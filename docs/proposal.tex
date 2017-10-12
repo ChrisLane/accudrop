@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{booktabs}
+
+\title{Proposal: Smart Devices as Safety Critical Tools in Parachuting}
+\author{Christopher Lane}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Every skydiver needs to learn to fly their canopy and one of the hardest parts of this is understanding how to land accurately and safely. Landing safely means that the canopy pilot must avoid other flyers and other obstacles and also land into wind under a flat and level canopy. Landing accurately often requires a lot of practice, with attention to how wind speed, canopy size and weight affect the trajectory of the canopy.
+
+For my project, I'd like to propose an investigation into the abilities of common smart devices such as smartphones and smartwatches for aiding novice skydivers in their canopy landing patterns and safety. An app will be created as a proof of concept to direct users to land accurately and avoid obstacles such as buildings and other flyers.
+
+\section{Discussion}
+Since skydiving is a high-risk sport, especially for novices, there are some issues that must be considered regarding safety. Since my app could give bad advice or not work as intended, resulting in an injury or death, the app should be treated as a proof of concept only and not be trusted completely.
+
+One could argue that without the app (presuming it's in working order), novice skydivers may be at more risk should they forget their training. While this may be true, I cannot be responsible for the safety of my fellow skydivers. I will likely test the app myself.
+
+Another thing to consider is whether current hardware in smartphones and smartwatches is capable of tracking altitude accurately and reliably, a vital requirement for the app to work well.
+
+\newpage\section{Expected Research}
+
+Most importantly, I must confirm that hardware in smart devices is capable of providing 3D positional data accurately and reliably in the sky. An initial browse reveals that many smartphones and smartwatches do contain barometers, this will likely be used to measure altitude. GPS will likely be used to track horizontal location.
+
+Movement characteristics of a parachute need to be investigated, these will affect the minimum requirements of smart device hardware and be required for trajectory prediction algorithms used to guide a user to their desired landing area.
+
+Two of the most obvious obstacles to avoid in the sky are buildings and other canopies in the sky. I will have to research ways of identifying positions of buildings on a map and communicating with or detecting other flyers through the app.
+
+Smartphone sensors may be unpredictable at times, I will investigate algorithms for avoiding data that should not be trusted from skewing results.
+
+A lot of research and testing may not be possible without collecting data from an actual skydive. Where possible, I will try to collect this data myself and when only collecting data that will not affect a user, I will try to gather data from fellow skydivers.
+
+\section{Schedule}
+
+\begin{tabular}{@{}llllllllllll@{}}
+\toprule
+\multicolumn{1}{c}{Task} & \multicolumn{11}{c}{Semester 1} \\ \midrule
+ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \midrule
+Initial Investigation & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  &  &  &  \\ \midrule
+Proposal &  &  & \cellcolor[HTML]{34FF34}{\color[HTML]{000000} } &  &  &  &  &  &  &  &  \\ \midrule
+Research sensors/canopy flight &  &  &  & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  &  \\ \midrule
+Research algorithms &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  \\ \midrule
+Write scientific article &  &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} &  &  &  &  \\ \midrule
+Design & \multicolumn{11}{l}{} \\ \midrule
+\indent Algorithms &  &  &  &  & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  \\ \midrule
+\indent Additional hardware &  &  &  &  & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  \\ \midrule
+\indent Class structure &  &  &  &  &  & \cellcolor[HTML]{34FF34} &  &  &  &  &  \\ \midrule
+\indent Interface &  &  &  &  &  & \cellcolor[HTML]{34FF34} &  &  &  &  &  \\ \midrule
+Implementation & \multicolumn{11}{l}{} \\ \midrule
+\indent Landing pattern tool &  &  &  &  &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} \\ \bottomrule
+\end{tabular}
+
+\begin{tabular}{@{}llllllllllll@{}}
+\toprule
+\multicolumn{1}{c}{Task} & \multicolumn{11}{c}{Semester 2} \\ \midrule
+ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \midrule
+Implementation & \multicolumn{11}{l}{} \\ \midrule
+\indent Obstacle avoidance & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} &  &  &  &  &  &  &  \\ \midrule
+\indent Extra safety/sanity checks &  &  &  &  & \cellcolor[HTML]{34FF34}{\color[HTML]{000000} } & \cellcolor[HTML]{34FF34}{\color[HTML]{000000} } &  &  &  &  &  \\ \midrule
+Cleanup &  &  &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} \\ \bottomrule
+\end{tabular}
+
+\end{document}
