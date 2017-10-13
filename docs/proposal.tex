@@ -1,6 +1,10 @@
 \documentclass{article}
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{booktabs}
+\usepackage{float}
+\usepackage[style=authoryear]{biblatex}
+
+\bibliography{proposal.bib}
 
 \title{Proposal: Smart Devices as Safety Critical Tools in Parachuting}
 \author{Christopher Lane}
@@ -22,18 +26,30 @@ Another thing to consider is whether current hardware in smartphones and smartwa
 
 \newpage\section{Expected Research}
 
-Most importantly, I must confirm that hardware in smart devices is capable of providing 3D positional data accurately and reliably in the sky. An initial browse reveals that many smartphones and smartwatches do contain barometers, this will likely be used to measure altitude. GPS will likely be used to track horizontal location.
+Most importantly, I must confirm that hardware in smart devices is capable of providing 3D positional data accurately and reliably in the sky. An initial browse reveals that many smartphones and smartwatches do contain barometers, this will likely be used to measure altitude. GPS will likely be used to track horizontal location. \autocite{alti}, a web page that I have found to contain a lot of information on how altimeters work and their sources of error will hopefully be a very useful source of information.
 
 Movement characteristics of a parachute need to be investigated, these will affect the minimum requirements of smart device hardware and be required for trajectory prediction algorithms used to guide a user to their desired landing area.
 
-Two of the most obvious obstacles to avoid in the sky are buildings and other canopies in the sky. I will have to research ways of identifying positions of buildings on a map and communicating with or detecting other flyers through the app.
+Two of the most obvious obstacles to avoid in the sky are buildings and other canopies in the sky. I will have to research ways of identifying positions of buildings on a map and communicating with or detecting other flyers through the app. I have taken a look into papers that have researched detection of buildings from aerial images, the papers that I have decided may be useful to my work are \autocite{buildings1} and \autocite{buildings2}.
 
 Smartphone sensors may be unpredictable at times, I will investigate algorithms for avoiding data that should not be trusted from skewing results.
 
 A lot of research and testing may not be possible without collecting data from an actual skydive. Where possible, I will try to collect this data myself and when only collecting data that will not affect a user, I will try to gather data from fellow skydivers.
 
+\section{Testing}
+Much of my testing will have to be on a virtual platform while creating my solutions since I will likely not have time to do a lot of skydiving over the year.
+
+Testing current hardware capabilities of smart devices (GPS and barometer) can be done by creating an app to collect/display 3D location data. If I use a smartwatch, I will be able to show altitude data and compare this to heights presented by my normal altimeter. After viewing collected data, I will be able to determine how accurate and reliable the devices that I have used are in the sky.
+
+For testing of the landing pattern helper, I will be able to input GPS and barometer data to see how the app will react and if it sets a good course. Once I am confident that the app works well with clean data that I have input, I will try to test the app in a real parachuting situation. I will record discrepancies that I see in the results and attempt to remove any issues afterwards. The test will fail if the app directs the user to do a dangerous manoeuvre or land far from the intended landing area.
+
+To test building avoidance I will input GPS and barometer data for an area with a few buildings. If the avoidance mechanisms work, then I will expect to see the landing pattern adjust to stay suitably clear of buildings. If the app directs a user to fly close to a building then the test will have failed.
+
+Depending on how avoidance of other flyers is implemented, the implementation of the test for this feature will change. I imagine that the general solution to implement this feature would be to input data indicating that another flyer is nearby and check that the app adjusts it's course accordingly. If the app does not modify the route, give a warning or gives dangerous instructions then the test will have failed.
+
 \section{Schedule}
 
+\begin{table}[H]
 \begin{tabular}{@{}llllllllllll@{}}
 \toprule
 \multicolumn{1}{c}{Task} & \multicolumn{11}{c}{Semester 1} \\ \midrule
@@ -51,7 +67,9 @@ Design & \multicolumn{11}{l}{} \\ \midrule
 Implementation & \multicolumn{11}{l}{} \\ \midrule
 \indent Landing pattern tool &  &  &  &  &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} \\ \bottomrule
 \end{tabular}
+\end{table}
 
+\begin{table}[H]
 \begin{tabular}{@{}llllllllllll@{}}
 \toprule
 \multicolumn{1}{c}{Task} & \multicolumn{11}{c}{Semester 2} \\ \midrule
@@ -61,5 +79,8 @@ Implementation & \multicolumn{11}{l}{} \\ \midrule
 \indent Extra safety/sanity checks &  &  &  &  & \cellcolor[HTML]{34FF34}{\color[HTML]{000000} } & \cellcolor[HTML]{34FF34}{\color[HTML]{000000} } &  &  &  &  &  \\ \midrule
 Cleanup &  &  &  &  &  & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} & \cellcolor[HTML]{34FF34} \\ \bottomrule
 \end{tabular}
+\end{table}
+
+\printbibliography[]
 
 \end{document}
