@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.google.android.gms.common.api.GoogleApiClient;
+import me.chrislane.accudrop.fragments.MainFragment;
 import me.chrislane.accudrop.fragments.MapFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +40,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         googleApiClient = new ApiClient(this).getmGoogleApiClient();
         locationManager = new LocationManager(this, googleApiClient);
         permissionManager = new PermissionManager(this);
+
+
+        // Set home fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = null;
+        try {
+            fragment = MainFragment.class.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fragmentManager.beginTransaction().replace(R.id.frame, fragment).commit();
     }
 
     @Override
