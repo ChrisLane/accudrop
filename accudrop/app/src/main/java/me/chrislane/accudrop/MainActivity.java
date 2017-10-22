@@ -1,6 +1,7 @@
 package me.chrislane.accudrop;
 
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,8 @@ import android.view.MenuItem;
 import com.google.android.gms.common.api.GoogleApiClient;
 import me.chrislane.accudrop.fragments.MainFragment;
 import me.chrislane.accudrop.fragments.MapFragment;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -89,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    TextToSpeech tts;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -97,8 +102,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.text_to_speech_test:
+                // TODO: Remove example code after demonstration
+                tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int status) {
+                        if (status == TextToSpeech.SUCCESS) {
+                            tts.setLanguage(Locale.UK);
+                            tts.speak("At 500 feet, turn upwind", TextToSpeech.QUEUE_FLUSH, null, null);
+
+                        }
+                    }
+                });
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -6,4 +6,9 @@
             android:title="@string/action_settings"
             android:orderInCategory="100"
             app:showAsAction="never"/>
+    <item
+            android:id="@+id/text_to_speech_test"
+            android:title="@string/text_to_speech_test"
+            android:orderInCategory="100"
+            app:showAsAction="never"/>
 </menu>
