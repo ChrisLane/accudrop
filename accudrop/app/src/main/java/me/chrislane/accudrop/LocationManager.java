@@ -11,11 +11,13 @@ public class LocationManager implements LocationListener {
 
     private final GoogleApiClient googleApiClient;
     private final MainActivity mainActivity;
-    private Location lastLocation;
+    private Location lastLocation = new Location("");
 
     public LocationManager(MainActivity mainActivity, GoogleApiClient googleApiClient) {
         this.mainActivity = mainActivity;
         this.googleApiClient = googleApiClient;
+        lastLocation.setLatitude(0);
+        lastLocation.setLongitude(0);
     }
 
     @Override

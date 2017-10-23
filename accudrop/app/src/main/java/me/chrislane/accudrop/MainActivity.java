@@ -23,9 +23,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LocationManager locationManager;
     private GoogleApiClient googleApiClient;
     private PermissionManager permissionManager;
+    private String currentFragmentTag = "";
+    private static final String MAIN_FRAGMENT_TAG = "main_fragment";
+    private static final String MAP_FRAGMENT_TAG = "map_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        googleApiClient = new ApiClient(this).getmGoogleApiClient();
+        locationManager = new LocationManager(this, googleApiClient);
+        permissionManager = new PermissionManager(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -40,26 +47,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        googleApiClient = new ApiClient(this).getmGoogleApiClient();
-        locationManager = new LocationManager(this, googleApiClient);
-        permissionManager = new PermissionManager(this);
-
-
         // Set home fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = null;
-        try {
-            fragment = MainFragment.class.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Fragment fragment;
+        if (savedInstanceState == null) {
+            fragment = new MainFragment();
+            currentFragmentTag = MAIN_FRAGMENT_TAG;
+        } else {
+            currentFragmentTag = savedInstanceState.getString("currentFragmentTag");
+            fragment = fragmentManager.findFragmentByTag(currentFragmentTag);
         }
-        fragmentManager.beginTransaction().replace(R.id.frame, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentFragmentTag", currentFragmentTag);
     }
 
     @Override
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
+        Fragment fragment;
         Class fragmentClass = MapFragment.class;
 
         switch (id) {
@@ -136,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_landing_pattern:
                 fragmentClass = MapFragment.class;
+                currentFragmentTag = MAP_FRAGMENT_TAG;
                 break;
             case R.id.nav_share:
                 break;
@@ -143,13 +148,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frame, fragment).commit();
+        if ((fragment = fragmentManager.findFragmentByTag(currentFragmentTag)) == null) {
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
