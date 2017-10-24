@@ -25,11 +25,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
     private GoogleMap map;
     private LocationManager locationManager;
+    private Location lastLocation = new Location("");
+    private CameraPosition.Builder camPosBuilder;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        lastLocation.setLatitude(51.52);
+        lastLocation.setLongitude(0.08);
+
+        camPosBuilder = new CameraPosition.Builder()
+                .zoom(15.5f)
+                .bearing(0)
+                .tilt(0);
     }
 
     @Override
@@ -50,6 +60,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
         MainActivity mainActivity = (MainActivity) context;
         locationManager = mainActivity.getLocationManager();
+        locationManager.addListener(this);
     }
 
     @Override
@@ -69,11 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         map = googleMap;
 
         // fixme: Fix crash here when screen is rotated
-        CameraPosition camPos = new CameraPosition.Builder().target(locationManager.getLastLatLng())
-                .zoom(15.5f)
-                .bearing(0)
-                .tilt(0)
-                .build();
+        CameraPosition camPos = camPosBuilder.target(locationManager.getLatLng(lastLocation)).build();
 
         // Initial map setup
         map.setBuildingsEnabled(true);
@@ -90,6 +97,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onLocationChanged(Location location) {
+        lastLocation = location;
 
+        if (map != null) {
+            CameraPosition camPos = camPosBuilder.target(locationManager.getLatLng(location)).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        }
     }
 }
