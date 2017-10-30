@@ -24,3 +24,12 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    supportLibVersion = "26.1.0"
+    playServicesVersion = "11.4.2"
+    espressoVersion = "2.2.2"
+    constraintLayoutVersion = "1.0.2"
+    archLifecycleVersion = "1.0.0-rc1"
+    archRoomVersion = "1.0.0-rc1"
+}
