@@ -1,10 +1,11 @@
 package me.chrislane.accudrop.fragments;
 
-import android.content.Context;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +18,20 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import me.chrislane.accudrop.LocationManager;
-import me.chrislane.accudrop.MainActivity;
+import me.chrislane.accudrop.LocationViewModel;
 import me.chrislane.accudrop.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap map;
-    private LocationManager locationManager;
+    private LocationViewModel locationViewModel;
     private Location lastLocation = new Location("");
     private CameraPosition.Builder camPosBuilder;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         lastLocation.setLatitude(51.52);
         lastLocation.setLongitude(0.08);
@@ -51,21 +51,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // Add this as a location listener
+        if (savedInstanceState == null) {
+            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+            locationViewModel.addListener(this);
+        }
+
+
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        MainActivity mainActivity = (MainActivity) context;
-        locationManager = mainActivity.getLocationManager();
-        locationManager.addListener(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     /**
@@ -77,10 +70,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("MapFragment", "Map ready");
         map = googleMap;
 
-        // fixme: Fix crash here when screen is rotated
-        CameraPosition camPos = camPosBuilder.target(locationManager.getLatLng(lastLocation)).build();
+        setupMap(map);
+    }
+
+    public void setupMap(GoogleMap map) {
+        CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(lastLocation)).build();
 
         // Initial map setup
         map.setBuildingsEnabled(true);
@@ -100,7 +97,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         lastLocation = location;
 
         if (map != null) {
-            CameraPosition camPos = camPosBuilder.target(locationManager.getLatLng(location)).build();
+            CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
     }

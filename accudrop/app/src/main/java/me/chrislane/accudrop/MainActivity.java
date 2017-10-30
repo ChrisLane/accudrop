@@ -1,5 +1,6 @@
 package me.chrislane.accudrop;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.NavigationView;
@@ -20,36 +21,38 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private LocationManager locationManager;
-    private GoogleApiClient googleApiClient;
-    private PermissionManager permissionManager;
+    private LocationViewModel locationViewModel;
     private String currentFragmentTag = "";
     private static final String MAIN_FRAGMENT_TAG = "main_fragment";
     private static final String MAP_FRAGMENT_TAG = "map_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        googleApiClient = new ApiClient(this).getmGoogleApiClient();
-        locationManager = new LocationManager(this, googleApiClient);
-        permissionManager = new PermissionManager(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Set home fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment;
+
+        if (savedInstanceState == null) {
+        }
+            GoogleApiClient googleApiClient = new ApiClient(this).getGoogleApiClient();
+            locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
+
+
         if (savedInstanceState == null) {
             fragment = new MainFragment();
             currentFragmentTag = MAIN_FRAGMENT_TAG;
@@ -67,21 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onStart() {
-        googleApiClient.connect();
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        locationManager.stopLocationUpdates();
-        googleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -105,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
                 return true;
@@ -159,20 +148,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public GoogleApiClient getGoogleApiClient() {
-        return googleApiClient;
-    }
-
-    public LocationManager getLocationManager() {
-        return locationManager;
-    }
-
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
+    public LocationViewModel getLocationViewModel() {
+        return locationViewModel;
     }
 }

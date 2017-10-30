@@ -1,6 +1,8 @@
 package me.chrislane.accudrop;
 
+import android.arch.lifecycle.ViewModel;
 import android.location.Location;
+import android.util.Log;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -10,30 +12,26 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationManager {
+public class LocationViewModel extends ViewModel {
 
-    private final GoogleApiClient googleApiClient;
-    private final MainActivity mainActivity;
     private boolean connected = false;
+    private GoogleApiClient googleApiClient;
     private List<LocationListener> listenerQueue = new ArrayList<>();
 
-    public LocationManager(MainActivity mainActivity, GoogleApiClient googleApiClient) {
-        this.mainActivity = mainActivity;
-        this.googleApiClient = googleApiClient;
-    }
 
-    public void startLocationUpdates() {
+    public void startLocationUpdates(GoogleApiClient googleApiClient) {
+        this.googleApiClient = googleApiClient;
         connected = true;
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mainActivity.getPermissionManager().checkLocationPermission();
-
-        for (LocationListener listener : listenerQueue)
+        for (LocationListener listener : listenerQueue) {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener);
+        }
     }
 
     public void stopLocationUpdates() {
+        Log.d("LocMgr", "Stopping location updates");
         connected = false;
 
         for (LocationListener listener : listenerQueue) {
@@ -45,7 +43,6 @@ public class LocationManager {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mainActivity.getPermissionManager().checkLocationPermission();
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener);
     }
 
