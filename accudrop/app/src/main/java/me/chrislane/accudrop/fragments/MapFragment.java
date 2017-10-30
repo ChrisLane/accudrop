@@ -1,15 +1,16 @@
 package me.chrislane.accudrop.fragments;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,20 +22,16 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import me.chrislane.accudrop.LocationViewModel;
 import me.chrislane.accudrop.R;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private LocationViewModel locationViewModel;
-    private Location lastLocation = new Location("");
     private CameraPosition.Builder camPosBuilder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        lastLocation.setLatitude(51.52);
-        lastLocation.setLongitude(0.08);
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -54,9 +51,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         // Add this as a location listener
         if (savedInstanceState == null) {
             locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
-            locationViewModel.addListener(this);
+            subscribe();
         }
-
 
         return view;
     }
@@ -77,7 +73,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     }
 
     public void setupMap(GoogleMap map) {
-        CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(lastLocation)).build();
+        Location loc = locationViewModel.getLastLocation().getValue();
+        CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
 
         // Initial map setup
         map.setBuildingsEnabled(true);
@@ -92,13 +89,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
                 .color(Color.RED));
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        lastLocation = location;
+    private void subscribe() {
+        final Observer<Location> locationObserver = new Observer<Location>() {
+            @Override
+            public void onChanged(@Nullable final Location location) {
+                if (map != null) {
+                    CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                }
+            }
+        };
 
-        if (map != null) {
-            CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-        }
+        locationViewModel.getLastLocation().observe(this, locationObserver);
     }
 }

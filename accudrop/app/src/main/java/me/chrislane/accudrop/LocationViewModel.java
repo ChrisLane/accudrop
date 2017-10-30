@@ -1,5 +1,7 @@
 package me.chrislane.accudrop;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.util.Log;
@@ -9,58 +11,45 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LocationViewModel extends ViewModel {
-
-    private boolean connected = false;
+public class LocationViewModel extends ViewModel implements LocationListener {
     private GoogleApiClient googleApiClient;
-    private List<LocationListener> listenerQueue = new ArrayList<>();
+    private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
+
+    public LocationViewModel() {
+        Location loc = new Location("");
+        loc.setLatitude(51.52);
+        loc.setLongitude(0.08);
+        lastLocation.setValue(loc);
+    }
 
 
     public void startLocationUpdates(GoogleApiClient googleApiClient) {
         this.googleApiClient = googleApiClient;
-        connected = true;
+
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        for (LocationListener listener : listenerQueue) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener);
-        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
     }
 
     public void stopLocationUpdates() {
         Log.d("LocMgr", "Stopping location updates");
-        connected = false;
 
-        for (LocationListener listener : listenerQueue) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, listener);
-        }
-    }
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
 
-    public void requestLocationUpdates(LocationListener listener) {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener);
-    }
-
-    public void addListener(LocationListener listener) {
-        if (connected) {
-            requestLocationUpdates(listener);
-            listenerQueue.add(listener);
-        } else {
-            listenerQueue.add(listener);
-        }
-    }
-
-    public void removeListener(LocationListener listener) {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, listener);
     }
 
     public LatLng getLatLng(Location location) {
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    public LiveData<Location> getLastLocation() {
+        return lastLocation;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        lastLocation.setValue(location);
+    }
 }
