@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.google.android.gms.common.api.GoogleApiClient;
 import me.chrislane.accudrop.fragments.MainFragment;
 import me.chrislane.accudrop.fragments.MapFragment;
 
@@ -21,14 +20,10 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private LocationViewModel locationViewModel;
     private String currentFragmentTag = "";
-    private static final String MAIN_FRAGMENT_TAG = "main_fragment";
-    private static final String MAP_FRAGMENT_TAG = "map_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -43,24 +38,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Set home fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment;
-
         if (savedInstanceState == null) {
+            new ApiClient(this);
+            ViewModelProviders.of(this).get(LocationViewModel.class);
         }
-            GoogleApiClient googleApiClient = new ApiClient(this).getGoogleApiClient();
-            locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
 
-
-        if (savedInstanceState == null) {
-            fragment = new MainFragment();
-            currentFragmentTag = MAIN_FRAGMENT_TAG;
-        } else {
-            currentFragmentTag = savedInstanceState.getString("currentFragmentTag");
-            fragment = fragmentManager.findFragmentByTag(currentFragmentTag);
-        }
-            fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
+        setCurrentFragment(savedInstanceState);
     }
 
     @Override
@@ -129,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_landing_pattern:
                 fragmentClass = MapFragment.class;
-                currentFragmentTag = MAP_FRAGMENT_TAG;
+                currentFragmentTag = MapFragment.TAG;
                 break;
             case R.id.nav_share:
                 break;
@@ -153,7 +136,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public LocationViewModel getLocationViewModel() {
-        return locationViewModel;
+    public void setCurrentFragment(Bundle savedInstanceState) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment;
+
+        if (savedInstanceState == null) {
+
+            fragment = new MainFragment();
+            currentFragmentTag = MainFragment.TAG;
+        } else {
+            currentFragmentTag = savedInstanceState.getString("currentFragmentTag");
+            fragment = fragmentManager.findFragmentByTag(currentFragmentTag);
+        }
+        fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
     }
 }

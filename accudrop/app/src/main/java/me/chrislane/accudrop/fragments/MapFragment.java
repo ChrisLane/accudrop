@@ -27,6 +27,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
+    public static final String TAG = "map_fragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import me.chrislane.accudrop.R;
 
 public class MainFragment extends Fragment {
+    public static final String TAG = "main_fragment";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

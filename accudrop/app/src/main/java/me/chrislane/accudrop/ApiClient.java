@@ -1,5 +1,6 @@
 package me.chrislane.accudrop;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import com.google.android.gms.location.LocationServices;
 public class ApiClient implements OnConnectionFailedListener, ConnectionCallbacks {
     private final GoogleApiClient googleApiClient;
     private MainActivity mainActivity;
+    private LocationViewModel locationViewModel;
 
     public ApiClient(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -28,13 +30,14 @@ public class ApiClient implements OnConnectionFailedListener, ConnectionCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d("ApiClient", "Connected");
-        mainActivity.getLocationViewModel().startLocationUpdates(googleApiClient);
+        locationViewModel = ViewModelProviders.of(mainActivity).get(LocationViewModel.class);
+        locationViewModel.startLocationUpdates(googleApiClient);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("ApiClient", "Connection suspended");
-        mainActivity.getLocationViewModel().stopLocationUpdates();
+        locationViewModel.stopLocationUpdates();
     }
 
     @Override

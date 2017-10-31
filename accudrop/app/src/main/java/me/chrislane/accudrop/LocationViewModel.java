@@ -22,7 +22,6 @@ public class LocationViewModel extends ViewModel implements LocationListener {
         lastLocation.setValue(loc);
     }
 
-
     public void startLocationUpdates(GoogleApiClient googleApiClient) {
         this.googleApiClient = googleApiClient;
 
