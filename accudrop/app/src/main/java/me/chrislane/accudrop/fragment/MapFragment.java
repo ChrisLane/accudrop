@@ -1,4 +1,4 @@
-package me.chrislane.accudrop.fragments;
+package me.chrislane.accudrop.fragment;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import me.chrislane.accudrop.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.R;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -70,10 +70,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Log.d("MapFragment", "Map ready");
         map = googleMap;
 
-        setupMap(map);
+        setupMap();
     }
 
-    public void setupMap(GoogleMap map) {
+    /**
+     * Set up the GoogleMap with initial settings and location.
+     */
+    private void setupMap() {
         Location loc = locationViewModel.getLastLocation().getValue();
         CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
 
@@ -90,17 +93,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .color(Color.RED));
     }
 
+    /**
+     * Subscribe to location changes.
+     */
     private void subscribe() {
         final Observer<Location> locationObserver = new Observer<Location>() {
             @Override
             public void onChanged(@Nullable final Location location) {
-                if (map != null) {
-                    CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
-                    map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-                }
+            updateMapLocation(location);
             }
         };
 
         locationViewModel.getLastLocation().observe(this, locationObserver);
+    }
+
+    /**
+     * Move the map camera to a new location.
+     *
+     * @param location Location to move the camera to.
+     */
+    private void updateMapLocation(Location location) {
+        if (map != null) {
+            CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        }
     }
 }

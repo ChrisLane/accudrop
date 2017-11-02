@@ -1,4 +1,4 @@
-package me.chrislane.accudrop;
+package me.chrislane.accudrop.viewmodel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -22,6 +22,11 @@ public class LocationViewModel extends ViewModel implements LocationListener {
         lastLocation.setValue(loc);
     }
 
+    /**
+     * Send a request for location updates to the GoogleApiClient.
+     *
+     * @param googleApiClient The GoogleApiClient to request updates from.
+     */
     public void startLocationUpdates(GoogleApiClient googleApiClient) {
         this.googleApiClient = googleApiClient;
 
@@ -32,6 +37,9 @@ public class LocationViewModel extends ViewModel implements LocationListener {
 
     }
 
+    /**
+     * Tell the GoogleApiClient to stop giving location updates.
+     */
     public void stopLocationUpdates() {
         Log.d("LocMgr", "Stopping location updates");
 
@@ -39,14 +47,30 @@ public class LocationViewModel extends ViewModel implements LocationListener {
 
     }
 
+    /**
+     * Get a LatLng object from a Location object.
+     *
+     * @param location The location to get latitude and longitude from.
+     * @return A LatLng object with latitude and longitude of the given location.
+     */
     public LatLng getLatLng(Location location) {
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    /**
+     * Get the device location for the last location update.
+     *
+     * @return The last known device location.
+     */
     public LiveData<Location> getLastLocation() {
         return lastLocation;
     }
 
+    /**
+     * Called to notify the app of a location change.
+     *
+     * @param location The new location of the device.
+     */
     @Override
     public void onLocationChanged(Location location) {
         lastLocation.setValue(location);

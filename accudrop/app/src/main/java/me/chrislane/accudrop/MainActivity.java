@@ -13,8 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import me.chrislane.accudrop.fragments.MainFragment;
-import me.chrislane.accudrop.fragments.MapFragment;
+import me.chrislane.accudrop.fragment.MainFragment;
+import me.chrislane.accudrop.fragment.MapFragment;
+import me.chrislane.accudrop.viewmodel.LocationViewModel;
 
 import java.util.Locale;
 
@@ -38,11 +39,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Create new instances if they should not exist already
         if (savedInstanceState == null) {
             new ApiClient(this);
             ViewModelProviders.of(this).get(LocationViewModel.class);
         }
 
+        // Set the fragment to be displayed
         setCurrentFragment(savedInstanceState);
     }
 
@@ -120,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         if ((fragment = fragmentManager.findFragmentByTag(currentFragmentTag)) == null) {
             try {
@@ -136,7 +138,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void setCurrentFragment(Bundle savedInstanceState) {
+    /**
+     * Set the current fragment to be displayed based on app state.
+     * If the app does not have a previously saved instance state, the default fragment will be created and displayed,
+     * otherwise, the fragment saved in the saved instance state will be displayed.
+     *
+     * @param savedInstanceState The bundle containing current fragment information.
+     */
+    private void setCurrentFragment(Bundle savedInstanceState) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment;
 

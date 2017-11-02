@@ -1,4 +1,4 @@
-package me.chrislane.accudrop.fragments;
+package me.chrislane.accudrop.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

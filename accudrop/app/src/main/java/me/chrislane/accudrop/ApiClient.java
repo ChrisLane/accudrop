@@ -10,10 +10,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
+import me.chrislane.accudrop.viewmodel.LocationViewModel;
 
 public class ApiClient implements OnConnectionFailedListener, ConnectionCallbacks {
     private final GoogleApiClient googleApiClient;
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
     private LocationViewModel locationViewModel;
 
     public ApiClient(MainActivity mainActivity) {
@@ -43,9 +44,5 @@ public class ApiClient implements OnConnectionFailedListener, ConnectionCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    public GoogleApiClient getGoogleApiClient() {
-        return googleApiClient;
     }
 }
