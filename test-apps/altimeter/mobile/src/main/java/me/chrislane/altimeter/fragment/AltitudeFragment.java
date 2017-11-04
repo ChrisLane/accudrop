@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import me.chrislane.altimeter.R;
+import me.chrislane.altimeter.Util;
+import me.chrislane.altimeter.Util.Unit;
 import me.chrislane.altimeter.viewmodel.LocationViewModel;
 import me.chrislane.altimeter.viewmodel.PressureViewModel;
 
@@ -70,7 +72,9 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
             @Override
             public void onChanged(@Nullable final Float altitude) {
                 // Update altitude text
-                updatePressureAltitude(altitude);
+                if (altitude != null) {
+                    updatePressureAltitude(Util.metresToFeet(altitude), Unit.IMPERIAL);
+                }
             }
         };
 
@@ -94,23 +98,40 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
             @Override
             public void onChanged(@Nullable final Double altitude) {
                 // Update altitude text
-                updateLocationAltitude(altitude);
+                if (altitude != null) {
+                    updateLocationAltitude(Util.metresToFeet(altitude.floatValue()), Unit.IMPERIAL);
+                }
             }
         };
 
         locationViewModel.getLastAltitude().observe(this, locationObserver);
     }
 
-    public void updateLocationAltitude(Double altitude) {
+    public void updateLocationAltitude(Float altitude, Unit unit) {
         Log.v(TAG, "Updating GPS altitude text");
         TextView text = view.findViewById(R.id.gps_altitude);
-        text.setText(String.format(Locale.ENGLISH, "%.0f m", altitude));
+        text.setText(getAltitudeText(altitude, unit));
+
     }
 
-    public void updatePressureAltitude(Float altitude) {
+    public void updatePressureAltitude(Float altitude, Unit unit) {
         Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure_altitude);
-        text.setText(String.format(Locale.ENGLISH, "%.0f m", altitude));
+        text.setText(getAltitudeText(altitude, unit));
+    }
+
+    public String getAltitudeText(Float altitude, Unit unit) {
+        String unitSymbol = "";
+        switch (unit) {
+            case METRIC:
+                unitSymbol = "m";
+                break;
+            case IMPERIAL:
+                unitSymbol = "ft";
+                break;
+        }
+
+        return String.format(Locale.ENGLISH, "%.0f %s", altitude, unitSymbol);
     }
 
     public void updatePressure(Float pressure) {
@@ -128,6 +149,6 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void stopListening() {
         pressureViewModel.stopListening();
-        locationViewModel.startListening();
+        locationViewModel.stopListening();
     }
 }

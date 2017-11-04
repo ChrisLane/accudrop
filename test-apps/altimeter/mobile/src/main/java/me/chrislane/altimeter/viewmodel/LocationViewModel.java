@@ -5,62 +5,55 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 public class LocationViewModel extends ViewModel implements LocationListener {
     private static final String TAG = "location_view_model";
-    private GoogleApiClient googleApiClient;
     private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private MutableLiveData<Location> groundLocation = new MutableLiveData<>();
     private MutableLiveData<Double> lastAltitude = new MutableLiveData<>();
     private LocationManager locationManager;
-    private boolean listening;
+    private Context applicationContext;
 
     public void initialise(Context context) {
         Log.d(TAG, "Initialising.");
-        Context applicationContext = context.getApplicationContext();
-
-        ApiClientListener apiClientListener = new ApiClientListener();
-        googleApiClient = new GoogleApiClient.Builder(applicationContext)
-                .addConnectionCallbacks(apiClientListener)
-                .addOnConnectionFailedListener(apiClientListener)
-                .addApi(LocationServices.API)
-                .build();
-        googleApiClient.connect();
+        applicationContext = context.getApplicationContext();
     }
 
     public void startListening() {
-        if (googleApiClient.isConnected() && !listening) {
-            listening = true;
-            Log.d(TAG, "Listening on location.");
-            LocationRequest request = LocationRequest.create();
-            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        Log.d(TAG, "Listening on location.");
 
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
-        }
+        locationManager = (LocationManager) applicationContext.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
     public void stopListening() {
         Log.d(TAG, "Stopped listening on Location.");
-        listening = false;
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "GPS Altitude given: " + location.hasAltitude());
-        Log.d(TAG, "Altitude is: " + location.getAltitude());
         lastLocation.setValue(location);
         updateAltitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     public LiveData<Location> getLastLocation() {
@@ -72,8 +65,8 @@ public class LocationViewModel extends ViewModel implements LocationListener {
     }
 
     public void setGroundLocation() {
-        if (groundLocation.getValue() != null) {
-            setGroundLocation(groundLocation.getValue());
+        if (lastLocation.getValue() != null) {
+            setGroundLocation(lastLocation.getValue());
         }
     }
 
@@ -98,27 +91,5 @@ public class LocationViewModel extends ViewModel implements LocationListener {
             return;
         }
         setLastAltitude(altitude);
-    }
-
-    private class ApiClientListener implements GoogleApiClient.OnConnectionFailedListener,
-            GoogleApiClient.ConnectionCallbacks {
-        private static final String TAG = "api_client_listener";
-
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            Log.d(TAG, "Connected to Google API.");
-            startListening();
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            Log.d(TAG, "Connection to Google API suspended.");
-            stopListening();
-        }
-
-        @Override
-        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-            Log.d(TAG, "Connection to Google API failed: " + connectionResult.toString());
-        }
     }
 }
