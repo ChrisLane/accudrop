@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import me.chrislane.altimeter.R;
+import me.chrislane.altimeter.viewmodel.LocationViewModel;
 import me.chrislane.altimeter.viewmodel.PressureViewModel;
 
 import java.util.Locale;
@@ -24,6 +25,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
 
     public static final String TAG = "altitude_fragment";
     private PressureViewModel pressureViewModel;
+    private LocationViewModel locationViewModel;
     private View view;
 
     @Override
@@ -34,6 +36,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
 
         // Get view models.
         pressureViewModel = ViewModelProviders.of(getActivity()).get(PressureViewModel.class);
+        locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
 
         // Add click listener for fragment view.
         Button calibrateButton = view.findViewById(R.id.calibrate_button);
@@ -46,6 +49,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
 
         // Subscribe to data changes
         subscribeToPressure();
+        subscribeToLocation();
 
         getActivity().getLifecycle().addObserver(this);
 
@@ -55,6 +59,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
     public void onClickCalibrate(View view) {
         Log.d(TAG, "Calibrating.");
         pressureViewModel.setGroundPressure();
+        locationViewModel.setGroundLocation();
     }
 
     /**
@@ -81,25 +86,48 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
         pressureViewModel.getLastPressure().observe(this, pressureObserver);
     }
 
+    /**
+     * Subscribe to location changes.
+     */
+    private void subscribeToLocation() {
+        final Observer<Double> locationObserver = new Observer<Double>() {
+            @Override
+            public void onChanged(@Nullable final Double altitude) {
+                // Update altitude text
+                updateLocationAltitude(altitude);
+            }
+        };
+
+        locationViewModel.getLastAltitude().observe(this, locationObserver);
+    }
+
+    public void updateLocationAltitude(Double altitude) {
+        Log.v(TAG, "Updating GPS altitude text");
+        TextView text = view.findViewById(R.id.gps_altitude);
+        text.setText(String.format(Locale.ENGLISH, "%.0f m", altitude));
+    }
+
     public void updatePressureAltitude(Float altitude) {
-        Log.d(TAG, "Updating pressure altitude text.");
+        Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure_altitude);
         text.setText(String.format(Locale.ENGLISH, "%.0f m", altitude));
     }
 
     public void updatePressure(Float pressure) {
-        Log.d(TAG, "Updating pressure altitude text.");
+        Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure);
         text.setText(String.format(Locale.ENGLISH, "%.0f hPa", pressure));
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void startPressure() {
+    public void startListening() {
         pressureViewModel.startListening();
+        locationViewModel.startListening();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void stopPressure() {
+    public void stopListening() {
         pressureViewModel.stopListening();
+        locationViewModel.startListening();
     }
 }

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import me.chrislane.altimeter.fragment.AltitudeFragment;
+import me.chrislane.altimeter.viewmodel.LocationViewModel;
 import me.chrislane.altimeter.viewmodel.PressureViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,15 +25,17 @@ public class MainActivity extends AppCompatActivity {
         if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
             // No barometer, do not continue.
             Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
-            return;
+            //return;
         }
 
         // Create or get ViewModels.
         PressureViewModel pressureViewModel = ViewModelProviders.of(this).get(PressureViewModel.class);
+        LocationViewModel locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
 
         // Check if this is the first activity creation.
         if (savedInstanceState == null) {
             pressureViewModel.initialise(sensorManager);
+            locationViewModel.initialise(this);
         }
 
         // Set the fragment view, passing whether the fragment should exist or not.

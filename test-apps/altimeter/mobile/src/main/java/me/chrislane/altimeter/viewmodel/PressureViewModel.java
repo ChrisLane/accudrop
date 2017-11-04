@@ -35,7 +35,7 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, "Sensor changed.");
+        Log.v(TAG, "Sensor changed.");
         lastPressure.setValue(event.values[0]);
         updateAltitude();
     }
@@ -51,7 +51,7 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
 
     public void setGroundPressure() {
         if (lastPressure.getValue() != null) {
-            groundPressure.setValue(lastPressure.getValue());
+            setGroundPressure(lastPressure.getValue());
         }
     }
 
@@ -67,6 +67,10 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
         return lastAltitude;
     }
 
+    public void setLastAltitude(float lastAltitude) {
+        this.lastAltitude.setValue(lastAltitude);
+    }
+
     private void updateAltitude() {
         Float ground = groundPressure.getValue();
         Float last = lastPressure.getValue();
@@ -79,6 +83,6 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
         } else {
             return;
         }
-        lastAltitude.setValue(altitude);
+        setLastAltitude(altitude);
     }
 }
