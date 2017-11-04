@@ -10,10 +10,10 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 public class PressureViewModel extends ViewModel implements SensorEventListener {
-    private SensorManager sensorManager;
-    private Sensor barometer;
     private static final String TAG = "pressure_view_model";
     private static final int ONE_SECOND_DELAY = 1000000;
+    private SensorManager sensorManager;
+    private Sensor barometer;
     private MutableLiveData<Float> lastPressure = new MutableLiveData<>();
     private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
     private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
@@ -45,10 +45,6 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
 
     }
 
-    public void setGroundPressure(float groundPressure) {
-        this.groundPressure.setValue(groundPressure);
-    }
-
     public void setGroundPressure() {
         if (lastPressure.getValue() != null) {
             setGroundPressure(lastPressure.getValue());
@@ -57,6 +53,10 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
 
     public LiveData<Float> getGroundPressure() {
         return groundPressure;
+    }
+
+    public void setGroundPressure(float groundPressure) {
+        this.groundPressure.setValue(groundPressure);
     }
 
     public LiveData<Float> getLastPressure() {
