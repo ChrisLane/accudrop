@@ -29,14 +29,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Create or get ViewModels.
-        PressureViewModel pressureViewModel = ViewModelProviders.of(this).get(PressureViewModel.class);
-        LocationViewModel locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
-
-        // Check if this is the first activity creation.
-        if (savedInstanceState == null) {
-            pressureViewModel.initialise(sensorManager);
-            locationViewModel.initialise(this);
-        }
+        ViewModelProviders.of(this).get(PressureViewModel.class);
+        ViewModelProviders.of(this).get(LocationViewModel.class);
 
         // Set the fragment view, passing whether the fragment should exist or not.
         setFragment(savedInstanceState != null);

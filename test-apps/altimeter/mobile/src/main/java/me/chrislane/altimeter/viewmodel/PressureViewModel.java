@@ -1,15 +1,18 @@
 package me.chrislane.altimeter.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class PressureViewModel extends ViewModel implements SensorEventListener {
+public class PressureViewModel extends AndroidViewModel implements SensorEventListener {
     private static final String TAG = "pressure_view_model";
     private static final int ONE_SECOND_DELAY = 1000000;
     private SensorManager sensorManager;
@@ -18,8 +21,10 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
     private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
     private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
 
-    public void initialise(SensorManager sensorManager) {
-        this.sensorManager = sensorManager;
+    public PressureViewModel(@NonNull Application application) {
+        super(application);
+
+        sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
         barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
     }
 
@@ -45,12 +50,6 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
 
     }
 
-    public void setGroundPressure() {
-        if (lastPressure.getValue() != null) {
-            setGroundPressure(lastPressure.getValue());
-        }
-    }
-
     public LiveData<Float> getGroundPressure() {
         return groundPressure;
     }
@@ -63,12 +62,18 @@ public class PressureViewModel extends ViewModel implements SensorEventListener 
         return lastPressure;
     }
 
-    public MutableLiveData<Float> getLastAltitude() {
+    public LiveData<Float> getLastAltitude() {
         return lastAltitude;
     }
 
     public void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
+    }
+
+    public void setGroundPressure() {
+        if (lastPressure.getValue() != null) {
+            setGroundPressure(lastPressure.getValue());
+        }
     }
 
     private void updateAltitude() {

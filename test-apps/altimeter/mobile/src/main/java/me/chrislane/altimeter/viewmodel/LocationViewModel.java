@@ -1,32 +1,32 @@
 package me.chrislane.altimeter.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class LocationViewModel extends ViewModel implements LocationListener {
+public class LocationViewModel extends AndroidViewModel implements LocationListener {
     private static final String TAG = "location_view_model";
     private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private MutableLiveData<Location> groundLocation = new MutableLiveData<>();
     private MutableLiveData<Double> lastAltitude = new MutableLiveData<>();
     private LocationManager locationManager;
-    private Context applicationContext;
 
-    public void initialise(Context context) {
-        Log.d(TAG, "Initialising.");
-        applicationContext = context.getApplicationContext();
+    public LocationViewModel(@NonNull Application application) {
+        super(application);
     }
 
     public void startListening() {
         Log.d(TAG, "Listening on location.");
 
-        locationManager = (LocationManager) applicationContext.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getApplication().getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
@@ -60,6 +60,14 @@ public class LocationViewModel extends ViewModel implements LocationListener {
         return lastLocation;
     }
 
+    public LiveData<Double> getLastAltitude() {
+        return lastAltitude;
+    }
+
+    public void setLastAltitude(double lastAltitude) {
+        this.lastAltitude.setValue(lastAltitude);
+    }
+
     public void setGroundLocation(Location groundLocation) {
         this.groundLocation.setValue(groundLocation);
     }
@@ -68,14 +76,6 @@ public class LocationViewModel extends ViewModel implements LocationListener {
         if (lastLocation.getValue() != null) {
             setGroundLocation(lastLocation.getValue());
         }
-    }
-
-    public LiveData<Double> getLastAltitude() {
-        return lastAltitude;
-    }
-
-    public void setLastAltitude(double lastAltitude) {
-        this.lastAltitude.setValue(lastAltitude);
     }
 
     private void updateAltitude() {
