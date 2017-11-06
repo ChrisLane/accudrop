@@ -137,7 +137,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
     public void updatePressure(Float pressure) {
         Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure);
-        text.setText(String.format(Locale.ENGLISH, "%.0f hPa", pressure));
+        text.setText(String.format(Locale.ENGLISH, "%.3f hPa", pressure));
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
