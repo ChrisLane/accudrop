@@ -15,8 +15,8 @@ import android.util.Log;
 public class PressureViewModel extends AndroidViewModel implements SensorEventListener {
     private static final String TAG = "pressure_view_model";
     private static final int ONE_SECOND_DELAY = 1000000;
-    private SensorManager sensorManager;
-    private Sensor barometer;
+    private final SensorManager sensorManager;
+    private final Sensor barometer;
     private MutableLiveData<Float> lastPressure = new MutableLiveData<>();
     private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
     private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();

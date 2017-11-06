@@ -3,7 +3,6 @@ package me.chrislane.altimeter.fragment;
 
 import android.arch.lifecycle.*;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,12 +41,7 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
 
         // Add click listener for fragment view.
         Button calibrateButton = view.findViewById(R.id.calibrate_button);
-        calibrateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickCalibrate(v);
-            }
-        });
+        calibrateButton.setOnClickListener(this::onClickCalibrate);
 
         // Subscribe to data changes
         subscribeToPressure();
@@ -68,23 +62,15 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
      * Subscribe to altitude changes.
      */
     private void subscribeToPressure() {
-        final Observer<Float> altitudeObserver = new Observer<Float>() {
-            @Override
-            public void onChanged(@Nullable final Float altitude) {
-                // Update altitude text
-                if (altitude != null) {
-                    updatePressureAltitude(Util.metresToFeet(altitude), Unit.IMPERIAL);
-                }
+        final Observer<Float> altitudeObserver = altitude -> {
+            // Update altitude text
+            if (altitude != null) {
+                updatePressureAltitude(Util.metresToFeet(altitude), Unit.IMPERIAL);
             }
         };
 
-        final Observer<Float> pressureObserver = new Observer<Float>() {
-            @Override
-            public void onChanged(@Nullable final Float pressure) {
-                // Update pressure text
-                updatePressure(pressure);
-            }
-        };
+        // Update pressure text
+        final Observer<Float> pressureObserver = this::updatePressure;
 
         pressureViewModel.getLastAltitude().observe(this, altitudeObserver);
         pressureViewModel.getLastPressure().observe(this, pressureObserver);
@@ -94,13 +80,10 @@ public class AltitudeFragment extends Fragment implements LifecycleObserver {
      * Subscribe to location changes.
      */
     private void subscribeToLocation() {
-        final Observer<Double> locationObserver = new Observer<Double>() {
-            @Override
-            public void onChanged(@Nullable final Double altitude) {
-                // Update altitude text
-                if (altitude != null) {
-                    updateLocationAltitude(Util.metresToFeet(altitude.floatValue()), Unit.IMPERIAL);
-                }
+        final Observer<Double> locationObserver = altitude -> {
+            // Update altitude text
+            if (altitude != null) {
+                updateLocationAltitude(Util.metresToFeet(altitude.floatValue()), Unit.IMPERIAL);
             }
         };
 
