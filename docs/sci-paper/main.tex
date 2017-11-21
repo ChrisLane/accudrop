@@ -1,0 +1,132 @@
+\documentclass[twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[backend=bibtex]{biblatex} % References
+\usepackage[hidelinks]{hyperref} % Clickable links
+
+\bibliography{refs.bib}
+
+\title{Using Smart Devices as Tools in Safety Critical Skydiving Applications}
+\author{Christopher Lane}
+
+\begin{document}
+\maketitle
+
+\begin{abstract} % "Helps decide if someone should read the paper"
+Smart devices such as smartphones and smartwatches today have many different sensors, often with high frequency and accuracy. One sensor that is becoming more common in smart devices is the barometer, this allows for air pressure to be measured, making altitude calculations possible. Since skydiving equipment is typically expensive, it would be useful for skydivers to enhance their skydiving experience using the smart devices that they already own. This article will discuss how an app might be created in order to give guidance to a skydiver to improve their canopy piloting.
+\end{abstract}
+
+\section{Introduction}\label{sec:introduction} % "Lays out the whole paper"
+
+% What is the problem?
+
+% Why is the problem important?
+
+% What has been done so far on the problem?
+
+% What is the contribution of this paper to the problem?
+
+% Is the contribution original? Explain why
+
+% Is the contribution non-trivial? Explain why
+
+% Short summary of the rest of the paper
+The rest of the paper is structured as follows: In Section~\ref{sec:related-work} we\dots
+
+
+\section{Related Work}\label{sec:related-work}
+\subsection{Apps} % Existing apps, what they accomplish, how they do it, what they do well, what they don't do well (solved by me!)
+
+%% L/D Vario %%
+% Built for gliding airsports.
+% Offers details on glide ratio, lift-to-drag ration, altitude, horizontal and vertical speed.
+% Advanced version of the smart altimeter app.
+% Uses a device's barometer to make calculations relative to the air.
+% "Advanced multiple-layer algorithms are used to calculate smooth descent rate and vertical acceleration from noisy altitude data."
+% The device needs to be mounted away from the body in undisturbed air stream.
+% Highly recommends the use of devices with barometric sensors of 60Hz or faster
+The~\citetitle{pfm_technologies_llc_l/d_2015} app by~\textcite{pfm_technologies_llc_l/d_2015} is an app that is built for ``gliding airsports''. The app allows for users to view their glide and lift-to-drag ratios, altitude, horizontal and vertical speeds among other things. The app seems to be built upon the much simpler~\citetitle{pfm_technologies_llc_smart_2016} app from the same author that only offers altitude and descent speed readings.
+The~\citetitle{pfm_technologies_llc_l/d_2015} app uses the handheld or wearable smart device's barometer to make calculations relative to the air around it that result in the device's current altitude from either sea level or a user-defined reference point. Data important to wingsuiters is calculated with the help of the device's accelerometer. It is recommended that devices with barometric sensors of 60Hz or higher are used to reduce latency in altitude calculations. The authors also recommend that the device be mounted away from the body, at least 2--3 feet from a wingsuiter's wings, this is presumably to reduce the risk of the wings or body affecting the pressure readings in the device.
+
+%% BlueFlyVario %%
+% App designed to read data from the BlueFlyVario bluetooth pressure sensor from https://www.blueflyvario.com/
+% Designed for for paragliding and hang gliding.
+% Shows data such as altitude, wind speed, heading, flight time.
+
+%% SpotAssist %%
+% A tool for skydivers.
+% Shows wind conditions at drop zones, safe plane exit area and recommended landing pattern based on changeable parameters (wind direction/speed, landing direction)
+
+\subsection{Barometers} % Explain findings from the barometer papers
+
+% (Inaccuracies) Inaccurate when ascending or descending at rapid rates
+
+% (Altitude calculation) Calculation for altitude from barometric pressure readings and temperature
+
+% (Accuracy testing) Tested accuracy of barometer using building floors
+
+% (Bluetooth transceivers)
+
+% (Data filtering) Filtering burst and random errors using kalman filter
+
+% (Barometer Specs) Pressure/temp ranges, sampling rate, accuracy
+
+% (Temperature) The effects of temperature on barometer readings
+
+\subsection{GPS} % Explain findings from barometer papers
+
+% Horizontal accuracy
+
+% Vertical accuracy about 2x worse than horizontal
+
+\subsection{Bluetooth} % Explain findings from bluetooth papers
+
+% Classes of bluetooth and their range/speed
+
+\subsection{Wi-Fi Direct} % explain findings from wi-fi direct papers
+
+% Range and speeds of Wi-Fi direct
+
+\section{Theory}\label{sec:theory} % Describes underlying theory behind the system (What, relation, definition, example)
+
+% Altitude calculation
+
+% Kalman filter
+
+% Canopy flight characteristics
+
+\section{Specification}\label{sec:specification} % Work proposed
+
+% Techniques that underlie the implementation
+
+    % Learner skydiving safety requirements
+
+    % Landing pattern point calculation method
+
+% Requirements of the implementation
+
+    % Able to show a recommended landing pattern based on wind speed and direction
+
+    % Able to give instruction for landing pattern turn points based on real-time progress in order to land in the landing area (via bluetooth earpiece)
+
+    % Able to communicate with other users of the app to warn of nearby canopies
+
+\section{Results and Discussion}\label{sec:results-discussion} % Tests done and planned
+
+% Discussion of results and evaluation
+
+% Discussion of justification for work
+
+% Discussion of experiments planned with justification
+
+% Discussion of expected evaluation approach (final experiments)
+
+\section{Conclusion} % Summarises research, discusses its significance
+
+% Briefly restate project description
+
+% Original motivation repeated
+
+% State of the field in light of this paper reassessed
+
+\printbibliography[]
+\end{document}
