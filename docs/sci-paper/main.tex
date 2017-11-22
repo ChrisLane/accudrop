@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[backend=bibtex]{biblatex} % References
 \usepackage[hidelinks]{hyperref} % Clickable links
+\usepackage{url} % Wrap urls
 
 \bibliography{refs.bib}
 
@@ -51,10 +52,14 @@ The~\citetitle{pfm_technologies_llc_l/d_2015} app uses the handheld or wearable 
 % App designed to read data from the BlueFlyVario bluetooth pressure sensor from https://www.blueflyvario.com/
 % Designed for for paragliding and hang gliding.
 % Shows data such as altitude, wind speed, heading, flight time.
+~\citetitle{dickie_blueflyvario_2016} is another app designed for gliding airsports, by~\textcite{dickie_blueflyvario_2016}. The app is designed to read data from the~\citetitle{noauthor_blueflyvario_nodate}~\cite{noauthor_blueflyvario_nodate} pressure sensor, providing data such as altitude wind speed, heading and flight time.
+The app's use of an external barometric sensor is useful since it ensures that results across all devices running the app will be consistent and that the required hardware specifications of the barometer are met.
+While the app does offer plenty of useful information, the user interface does seem cluttered and not user friendly. Since we do not have the~\citetitle{noauthor_blueflyvario_nodate} pressure sensor, we could not test any features of the app or sensor, however, with the website claiming ``altitude resolution of 10cm''~\cite{noauthor_blueflyvario_nodate} it can be seen why it would be desirable.
 
 %% SpotAssist %%
 % A tool for skydivers.
 % Shows wind conditions at drop zones, safe plane exit area and recommended landing pattern based on changeable parameters (wind direction/speed, landing direction)
+\citetitle{inc_spot_2017}~\cite{inc_spot_2017} is a different kind of app, focussing on pre and post-skydive assistance. Features of the app include wind condition forcasting, safe plane exit area calculating, cutaway finder and a landing pattern simulator. The wind condition forecasting shows information for different altitudes, information that is not typically available on standard forecast websites. The cutaway finder feature allows users to say where they cut away their main canopy so that the app can make an estimate of where the canopy may have landed based on wind speed and direction. The two likely most useful features for learner skydivers or skydivers at a new drop zone are the safe exit and landing pattern recommendations. The app is able to show a satellite image of drop zones and overlay recommendations on where to turn to land or where to exit the plane in order to be able to land in the target area. The app does not offer any features to feed exit or landing pattern data to skydivers during a jump and many features are restricted by a one time purchase or subscription.
 
 \subsection{Barometers} % Explain findings from the barometer papers
 
@@ -90,7 +95,7 @@ The~\citetitle{pfm_technologies_llc_l/d_2015} app uses the handheld or wearable 
 
 % Altitude calculation
 
-% Kalman filter
+% Kalman filter (why use this)
 
 % Canopy flight characteristics
 
@@ -128,5 +133,5 @@ The~\citetitle{pfm_technologies_llc_l/d_2015} app uses the handheld or wearable 
 
 % State of the field in light of this paper reassessed
 
-\printbibliography[]
+\printbibliography{}
 \end{document}
