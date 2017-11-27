@@ -88,13 +88,16 @@ Since there is a relation between air pressure and altitude, altitude can be cal
     % One might pressume that a decrease in temperature may result in a decrease in pressure readings.
 In a paper investigating the calibration of smartphone sensors for indoor positioning~\cite{keller_calibration_2012}, tests were conducted to investigate the effects of temperature change on measurements from a smartphone's barometer. The \textit{BMP280} barometer has a temperature sensor that is used for applying inbuilt calibrations based on the measured temperature. While the barometer does have its own temperature dependent calibration, we can see from~\citeauthor{keller_calibration_2012}'s results that temperature changes do still have a noticeable effect on the device's pressure readings. Results showed a correlation whereby as temperature increased, so too did pressure, an unexpected result when we consider that air becomes less dense at higher temperatures. Inconsistencies in pressure readings between temperatures likely vary depending on the smart device. The paper only used one device, it would be interesting to investigate how much different barometers are affected by temperature to understand how much they can be relied on in quickly changing temperatures such as while skydiving.
 
-
 % (Accuracy testing) Tested accuracy of barometer using building floors
-
+    % Accuracy shown to be good in both Nengquiang and keller tests
+    % Accuracy not yet tested at high speeds and larger altitudes
+Smartphones have previously been tested for their barometric pressure sensing accuracy, in papers such as by~\textcite{keller_calibration_2012} and~\textcite{he_atmospheric_2012}. In both of these papers, researchers took a smart device to different floors of a building and recorded their results. The researchers found that the altitude data from the phones they used had accuracy better than \SI{\pm1}{\metre}. This data is for small changes in altitude with slow rates of change, it is important that tests be carried out to discover the accuracy of smart device altitude measurements across large altitude ranges, temperature and at faster speeds.
 
 % (Inaccuracies) Inaccurate when ascending or descending at rapid rates
+Inaccuracies can occur smart device barometers, temperature must be accounted for in calibration and positioning must be considered, as suggested by the~\citetitle{pfm_technologies_llc_l/d_2015} app mentioned in Section~\ref{sec:apps}. Characteristics of smart device barometers may not be suited to high ascent/descent rates. \textcite{gray_integrated_1995} claims that barometers are ``most inaccurate when ascending or descending at rapid rates (especially noted in fighter aircraft)''. A skydiver is not likely to be descending at the rates that a fighter aircraft can but since smart devices are not built with extreme descent rates in mind, large inaccuracies could be found that might not have been previously discovered through testing on floors of a building.
 
 % (Data filtering) Filtering burst and random errors using kalman filter
+
 
 \subsection{GPS}\label{sec:gps} % Explain findings from barometer papers
 
