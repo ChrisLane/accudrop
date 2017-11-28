@@ -1,4 +1,4 @@
-\documentclass[twocolumn]{article}
+\documentclass[11pt, twocolumn]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[backend=bibtex]{biblatex} % References
@@ -97,7 +97,7 @@ Smartphones have previously been tested for their barometric pressure sensing ac
 Inaccuracies can occur smart device barometers, temperature must be accounted for in calibration and positioning must be considered, as suggested by the~\citetitle{pfm_technologies_llc_l/d_2015} app mentioned in Section~\ref{sec:apps}. Characteristics of smart device barometers may not be suited to high ascent/descent rates. \textcite{gray_integrated_1995} claims that barometers are ``most inaccurate when ascending or descending at rapid rates (especially noted in fighter aircraft)''. A skydiver is not likely to be descending at the rates that a fighter aircraft can but since smart devices are not built with extreme descent rates in mind, large inaccuracies could be found that might not have been previously discovered through testing on floors of a building.
 
 % (Data filtering) Filtering burst and random errors using kalman filter
-
+Papers testing the use of barometers for calculating altitude have stated the typical existence of burst and random errors~\cite{gray_integrated_1995, liu_beyond_2014}. Extended Kalman filtering is used to successfully increase the accuracy of the pressure readings in~\textcite{liu_beyond_2014}, a paper investigating the use of smartphone barometers to increase accuracy of elevation data. The Extended Kalman Filter linearises data according to an estimate based on the current mean and covariance of data that has already been seen~\cite{julier_unscented_2004}. The paper states that ``the elevation obtained by Kalman filter is generally better than without Kalman filter.'' While it may seem like a good idea to apply an Extended Kalman Filter to all smart device barometric data, we must be careful since our use of the data will be safety critical. Extended Kalman filtering may not deal so well with rapid and fluctuating changes in air pressure that would come from skydiving. \textcite{huang_analysis_2008} state that poor initial estimates or incorrect modelling can lead to a divergence from expected results, certainly not something that should be occuring during a skydive.
 
 \subsection{GPS}\label{sec:gps} % Explain findings from barometer papers
 
