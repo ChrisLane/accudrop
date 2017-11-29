@@ -127,10 +127,38 @@ Unlike with Bluetooth 5.0, mesh networks are not available for Wi-Fi Direct devi
 \section{Theory}\label{sec:theory} % Describes underlying theory behind the system (What, relation, definition, example)
 
 % Altitude calculation
+For a skydiving assistance app, we will need to calculate the user's altitude. Altitude can be calculated using the equation
+\begin{equation}
+    H = \frac{T_0} {-\frac{dT}{dH}} \cdot \left[1-{\left(\frac{P} {P_0}\right)}^{-\frac{dT} {dH} \cdot \frac{R} {g}}\right]
+\end{equation}
+Many of the parameters in his equation are constants, we will only be needing to change $T_0, P$ and $P_0$. $P$ is the atmospheric pressure, $P_0$ is the reference atomospheric pressure, $T_0$ is the current temperature, $\frac{dT}{dH}$ is the temperature gradient with altitude, $g$ is the acceleration of gravity and $R$ is the gas constant. The constant values, $\frac{dT}{dH} = \SI{-6.5}{\kelvin\per\kilo\metre}$, $g = \SI{9.82}{\metre\per\second\squared}$, $R = \SI{287.052}{\metre\squared\per(\second\squared\cdot\kelvin)}$, giving~\cite{he_atmospheric_2012}
 
-% Kalman filter (why use this)
+\begin{equation}
+    H = \frac{T_0} {6.5} \cdot \left[1-{\left(\frac{P} {P_0}\right)}^{0.19}\right]
+\end{equation}
+
+% Filtering
+    % Likely not use a kalman filter
+    % Do we want filtering or averaging? Adds delay to when altitude results are shown.
+
+
+% Skydiving safety
+    % Safe landing pattern (priorities), turn heights
+    % Keeping away from other canopies
+Learner skydivers are taught to follow a predictable landing pattern with certain landing priorities to keep themselves and others safe. If students remain in the holding area (area to stay in before landing sequence) after their skydive, they should be able to turn approximately downwind at \SI{500}{\metre}, across wind at \SI{300}{\metre} and upwind at \SI{150}{\metre}. Skydivers should plan how they will avoid each other while under canopy. An unpredictable pattern can make students hard to avoid for other skydivers and canopy collisions can be very dangerous. Students should not attempt to make low turns for any reason as these can cause fatal accidents. The~\citeauthor{british_parachute_association_chmanual.pdf_nodate} state priorities that should be used when landing a parachute~\cite{british_parachute_association_chmanual.pdf_nodate}:
+
+\begin{enumerate}
+    \item Land under a flat and level canopy
+    \item Land into a hazard free area
+    \item Land into wind (this is ideal but not at the expense of the above)
+\end{enumerate}
+
 
 % Canopy flight characteristics
+    % Canopy speed, calculating wind speed from this
+    % Vertical speed remains constant without input from pilot
+Airspeed is used to measure the speed of a canopy, this is speed relative to the air as opposed to the ground. The airspeed of a typical student canopy is \SI{9}{\metre\per\second}. If a canopy is facing into wind and has a known airspeed, we can calculate the wind speed by subtracting the groundspeed from the airspeed. For example, a canopy with an airspeed of \SI{10}{\metre\per\second} moving at a groundspeed of \SI{5}{\metre\per\second} into wind shows that the windspeed must be \SI{5}{\metre\per\second} since $10 - 5 = 5$.
+The glide ratio of a canopy is used to describe the ratio of distance forwards to downwards. The glide ratio is calculated by the forward speed divided by the sink speed. So for a canopy with an airspeed of \SI{10}{\metre\per\second} and a glide ratio of 2.5, we can calculate that the downward speed of the canopy is \SI{4}{\metre\per\second} by dividing the airspeed by the glide ratio. The descent rate of a canopy remains constant without user input, unlike groundspeed which is affected by wind speed.
 
 \section{Specification}\label{sec:specification} % Work proposed
 
