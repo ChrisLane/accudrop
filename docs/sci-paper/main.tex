@@ -1,13 +1,16 @@
-\documentclass[11pt, twocolumn]{article}
+\documentclass[11pt, a4paper, twocolumn]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[backend=bibtex]{biblatex} % References
-\usepackage[hidelinks]{hyperref} % Clickable links
+\usepackage[hidelinks,draft]{hyperref} % Clickable links (TODO: Remove draft option)
 \usepackage{url} % Wrap urls
 \usepackage{siunitx} % Typeset units
+\usepackage{graphicx} % Import graphics
+
+\graphicspath{{graphics/}}
 
 \sisetup{per-mode=symbol} % (siunitx) Use symbols for 'per' values e.g. m/s
-
+\DeclareSIUnit\feet{ft} % Add the imperial 'feet' unit
 \newcommand{\hPa}{\hecto\pascal} % Shorter command for hPa
 
 \bibliography{refs.bib}
@@ -19,7 +22,7 @@
 \maketitle
 
 \begin{abstract} % "Helps decide if someone should read the paper"
-Smart devices such as smartphones and smartwatches today have many different sensors, often with high frequency and accuracy. One sensor that is becoming more common in smart devices is the barometer, this allows for air pressure to be measured, making altitude calculations possible. Since skydiving equipment is typically expensive, it would be useful for skydivers to enhance their skydiving experience using the smart devices that they already own. This article will discuss how an app might be created to give guidance to a skydiver to improve their canopy piloting.
+    Smart devices such as smartphones and smartwatches today have many different sensors, often with high frequency and accuracy. One sensor that is becoming more common in smart devices is the barometer, this allows for air pressure to be measured, making altitude calculations possible. Since skydiving equipment is typically expensive, it would be useful for skydivers to enhance their skydiving experience using the smart devices that they already own. This article will discuss how an app might be created to give guidance to a skydiver to improve their canopy piloting.
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction} % "Lays out the whole paper"
@@ -77,20 +80,20 @@ While many smartphones and smartwatches do now come with barometric sensors buil
 The \citetitle{noauthor_blueflyvario_nodate} is built for gliding airsports such as paragliding and boasts a sampling frequency of \SI{50}{\Hz} with ``a resolution that enables the measurement of altitude differences as small as \SI{10}{\cm}.''
 
 % (Altitude calculation) Calculation for altitude from barometric pressure readings and temperature
-    % Two similar calculations for altitude in the papers. Paper A gives ... Paper B gives...
-    % One calculation a base HEIGHT and calculates current altitude on top of that, other calculates height directly from pressure readings.
-    % I will be calculating all heights relative to the air pressure on the ground and so will not be making calculations relative to known object heights. Algorithm * will be used.
+% Two similar calculations for altitude in the papers. Paper A gives ... Paper B gives...
+% One calculation a base HEIGHT and calculates current altitude on top of that, other calculates height directly from pressure readings.
+% I will be calculating all heights relative to the air pressure on the ground and so will not be making calculations relative to known object heights. Algorithm * will be used.
 Since there is a relation between air pressure and altitude, altitude can be calculated from air pressure measurements. \textcite{liu_beyond_2014} defines an equation for converting air pressure to altitude. The equation requires a reference pressure value and the pressure at which elevation is to be calculated as well as some constants such as gravitational acceleration. The paper specifies that the reference pressure would be the standard atmospheric pressure which reflects air pressure at sea level. We can use this equation for calculating altitude while skydiving however for accuracy and ease of calculation purposes. It would be a good idea to calibrate the reference pressure to the pressure reading at ground level just before a skydive since this will be the most recent and localised reading. Using the local ground pressure for reference in the equation would also remove the need to calculate the height of that position from sea level and subtracting it from all future calculations.
 
 % (Temperature) The effects of temperature on barometer readings
-    % Calibration of smartphones paper mentions integrated temperature sensor, not accessible via Android APIs. Inbuilt calibrations based on temp.
-    % Temperature causes change in pressure readings. Can see in Fig 9 that as temperature rises on Galaxy Nexus, so too does pressure reading.
-    % One might pressume that a decrease in temperature may result in a decrease in pressure readings.
+% Calibration of smartphones paper mentions integrated temperature sensor, not accessible via Android APIs. Inbuilt calibrations based on temp.
+% Temperature causes change in pressure readings. Can see in Fig 9 that as temperature rises on Galaxy Nexus, so too does pressure reading.
+% One might pressume that a decrease in temperature may result in a decrease in pressure readings.
 In a paper investigating the calibration of smartphone sensors for indoor positioning~\cite{keller_calibration_2012}, tests were conducted to investigate the effects of temperature change on measurements from a smartphone's barometer. The \textit{BMP280} barometer has a temperature sensor that is used for applying inbuilt calibrations based on the measured temperature. While the barometer does have its temperature dependent calibration, we can see from \citeauthor{keller_calibration_2012}'s results that temperature changes do still have a noticeable effect on the device's pressure readings. Results showed a correlation whereby as temperature increased, so too did pressure, an unexpected result when we consider that air becomes less dense at higher temperatures. Inconsistencies in pressure readings between temperatures likely vary depending on the smart device. The paper only used one device, it would be interesting to investigate how much different barometers are affected by temperature to understand how much they can be relied on in quickly changing temperatures such as while skydiving.
 
 % (Accuracy testing) Tested accuracy of barometer using building floors
-    % Accuracy shown to be good in both Nengquiang and keller tests
-    % Accuracy not yet tested at high speeds and larger altitudes
+% Accuracy shown to be good in both Nengquiang and keller tests
+% Accuracy not yet tested at high speeds and larger altitudes
 Smartphones have previously been tested for their barometric pressure sensing accuracy, in papers such as by~\textcite{keller_calibration_2012} and~\textcite{he_atmospheric_2012}. In both of these papers, researchers took a smart device to different floors of a building and recorded their results. The researchers found that the altitude data from the phones they used had an accuracy better than \SI{\pm1}{\metre}. This data is for small changes in altitude with slow rates of change; it is important that tests be carried out to discover the accuracy of smart device altitude measurements across large altitude ranges, temperature and at faster speeds.
 
 % (Inaccuracies) Inaccurate when ascending or descending at rapid rates
@@ -102,12 +105,12 @@ Papers testing the use of barometers for calculating altitude have stated the ex
 \subsection{GNSS}\label{sec:gps} % Explain findings from barometer papers
 
 % Horizontal accuracy (Understanding GPS: principles and applications)
-    % 4m horizontal accuracy best solution for getting logitude and latitude coordinates
+% 4m horizontal accuracy best solution for getting logitude and latitude coordinates
 GNSS is currently the best solution for obtaining the longitude and latitude of a smart device outdoors. The horizontal accuracy for the new GALILEO GNSS system has a horizontal accuracy of just \SI{4}{\metre}~\cite{kaplan_understanding_2005} with a maximum public use precision of \SI{1}{\metre}. While the GALILEO system is reasonably accurate, we must remember that not all devices support the navigation service yet and thus may need to use another satellite service such as GPS that are found to have worse accuracy.
 
 % Vertical accuracy about 2x worse than horizontal
-    % 8m vertical accuracy not great, 2x worse than horizonta
-    % Not appropriate for usage in skydiving where quick/accurate altitude data required
+% 8m vertical accuracy not great, 2x worse than horizonta
+% Not appropriate for usage in skydiving where quick/accurate altitude data required
 \textcite{kaplan_understanding_2005} have shown the vertical accuracy of the most accurate GNSS to be about two times worse than horizontal, giving a vertical accuracy of \SI{8}{\metre}. Since the vertical accuracy of GNSS is quite weak when compared to results from a smart device barometer and relies on a signal from satellites, it would not be wise to use it as a primary source for altitude data over barometric data.
 
 \subsection{Bluetooth}\label{sec:bluetooth} % Explain findings from bluetooth papers
@@ -138,13 +141,13 @@ Many of the parameters in his equation are constants, we will only be needing to
 \end{equation}
 
 % Filtering
-    % Likely not use a kalman filter
-    % Do we want filtering or averaging? Adds delay to when altitude results are shown.
+% Likely not use a kalman filter
+% Do we want filtering or averaging? Adds delay to when altitude results are shown.
 
 \subsection{Skydiving}
 % Skydiving safety
-    % Safe landing pattern (priorities), turn heights
-    % Keeping away from other canopies
+% Safe landing pattern (priorities), turn heights
+% Keeping away from other canopies
 Learner skydivers are taught to follow a predictable landing pattern with certain landing priorities to keep themselves and others safe. If students remain in the holding area (area to stay in before landing sequence) after their skydive, they should be able to turn approximately downwind at \SI{500}{\metre}, across wind at \SI{300}{\metre} and upwind at \SI{150}{\metre}. Skydivers should plan how they will avoid each other while under canopy. An unpredictable pattern can make students hard to avoid for other skydivers and canopy collisions can be very dangerous. Students should not attempt to make low turns for any reason as these can cause fatal accidents. The \citeauthor{british_parachute_association_chmanual.pdf_nodate} state priorities that should be used when landing a parachute~\cite{british_parachute_association_chmanual.pdf_nodate}:
 
 \begin{enumerate}
@@ -155,16 +158,16 @@ Learner skydivers are taught to follow a predictable landing pattern with certai
 
 
 % Canopy flight characteristics
-    % Canopy speed, calculating wind speed from this
-    % Vertical speed remains constant without input from pilot
+% Canopy speed, calculating wind speed from this
+% Vertical speed remains constant without input from pilot
 Airspeed is used to measure the speed of a canopy, this is speed relative to the air as opposed to the ground. The airspeed of a typical student canopy is \SI{9}{\metre\per\second}. If a canopy is facing into wind and has a known airspeed, we can calculate the wind speed by subtracting the groundspeed from the airspeed. For example, a canopy with an airspeed of \SI{10}{\metre\per\second} moving at a groundspeed of \SI{5}{\metre\per\second} into wind shows that the windspeed must be \SI{5}{\metre\per\second} since $10 - 5 = 5$.
 The glide ratio of a canopy is used to describe the ratio of distance forwards to downwards. The glide ratio is calculated by the forward speed divided by the sink speed. So for a canopy with an airspeed of \SI{10}{\metre\per\second} and a glide ratio of 2.5, we can calculate that the downward speed of the canopy is \SI{4}{\metre\per\second} by dividing the airspeed by the glide ratio. The descent rate of a canopy remains constant without user input, unlike groundspeed which is affected by wind speed.
 
 \section{Specification}\label{sec:specification} % Work proposed
 
 % Techniques that underlie the implementation
-    % Learner skydiving safety requirements
-    % Landing pattern point calculation method
+% Learner skydiving safety requirements
+% Landing pattern point calculation method
 The app that we create must first and foremost follow skydiver safety standards, this means that it should not recommend that the user does anything dangerous, does what it can to promote safety before, during and after a jump and takes steps to ensure data given to the user is within a safe degree of accuracy.
 
 An algorithm and process must be created to accurately predict the skydiver's progress to the ground while under canopy and offer safe coordinates to be visited in order to land within the desired landing area. This algorithm and process will be used to provide the landing pattern recommendation view and live feedback data.
@@ -172,12 +175,12 @@ An algorithm and process must be created to accurately predict the skydiver's pr
 The app must be able to provide accurate altitude data by using a smart device's barometer, possibly aided by GPS altitude data. While barometer data for altitude will be more accurate, the GPS should be used to verify that sane readouts are present if possible.
 
 % Requirements of the implementation
-    % Able to show a recommended landing pattern based on wind speed and direction
-    % Able to give instruction for landing pattern turn points based on real-time progress in order to land in the landing area (via bluetooth earpiece)
-    % Able to communicate with other users of the app to warn of nearby canopies
-    % Watch jump back
-    % Voice chat for canopy formation
-    % Suggest improvements
+% Able to show a recommended landing pattern based on wind speed and direction
+% Able to give instruction for landing pattern turn points based on real-time progress in order to land in the landing area (via bluetooth earpiece)
+% Able to communicate with other users of the app to warn of nearby canopies
+% Watch jump back
+% Voice chat for canopy formation
+% Suggest improvements
 The primary feature of the app will be the landing pattern recommendation and instruction. The app should be able to recommend a landing pattern based on current wind speed, direction and canopy airspeed and glide ratio. While the app must be able to display the landing pattern on the screen to be viewed before a skydive, it should also be able to direct a user during their landing pattern, adjusting the route based on live data to ensure that the user lands where they intended to. Users should not be looking at their device while they descend under canopy and so instructions will be given via text-to-speech, likely to a Bluetooth earpiece.
 
 In order to add an extra layer of safety to the app and avoid canopy collisions, the app will attempt to communicate with other devices with the app loaded in order to warn users when they're becoming too close to each other. Devices will broadcast their longitude, latitude and altitude to allow for each device to calculate the distance from the other.
@@ -192,36 +195,85 @@ The app must be designed so that functionality can be controlled and information
 
 \section{Implementation}\label{sec:implementation} % How the specifications will be met
 % Systems being used
-    % Java 8
-    % Android SDK
-The app being created is being written for Android devices, using Java 8 and Android SDK platform 26. The aim is to have the app working for both smartphones and smartwatches.
+% Java 8
+% Android SDK
+The app being created is being written for Android devices, using Java 8~\cite{noauthor_java_nodate} and Android SDK platform 26~\cite{noauthor_download_nodate}. The aim is to have the app working for both smartphones and smartwatches.
 
 \subsection{Landing Pattern} % Process for calculating landing pattern turn points
+% Pattern calculation
+% Recommended landing pattern view
+% Text to speech
+The interface for the recommended landing pattern feature will be an overlay on a Google Map showing the landing area, turning points, their height and the route between these points. The interface will remain simple and clear but have options available to adjust the wind speed/direction and canopy characteristics that would adjust the landing pattern recommendations.
+
+Users of the app should not be holding the device during a skydive, for this reason landing pattern guidance and warnings will be given via text-to-speech so that it can be heard through a bluetooth earpiece.
+
+Since the descent rate of a canopy without user input remains constant, we can calculate the time till landing for the canopy from this and the altitude. From this calculation, we can further calculate what height the canopy will be at after a certain amount of time.
+From the information we know about the airspeed and glide ratio of the canopy, we can calculate how far the canopy is able to fly in mild conditions. If we include wind speed and direction into the calculation, we can realise how far the canopy is able to travel in directions relative to the wind.
+The time until landing can be split into three, these are the phases between turns of the landing pattern (downwind, across wind, upwind). The distance horizontally across wind can remain constant since changing this length would require us to instruct the user to move diagonally across the wind in their pattern, something that's hard to do. We adjust the remaining time spent on the upwind and downwind stages in a ratio to get the final turn to a safe height that will land the user in their landing area.
 
 \subsection{Communication} % How and why communication will work
-
+Communication between devices will be implemented using Wi-Fi Direct due to its higher bandwidth and longer range when compared to Bluetooth. Since skydivers will likely be dropping in and out of range from each other as distances between them change, no effort will be made to maintain any larger network of devices. One-to-one connections will be made, sending few, small packets in an attempt to increase the likelihood that all data is received. Sending of data should not be occuring as frequently as the data is obtained. For the canopy collision warning system, sending coordinates every three seconds would likely be sufficient. One problem that exists is that it could be hard to establish a connection and send data to every device if there are many people in the sky at once.
+Warnings will be given the user via text-to-speech to inform them of how far away the other canopy is and which direction. For example, a warning may be similar in form to ``Warning: Canopy 10 metres north''.
 
 \section{Results and Discussion}\label{sec:results-discussion} % Tests done and planned
 
 % Discussion of results and evaluation
-    % Created an app to calibrate a ground pressure and calculate altitude from pressure data (GPS also written up)
-    % Tested altitude calculation on smartphones by calibrating, travelling up Muirhead, comparing with altimeter then coming down floors.
-    % GPS didn't work because in building though evidence there to show poor results
-    % Phones matched ~altimeter altitude.
-    % All phones showed very similar results
-        % Pressure value for Galaxy different
-        % Altitude for one went berserk, could have been an error in the test code
+% Created an app to calibrate a ground pressure and calculate altitude from pressure data (GPS also written up)
+% Tested altitude calculation on smartphones by calibrating, travelling up Muirhead, comparing with altimeter then coming down floors.
+% GPS didn't work because in building though evidence there to show poor results
+% Phones matched ~altimeter altitude.
+% All phones showed very similar results
+% Pressure value for Galaxy different
+% Altitude for one went berserk, could have been an error in the test code
+We felt that it would first be a good idea to establish whether smartphones available to us are able to accurately calculate altitude. A testing app was created to allow us to set the reference air pressure/GPS altitude and calculate the difference in altitude from sensor readings.
+The tallest building in the University of Birmingham that we had access to at the time was Muirhead Tower, which has floors LG, G, M and 1--12. Four smartphones and a skydiving altimeter were used to test altitude detection within the building, the smartphones were the Samsung Galaxy S3, Samsung Galaxy S6, Samsung Galaxy Note 4 and the Nexus 5X.
+Firstly, all devices were taken to the lowest floor (LG) and calibrated so that this would be used as the reference air pressure. Since the skydiving altimeter only activates once it sees a large change in pressure, all devices were then taken to the top floor (12) and readings were taken from all devices. This process of taking measurements continued on every other floor down the building.
+The measurements taken from the devices can be seen in Figures~\ref{fig:alt-test-altitude} and~\ref{fig:alt-test-pressure}.
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics{alt-test-altitude}
+    \caption{Altitude measurements from smartphones in Muirehead Tower}\label{fig:alt-test-altitude}
+\end{figure*}
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics{alt-test-pressure}
+    \caption{Air pressure measurements from smartphones in Muirhead Tower}\label{fig:alt-test-pressure}
+\end{figure*}
+
+Measurements for altitude were in feet since this is the most common unit used for skydiving in the UK and what the altimeter was set to display in. The skydiving altimeter that was used as a reference unfortunately could only be used on the top floor due to it resetting to zero if it does not detect altitude changes under a certain height. On the top floor of the building the skydiving altimeter that displays altitude in tens of feet showed a height of \SI{150}{\feet}, all smartphones showed similar readings between \SIlist{150; 160}{\feet}, as seen in Figure~\ref{fig:alt-test-altitude}.
+Figure~\ref{fig:alt-test-pressure} shows that all phones follow the same rate of change in air pressure as the test moved down the floors of the building, however, the Nexus 5X appears to give larger pressure readings than the other phones. The larger pressure reading from the Nexus 5X could be due to a difference in the barometric sensor's calibration, it is likely that the Samsungs all use the same chip or similar and that the Nexus phone uses a chip from a different supplier.
+There does seem to be some strange behaviour in the Galaxy S3's results, shown in Figure~\ref{fig:alt-test-altitude}. The altitude reading from the Galaxy S3 jumps from \SI{131}{\feet} to \SI{356}{\feet} between floors ten and eight (twelve and ten in the graph), which is certainly not correct. Something must have changed in either the reference pressure or temperature to have caused this unexpected behaviour because when we look at results for the Galaxy S3 in Figure~\ref{fig:alt-test-pressure}, there are no strange jumps in the data. After testing again and not being able to reproduce the problem, it is quite possible that this was due to a hard to activate bug in the test app. The test app was set up to track altitude data from GNSS as a source however many of the devices could not receive a GPS signal from within the building. The phones that could receive a GNSS signal verified previous research suggesting large inaccuracies in GNSS altitude data, often fluctuating by \SI{\pm10}{\feet}.
+
+% Tested Wi-Fi Direct connection speed. Approx 4secs including time to click accept connection
+Another test that has been conducted was to determine the typical time to establish a connection via Wi-Fi Direct. Three different phones were used to connect to each other across a room and timed until the word ``Connected'' showed on the screen. The time for a connection to be established across devices was approximately four seconds, including time to click ``Accept'' for the connection.
 
 % Discussion of justification for work
-    % Shows that smartphones may be appropriate for aiding skydivers
-    % GPS is inaccurate
+% Shows that smartphones may be appropriate for aiding skydivers
+The altitude test has certainly helped prove that today's smart devices are capable of measuring altitude to a useful degree of accuracy. Our findings were closely matched by a very similar test documented by \textcite{he_atmospheric_2012}. It is important to note that while the results are positive for demonstrating the appropriateness of using smart devices for altitude detection in some cases, this may not necessarily apply to the more extreme circumstances of skydiving.
+
+% GNSS is inaccurate
+That the GNSS data could not be used for a large amount of the test, demonstrates why it would not be a suitable primary source for altitude data, smart devices would have to rely on having satellite signal which may not always be the case. On top of this, the altitude data provided by GNSS is inaccurate, we saw large, regular fluctuations in the altitude data produced.
 
 % Discussion of experiments planned with justification
-    % Test live landing pattern router
-    % Test accuracy of barometers during freefall
-    % Test range of Wi-Fi direct
+% Collection of data for testing
+Other experiments are planned in order to verify certain aspects of the app. To carry out these experiments and conduct A/B testing to find improvements without having to jump out of a plane every time, sensor data will be collected from a few skydives that can be input into test harness programs.
+
+% Test live landing pattern router
+Firsly, once the live landing pattern feedback has been implemented, it must be tested. In order to test this, test data from previous skydives will be used and modified to see how the app performs with both expected user behaviour and unexpected user behaviour. The app should be able to direct the user to their landing area in all conditions where possible, performance will be measured in terms of how close to the centre of the landing area the user lands and how safe the instructions were.
+
+% Test accuracy of barometers during freefall
+Testing the accuracy of smart device barometers during freefall could prove to be very useful. While the main features of the app concentrate on the user while under canopy, if barometer accuracy is good during freefall, the app could be extended to provide useful features for that part of a skydive too. We do have access to a skydiving altimeter that logs altitude for the whole period of a skydive, we will use this to compare data collected from a smart device that will also be set up to log altitude data, in order to establish how accurate it is during freefall. The closer the altitude data of the smart device is to the real skydiving altimeter, the better. Ideally, the difference between the smart device and the skydiving altimeter's altitudes will be less than \SI{10}{\metre}.
+
+% Test range of Wi-Fi direct
+It may be hard to test the range of Wi-Fi direct under canopy without putting people in danger, which is not something we are willing to do. Instead, the range can be tested in an open space such as a park by having two devices that start out of range of each other, the two devices should be moved towards each other until a connection is made between the phones. At the point of connection, the distance between the devices can be measured using GNSS coordinates to establish the range. The result may differ slightly to what may be achieved in the sky since for example clouds in the path between the devices could reduce the range of a connection.
+
+% Data collection to investigate how much data we can track and effect on battery life
+For optimisation purposes, experimentation could be done to find balances between logging and calculating all data and performing actions less frequently to improve battery life. By tracking battery levels and CPU usage, we can see how much stress we are putting the device under with different settings to be able to make conclusions on what needs to be changed to make the app more practical for users. The app would not be very useful to a user if it drained their battery during a skydive and so a balance must be found.
 
 % Discussion of expected evaluation approach (final experiments)
+The final evaluation of the app will measure success based on a few criteria, the first will be whether the app can successfully improve a skydiver's landing pattern and aid them in reviewing their jump. The second criteria is whether the app can carry out its functions without adding any risk to the skydiver. The final criteria for the performance of the app is that it should improve the safety of the skydiver. To evaluate the app based on these criteria, we will use the app during a skydive, following the landing pattern directions given by the app. The app will be rated based on how close the skydiver is to their intended landing area and whether this would be an improvement when compared to a struggling student's landing. We will also test the landing pattern guidance tool programatically, feeding it unexpected flight data to test for cases where an unsafe instruction may be given. In order to test that the app is able to increase skydiver safety, the app will be given to professionals that will fly their canopies close to each other to prompt a warning. This warning check will be done with an increased warning distance so that the canopies do not have to fly too close to test the feature. Alternatively, if no one is able to do the collision warning experiment in the sky, the same test can be done in an open area on the ground. Since we also want the app to be a useful tool for reviewing a jump, the app must also be able to log and playback location data and statistics from a jump to the user.
 
 \section{Conclusion} % Summarises research, discusses its significance
 
