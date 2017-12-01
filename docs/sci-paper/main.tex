@@ -28,19 +28,27 @@
 \section{Introduction}\label{sec:introduction} % "Lays out the whole paper"
 
 % What is the problem?
+Learning to skydive is a fast learning curve and in particular the journey under canopy (parachute) is arguably the most dangerous part of the skydive. A skydiver must ensure they avoid all obstacles including other skydivers, guide themselves to a safe landing area and avoid making any dangerous low turns. Student skydivers often struggle to predict their trajectory while planning their landing pattern and this can result in landing far from the intended landing area or taking dangerous actions in an attempt to meet their target area.
+Skydiving gear is very expensive, this makes sense because there aren't a huge amount of manufacturers and everything that is created is safety critical and specialised. There are no tools beyond radio communication with an instructor on the ground to aid student's with their canopy skills and even this is usually not used after the first two jumps.
 
 % Why is the problem important?
+The problem is important because there are substantial safety concerns when skydiving students are flying their canopies and little to aid them to fly better and safer other than with pre and post skydive training.
 
 % What has been done so far on the problem?
+So far there has been very little done to solve the problem of helping student skydivers improve their landing patterns and be safer in the sky during the activity, all of the support takes place on the ground.
 
 % What is the contribution of this paper to the problem?
+This paper proposes a proof-of-concept app to aid skydivers before, during and after a skydive, focussing primarily on features to improve landing pattern accuracy and safety.
+An investigation has been documented into the appropriateness of today's smart devices such as smartphones and smartwatches for use in safety critical skydiving applications.
 
 % Is the contribution original? Explain why
+Through our research, we have found that this problem does not appear to have been tackled before. Very few apps exist already for gliding airsports such as paragliding but these only provide simple statistics such as current altitude and speed, nothing could be found to provide live feedback or safety enhancing features.
 
 % Is the contribution non-trivial? Explain why
+This project will solve many different complex problems in order to contribute solutions to the problems skydivers face. Problems such as how to calculate and recommend a landing pattern that can be used to guide a skydiver to their landing area with a higher degree of accuracy, all while ensuring skydiving safety measures are maintained pose a significant challenge. The challenge of calculating landing patterns becomes more difficult when it must also adjust to live data. Other challenges that will be explained in the paper include being able to detect other skydivers in the sky to produce collision warnings and being able to present collected jump data to a skydiver in a way that's intuitive to use and easy to learn from.
 
 % Short summary of the rest of the paper
-The rest of the paper is structured as follows: In Section~\ref{sec:related-work} we\dots
+The rest of the paper is structured as follows: In Section~\ref{sec:related-work} we explore existing work that can be used to gain an understanding on the current state of research into solutions to problems that we will face. In Section~\ref{sec:theory}, theory will be explained that will be required when creating a solution to the problem. Section~\ref{sec:specification} will state what features the app must contain in order to solve the problems being addressed by this paper. Implementation details of the app will be stated in Section~\ref{sec:implementation}, past and future experiments will be discussed in Section~\ref{sec:results-discussion} and a conclusion to this paper will be included in Section~\ref{sec:conclusion}.
 
 
 \section{Related Work}\label{sec:related-work}
@@ -275,13 +283,18 @@ For optimisation purposes, experimentation could be done to find balances betwee
 % Discussion of expected evaluation approach (final experiments)
 The final evaluation of the app will measure success based on a few criteria, the first will be whether the app can successfully improve a skydiver's landing pattern and aid them in reviewing their jump. The second criteria is whether the app can carry out its functions without adding any risk to the skydiver. The final criteria for the performance of the app is that it should improve the safety of the skydiver. To evaluate the app based on these criteria, we will use the app during a skydive, following the landing pattern directions given by the app. The app will be rated based on how close the skydiver is to their intended landing area and whether this would be an improvement when compared to a struggling student's landing. We will also test the landing pattern guidance tool programatically, feeding it unexpected flight data to test for cases where an unsafe instruction may be given. In order to test that the app is able to increase skydiver safety, the app will be given to professionals that will fly their canopies close to each other to prompt a warning. This warning check will be done with an increased warning distance so that the canopies do not have to fly too close to test the feature. Alternatively, if no one is able to do the collision warning experiment in the sky, the same test can be done in an open area on the ground. Since we also want the app to be a useful tool for reviewing a jump, the app must also be able to log and playback location data and statistics from a jump to the user.
 
-\section{Conclusion} % Summarises research, discusses its significance
+\section{Conclusion}\label{sec:conclusion} % Summarises research, discusses its significance
+
+% The field
+Little research has been conducted into the appropriateness of smart devices for safety critical extreme sports such as skydiving. Research into smartphone barometers has been primarily for detecting static altitudes in a building and not for high speed descents.
 
 % Briefly restate project description
+Instead of creating tools to teach skydivers only on the ground, we set out to create an aid for skydivers in the form of an Android app that can assist them during a skydive based on the current environment. The app will be able to help improve a skydiver's landing accuracy, provide useful information to learn from and communicate with other instances of the app to increase safety.
 
 % Original motivation repeated
 
 % State of the field in light of this paper reassessed
+We hope that in light of this project, more people will consider the use of smart devices to assist in extreme altitude sports such as skydiving. An increase in the accessability of advanced tools in sports where prices are high and development is lagging is much needed as our smart devices become more advanced and reliable.
 
 \printbibliography{}
 \end{document}
