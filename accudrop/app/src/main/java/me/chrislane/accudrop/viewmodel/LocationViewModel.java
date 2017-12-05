@@ -14,7 +14,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 public class LocationViewModel extends AndroidViewModel implements LocationListener {
-    private static final String TAG = "location_view_model";
+    private static final String TAG = LocationViewModel.class.getSimpleName();
     private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private LocationManager locationManager;
 
@@ -25,16 +25,19 @@ public class LocationViewModel extends AndroidViewModel implements LocationListe
         loc.setLatitude(51.52);
         loc.setLongitude(0.08);
         lastLocation.setValue(loc);
+        locationManager = (LocationManager) getApplication().getSystemService(Context.LOCATION_SERVICE);
     }
 
     /**
      * Tell the location manager to start collecting location updates.
      */
     public void startListening() {
-        Log.d(TAG, "Listening on location.");
-
-        locationManager = (LocationManager) getApplication().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.d(TAG, "Listening on location.");
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        } else {
+            // TODO: Do something if GPS is disabled
+        }
     }
 
     /**

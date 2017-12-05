@@ -13,7 +13,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 public class PressureViewModel extends AndroidViewModel implements SensorEventListener {
-    private static final String TAG = "pressure_view_model";
+    private static final String TAG = PressureViewModel.class.getSimpleName();
     private static final int ONE_SECOND_DELAY = 1000000;
     private final SensorManager sensorManager;
     private final Sensor barometer;

@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
-import android.arch.lifecycle.*;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,20 +17,27 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import me.chrislane.accudrop.MainActivity;
+import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LifecycleObserver {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
+    public static final String TAG = MapFragment.class.getSimpleName();
     private GoogleMap map;
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
-    public static final String TAG = MapFragment.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        // Add this as a location listener
+        if (savedInstanceState == null) {
+            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+        }
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -46,12 +53,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Lifecyc
         // Set up the map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        // Add this as a location listener
-        if (savedInstanceState == null) {
-            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
-            subscribe();
-        }
 
         return view;
     }
@@ -77,11 +78,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Lifecyc
     private void setupMap() {
         Location loc = locationViewModel.getLastLocation().getValue();
         CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
+        MainActivity main = (MainActivity) getActivity();
+        PermissionManager permissionManager = main.getPermissionManager();
 
         // Initial map setup
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        map.setMyLocationEnabled(true);
+        if (permissionManager.checkLocationPermission()) {
+            map.setMyLocationEnabled(true);
+        } else {
+            permissionManager.requestLocationPermission("Location access is required to find your location.");
+        }
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         //TODO : Remove example line drawing
@@ -89,36 +96,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Lifecyc
                 .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
                 .width(5)
                 .color(Color.RED));
-    }
-
-    /**
-     * Subscribe to location changes.
-     */
-    private void subscribe() {
-        final Observer<Location> locationObserver = this::updateMapLocation;
-
-        locationViewModel.getLastLocation().observe(this, locationObserver);
-    }
-
-    /**
-     * Move the map camera to a new location.
-     *
-     * @param location Location to move the camera to.
-     */
-    private void updateMapLocation(Location location) {
-        if (map != null) {
-            CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void startListening() {
-        locationViewModel.startListening();
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void stopListening() {
-        locationViewModel.stopListening();
     }
 }

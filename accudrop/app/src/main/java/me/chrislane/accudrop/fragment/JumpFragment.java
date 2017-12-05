@@ -1,15 +1,17 @@
 package me.chrislane.accudrop.fragment;
 
 
-import android.app.Fragment;
 import android.arch.lifecycle.*;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import me.chrislane.accudrop.MainActivity;
+import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.Util.Unit;
@@ -21,7 +23,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class JumpFragment extends android.support.v4.app.Fragment implements LifecycleObserver {
+public class JumpFragment extends Fragment implements LifecycleObserver {
 
     public static final String TAG = JumpFragment.class.getSimpleName();
     private PressureViewModel pressureViewModel;
@@ -29,14 +31,23 @@ public class JumpFragment extends android.support.v4.app.Fragment implements Lif
     private View view;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment.
-        view = inflater.inflate(R.layout.fragment_jump, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
         // Get view models.
-        pressureViewModel = ViewModelProviders.of(getActivity()).get(PressureViewModel.class);
-        locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+        if (savedInstanceState == null) {
+            pressureViewModel = ViewModelProviders.of(getActivity()).get(PressureViewModel.class);
+            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+        }
+
+        getActivity().getLifecycle().addObserver(this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment.
+        view = inflater.inflate(R.layout.fragment_jump, container, false);
 
         // Add click listener for fragment view.
         Button calibrateButton = view.findViewById(R.id.calibrate_button);
@@ -44,8 +55,6 @@ public class JumpFragment extends android.support.v4.app.Fragment implements Lif
 
         // Subscribe to data changes
         subscribeToPressure();
-
-        getActivity().getLifecycle().addObserver(this);
 
         return view;
     }
@@ -91,8 +100,15 @@ public class JumpFragment extends android.support.v4.app.Fragment implements Lif
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void startListening() {
+        MainActivity main = (MainActivity) getActivity();
+        PermissionManager permissionManager = main.getPermissionManager();
         pressureViewModel.startListening();
-        locationViewModel.startListening();
+        if (permissionManager.checkLocationPermission()) {
+            locationViewModel.startListening();
+        } else {
+            String reason = "Location access is required to track your jump location.";
+            permissionManager.requestLocationPermission(reason);
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
