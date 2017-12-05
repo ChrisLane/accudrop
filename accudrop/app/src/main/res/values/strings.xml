@@ -9,4 +9,10 @@
 
     <string name="main_fragment_warning">This app is a proof of concept. Should you get a hold of this app, you should not attempt to
     use it in any safety critical situations such as real skydiving.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="calibrate_button">Calibrate</string>
+    <string name="pressure_altitude_label">Altitude</string>
+    <string name="unknown_value">\?</string>
 </resources>

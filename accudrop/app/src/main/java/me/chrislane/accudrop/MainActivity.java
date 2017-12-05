@@ -1,9 +1,15 @@
 package me.chrislane.accudrop;
 
+import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -13,15 +19,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.MapFragment;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String currentFragmentTag = "";
+    private String currentFragmentTag = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +48,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Create new instances if they should not exist already
-        if (savedInstanceState == null) {
-            new ApiClient(this);
-            ViewModelProviders.of(this).get(LocationViewModel.class);
+        if (savedInstanceState != null) {
+            currentFragmentTag = savedInstanceState.getString("currentFragmentTag");
         }
 
+        // Check that the device has a barometer.
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
+            // No barometer, do not continue.
+            Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
+            //return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        // Create or get ViewModels
+        ViewModelProviders.of(this).get(PressureViewModel.class);
+        ViewModelProviders.of(this).get(LocationViewModel.class);
+
         // Set the fragment to be displayed
-        setCurrentFragment(savedInstanceState);
+        setCurrentFragment();
     }
 
     @Override
@@ -86,14 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.text_to_speech_test:
                 // TODO: Remove example code after demonstration
-                tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-                        if (status == TextToSpeech.SUCCESS) {
-                            tts.setLanguage(Locale.UK);
-                            tts.speak("At 500 feet, turn upwind", TextToSpeech.QUEUE_FLUSH, null, null);
+                tts = new TextToSpeech(this, status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        tts.setLanguage(Locale.UK);
+                        tts.speak("At 500 feet, turn upwind", TextToSpeech.QUEUE_FLUSH, null, null);
 
-                        }
                     }
                 });
                 return true;
@@ -111,17 +141,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_jump:
-                // Handle the jump action
+                fragmentClass = JumpFragment.class;
                 break;
             case R.id.nav_landing_pattern:
                 fragmentClass = MapFragment.class;
-                currentFragmentTag = MapFragment.TAG;
                 break;
             case R.id.nav_share:
                 break;
             default:
                 break;
         }
+
+        currentFragmentTag = fragmentClass.getSimpleName();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         if ((fragment = fragmentManager.findFragmentByTag(currentFragmentTag)) == null) {
@@ -140,23 +171,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * Set the current fragment to be displayed based on app state.
-     * If the app does not have a previously saved instance state, the default fragment will be created and displayed,
-     * otherwise, the fragment saved in the saved instance state will be displayed.
-     *
-     * @param savedInstanceState The bundle containing current fragment information.
+     * If the app does not have a previously saved fragment tag, the default fragment will be created and displayed,
+     * otherwise, the saved fragment will be displayed.
      */
-    private void setCurrentFragment(Bundle savedInstanceState) {
+    private void setCurrentFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment;
 
-        if (savedInstanceState == null) {
-
+        if (currentFragmentTag == null) {
             fragment = new MainFragment();
             currentFragmentTag = MainFragment.TAG;
         } else {
-            currentFragmentTag = savedInstanceState.getString("currentFragmentTag");
             fragment = fragmentManager.findFragmentByTag(currentFragmentTag);
         }
-        fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame, fragment, currentFragmentTag)
+                .commit();
     }
 }

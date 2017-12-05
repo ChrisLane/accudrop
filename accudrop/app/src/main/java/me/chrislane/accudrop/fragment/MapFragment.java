@@ -1,11 +1,9 @@
 package me.chrislane.accudrop.fragment;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.*;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,15 +17,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.R;
+import me.chrislane.accudrop.viewmodel.LocationViewModel;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, LifecycleObserver {
 
     private GoogleMap map;
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
-    public static final String TAG = "map_fragment";
+    public static final String TAG = MapFragment.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,12 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * Subscribe to location changes.
      */
     private void subscribe() {
-        final Observer<Location> locationObserver = new Observer<Location>() {
-            @Override
-            public void onChanged(@Nullable final Location location) {
-            updateMapLocation(location);
-            }
-        };
+        final Observer<Location> locationObserver = this::updateMapLocation;
 
         locationViewModel.getLastLocation().observe(this, locationObserver);
     }
@@ -117,5 +110,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(location)).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void startListening() {
+        locationViewModel.startListening();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void stopListening() {
+        locationViewModel.stopListening();
     }
 }
