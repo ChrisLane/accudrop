@@ -23,7 +23,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class JumpFragment extends Fragment implements LifecycleObserver {
+public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
     public static final String TAG = JumpFragment.class.getSimpleName();
     private PressureViewModel pressureViewModel;

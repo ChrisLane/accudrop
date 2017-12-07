@@ -12,14 +12,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
+import me.chrislane.accudrop.db.AccudropDb;
+import me.chrislane.accudrop.db.Position;
+
+import java.util.Date;
 
 public class LocationViewModel extends AndroidViewModel implements LocationListener {
     private static final String TAG = LocationViewModel.class.getSimpleName();
     private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private LocationManager locationManager;
+    private AccudropDb db;
 
     public LocationViewModel(@NonNull Application application) {
         super(application);
+        db = AccudropDb.getInMemoryDatabase(application);
 
         Location loc = new Location("");
         loc.setLatitude(51.52);
@@ -44,12 +50,12 @@ public class LocationViewModel extends AndroidViewModel implements LocationListe
      * Tell the location manager to stop getting location updates.
      */
     public void stopListening() {
-        Log.d(TAG, "Stopped listening on Location.");
+        Log.d(TAG, "Stopped listening on Position.");
         locationManager.removeUpdates(this);
     }
 
     /**
-     * Get a LatLng object from a Location object.
+     * Get a LatLng object from a Position object.
      *
      * @param location The location to get latitude and longitude from.
      * @return A LatLng object with latitude and longitude of the given location.
@@ -75,6 +81,7 @@ public class LocationViewModel extends AndroidViewModel implements LocationListe
     @Override
     public void onLocationChanged(Location location) {
         lastLocation.setValue(location);
+        addPosition(location);
     }
 
     @Override
@@ -89,6 +96,26 @@ public class LocationViewModel extends AndroidViewModel implements LocationListe
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    private void addPosition(Location location) {
+        Integer jumpId = db.jumpModel().findLastJumpId().getValue();
+        if (jumpId == null) {
+            Log.e(TAG, "Attempted to add a position to a non-existent jump.");
+            return;
+        }
+
+        Position pos = new Position();
+        pos.latitude = location.getLatitude();
+        pos.longitude = location.getLongitude();
+        pos.time = new Date();
+        pos.jumpId = jumpId;
+
+        db.locationModel().insertPosition(pos);
+    }
+
+    private void subscribeToDbChanges() {
 
     }
 }

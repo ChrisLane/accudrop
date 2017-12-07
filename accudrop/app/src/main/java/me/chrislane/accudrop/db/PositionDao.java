@@ -8,18 +8,18 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 @Dao
-public interface LocationDao {
+public interface PositionDao {
 
-    @Query("SELECT * FROM Location")
-    LiveData<List<Location>> findAllLocations();
+    @Query("SELECT * FROM Position")
+    LiveData<List<Position>> findAllLocations();
 
-    @Query("SELECT * FROM Location " +
+    @Query("SELECT * FROM Position " +
             "WHERE jump_id = :jumpNumber ")
-    LiveData<List<Location>> findLocationsByJumpNumber(int jumpNumber);
+    LiveData<List<Position>> findLocationsByJumpNumber(int jumpNumber);
 
     @Insert
-    void insertLocation(Location location);
+    void insertPosition(Position position);
 
-    @Query("DELETE FROM Location")
+    @Query("DELETE FROM Position")
     void deleteAll();
 }

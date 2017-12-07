@@ -17,6 +17,14 @@ public interface JumpDao {
     "WHERE id = :id ")
     LiveData<Jump> findJumpWithId(int id);
 
+    @Query("SELECT * FROM Jump " +
+    "WHERE id IN ( " +
+    "SELECT MAX(id) FROM Jump ) ")
+    LiveData<Jump> findLastJump();
+
+    @Query("SELECT MAX(id) FROM Jump")
+    LiveData<Integer> findLastJumpId();
+
     @Insert
     void insertJump(Jump jump);
 

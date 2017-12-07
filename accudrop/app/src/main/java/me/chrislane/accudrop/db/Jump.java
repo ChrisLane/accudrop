@@ -1,12 +1,14 @@
 package me.chrislane.accudrop.db;
 
+import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
+@Entity
 public class Jump {
     @PrimaryKey
-    private int id;
+    public int id;
 
-    private Timestamp time;
+    public Date time;
 }

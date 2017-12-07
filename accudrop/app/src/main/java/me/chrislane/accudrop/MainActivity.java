@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
-        Class fragmentClass = MapFragment.class;
+        Class<?> fragmentClass = MapFragment.class;
 
         switch (id) {
             case R.id.nav_jump:
