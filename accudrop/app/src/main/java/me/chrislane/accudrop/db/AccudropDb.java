@@ -18,7 +18,7 @@ public abstract class AccudropDb extends RoomDatabase {
 
     public static AccudropDb getInMemoryDatabase(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AccudropDb.class).build();
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop").build();
         }
         return INSTANCE;
     }
