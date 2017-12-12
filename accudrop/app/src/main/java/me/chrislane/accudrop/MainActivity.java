@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,8 @@ import me.chrislane.accudrop.viewmodel.PressureViewModel;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
@@ -177,5 +180,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
