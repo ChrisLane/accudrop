@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     signingConfigs {
@@ -7,14 +8,11 @@ android {
     buildToolsVersion "27.0.2"
     defaultConfig {
         applicationId "me.chrislane.accudrop"
-        minSdkVersion 25
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -45,9 +43,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
     compile 'com.google.android.gms:play-services-maps:' + rootProject.playServicesVersion
     compile 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion
-    compile 'android.arch.lifecycle:common-java8:' + rootProject.archLifecycleVersion
     compile 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion
-    annotationProcessor 'android.arch.lifecycle:common-java8:' + rootProject.archLifecycleVersion
+    annotationProcessor 'android.arch.lifecycle:compiler:' + rootProject.archLifecycleVersion
     annotationProcessor 'android.arch.persistence.room:compiler:' + rootProject.archRoomVersion
     testCompile 'junit:junit:4.12'
 }
