@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class JumpFragment extends Fragment implements LifecycleObserver {
+public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
     public static final String TAG = JumpFragment.class.getSimpleName();
     private PressureViewModel pressureViewModel;
@@ -99,9 +99,9 @@ public class JumpFragment extends Fragment implements LifecycleObserver {
         text.setText(getAltitudeText(altitude, unit));
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void startListening() {
-        MainActivity main = (MainActivity) getActivity();
+    @Override
+    public void onResume(@NonNull LifecycleOwner owner) {
+        MainActivity main = (MainActivity) owner;
         PermissionManager permissionManager = main.getPermissionManager();
         pressureViewModel.startListening();
         if (permissionManager.checkLocationPermission()) {
@@ -112,8 +112,8 @@ public class JumpFragment extends Fragment implements LifecycleObserver {
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void stopListening() {
+    @Override
+    public void onPause(@NonNull LifecycleOwner owner) {
         pressureViewModel.stopListening();
         locationViewModel.stopListening();
     }
