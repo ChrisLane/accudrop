@@ -3,6 +3,7 @@ package me.chrislane.accudrop.fragment;
 
 import android.arch.lifecycle.*;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
+public class JumpFragment extends Fragment implements LifecycleObserver {
 
     public static final String TAG = JumpFragment.class.getSimpleName();
     private PressureViewModel pressureViewModel;
@@ -45,7 +46,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment.
         view = inflater.inflate(R.layout.fragment_jump, container, false);
 
