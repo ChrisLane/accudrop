@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3dd14982083a8ba055b372a1ababdad7",
+    "identityHash": "5867144344bfc106a74310968a72f522",
     "entities": [
       {
         "tableName": "Jump",
@@ -32,14 +32,8 @@
       },
       {
         "tableName": "Position",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`altitude` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `jump_id` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `time` INTEGER, FOREIGN KEY(`jump_id`) REFERENCES `Jump`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `altitude` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `time` INTEGER, `jump_id` INTEGER NOT NULL, FOREIGN KEY(`jump_id`) REFERENCES `Jump`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
-          {
-            "fieldPath": "altitude",
-            "columnName": "altitude",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
@@ -47,8 +41,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "jumpId",
-            "columnName": "jump_id",
+            "fieldPath": "altitude",
+            "columnName": "altitude",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -69,6 +63,12 @@
             "columnName": "time",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "jumpId",
+            "columnName": "jump_id",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -104,7 +104,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3dd14982083a8ba055b372a1ababdad7\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5867144344bfc106a74310968a72f522\")"
     ]
   }
 }
