@@ -14,12 +14,12 @@ public interface JumpDao {
     LiveData<List<Jump>> findAllJumps();
 
     @Query("SELECT * FROM Jump " +
-    "WHERE id = :id ")
+            "WHERE id = :id ")
     LiveData<Jump> findJumpWithId(int id);
 
     @Query("SELECT * FROM Jump " +
-    "WHERE id IN ( " +
-    "SELECT MAX(id) FROM Jump ) ")
+            "WHERE id IN ( " +
+            "SELECT MAX(id) FROM Jump ) ")
     LiveData<Jump> findLastJump();
 
     @Query("SELECT MAX(id) FROM Jump")

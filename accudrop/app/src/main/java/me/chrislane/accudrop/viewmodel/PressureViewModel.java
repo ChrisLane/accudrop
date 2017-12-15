@@ -4,16 +4,12 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.listener.PressureListener;
 
 public class PressureViewModel extends AndroidViewModel {
@@ -21,7 +17,7 @@ public class PressureViewModel extends AndroidViewModel {
     private static final int ONE_SECOND_DELAY = 1000000;
     private final SensorManager sensorManager;
     private final Sensor barometer;
-    PressureListener pressureListener;
+    private PressureListener pressureListener;
     private MutableLiveData<Float> lastPressure = new MutableLiveData<>();
     private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
     private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
@@ -56,13 +52,13 @@ public class PressureViewModel extends AndroidViewModel {
         return lastPressure;
     }
 
-    public LiveData<Float> getLastAltitude() {
-        return lastAltitude;
-    }
-
     public void setLastPressure(float lastPressure) {
         this.lastPressure.setValue(lastPressure);
         updateAltitude();
+    }
+
+    public LiveData<Float> getLastAltitude() {
+        return lastAltitude;
     }
 
     public void setLastAltitude(float lastAltitude) {

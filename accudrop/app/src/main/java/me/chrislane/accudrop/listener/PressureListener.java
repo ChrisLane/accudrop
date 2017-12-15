@@ -3,7 +3,6 @@ package me.chrislane.accudrop.listener;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 

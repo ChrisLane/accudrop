@@ -19,13 +19,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.Locale;
+
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.MapFragment;
+import me.chrislane.accudrop.listener.ReadingListener;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
-
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -33,12 +36,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
+    private ReadingListener readingListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         permissionManager = new PermissionManager(this);
+        readingListener = new ReadingListener(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
         ViewModelProviders.of(this).get(LocationViewModel.class);
+        ViewModelProviders.of(this).get(JumpViewModel.class);
 
         // Set the fragment to be displayed
         setCurrentFragment();
@@ -181,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
+    }
+
+    public ReadingListener getReadingListener() {
+        return readingListener;
     }
 
     @Override

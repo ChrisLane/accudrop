@@ -12,11 +12,7 @@ public abstract class AccudropDb extends RoomDatabase {
 
     private static AccudropDb INSTANCE;
 
-    public abstract JumpDao jumpModel();
-
-    public abstract PositionDao locationModel();
-
-    public static AccudropDb getInMemoryDatabase(Context context) {
+    public static AccudropDb getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop").build();
         }
@@ -26,4 +22,8 @@ public abstract class AccudropDb extends RoomDatabase {
     public static void destroyInstance() {
         INSTANCE = null;
     }
+
+    public abstract JumpDao jumpModel();
+
+    public abstract PositionDao locationModel();
 }
