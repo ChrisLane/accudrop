@@ -10,24 +10,24 @@ import java.util.List;
 @Dao
 public interface JumpDao {
 
-    @Query("SELECT * FROM Jump")
+    @Query("SELECT * FROM jump")
     LiveData<List<Jump>> findAllJumps();
 
-    @Query("SELECT * FROM Jump " +
+    @Query("SELECT * FROM jump " +
             "WHERE id = :id ")
     LiveData<Jump> findJumpWithId(int id);
 
-    @Query("SELECT * FROM Jump " +
+    @Query("SELECT * FROM jump " +
             "WHERE id IN ( " +
-            "SELECT MAX(id) FROM Jump ) ")
+            "SELECT MAX(id) FROM jump ) ")
     LiveData<Jump> findLastJump();
 
-    @Query("SELECT MAX(id) FROM Jump")
+    @Query("SELECT CAST(MAX(id) AS INTEGER) FROM jump")
     LiveData<Integer> findLastJumpId();
 
     @Insert
     void insertJump(Jump jump);
 
-    @Query("DELETE FROM Jump")
+    @Query("DELETE FROM jump")
     void deleteAll();
 }
