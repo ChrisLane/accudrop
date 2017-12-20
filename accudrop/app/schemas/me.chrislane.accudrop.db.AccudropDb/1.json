@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5867144344bfc106a74310968a72f522",
+    "identityHash": "c473b55cfc404532eb1dc5619fda45a1",
     "entities": [
       {
-        "tableName": "Jump",
+        "tableName": "jump",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `time` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
@@ -31,8 +31,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "Position",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `altitude` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `time` INTEGER, `jump_id` INTEGER NOT NULL, FOREIGN KEY(`jump_id`) REFERENCES `Jump`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "tableName": "position",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `altitude` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `time` INTEGER, `jump_id` INTEGER NOT NULL, FOREIGN KEY(`jump_id`) REFERENCES `jump`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,17 +79,17 @@
         },
         "indices": [
           {
-            "name": "index_Position_jump_id",
+            "name": "index_position_jump_id",
             "unique": false,
             "columnNames": [
               "jump_id"
             ],
-            "createSql": "CREATE  INDEX `index_Position_jump_id` ON `${TABLE_NAME}` (`jump_id`)"
+            "createSql": "CREATE  INDEX `index_position_jump_id` ON `${TABLE_NAME}` (`jump_id`)"
           }
         ],
         "foreignKeys": [
           {
-            "table": "Jump",
+            "table": "jump",
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
@@ -104,7 +104,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5867144344bfc106a74310968a72f522\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c473b55cfc404532eb1dc5619fda45a1\")"
     ]
   }
 }

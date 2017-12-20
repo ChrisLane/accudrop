@@ -5,7 +5,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity
+@Entity(tableName = "jump")
 public class Jump {
     @PrimaryKey
     public int id;

@@ -9,6 +9,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.util.Date;
 
 @Entity(
+        tableName = "position",
         indices = {
                 @Index("jump_id")
         },
