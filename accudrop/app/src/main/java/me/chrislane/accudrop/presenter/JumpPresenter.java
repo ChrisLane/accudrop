@@ -103,7 +103,7 @@ public class JumpPresenter {
         private final WeakReference<MainActivity> mainRef;
         private final AccudropDb db;
 
-        public CreateAndInsertJumpTask(MainActivity main, AccudropDb db) {
+        CreateAndInsertJumpTask(MainActivity main, AccudropDb db) {
             this.mainRef = new WeakReference<>(main);
             this.db = db;
         }
@@ -138,7 +138,7 @@ public class JumpPresenter {
         private final WeakReference<MainActivity> mainRef;
         private final AccudropDb db;
 
-        public InsertJumpTask(WeakReference<MainActivity> mainRef, AccudropDb db) {
+        InsertJumpTask(WeakReference<MainActivity> mainRef, AccudropDb db) {
             this.mainRef = mainRef;
             this.db = db;
         }
