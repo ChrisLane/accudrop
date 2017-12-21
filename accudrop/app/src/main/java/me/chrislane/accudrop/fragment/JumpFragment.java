@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.Util.Unit;
@@ -25,9 +26,10 @@ import me.chrislane.accudrop.presenter.JumpPresenter;
  */
 public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
-    public static final String TAG = JumpFragment.class.getSimpleName();
+    private static final String TAG = JumpFragment.class.getSimpleName();
     private View view;
     private JumpPresenter jumpPresenter;
+    private Boolean isJumping;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,10 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
         jumpPresenter = new JumpPresenter(this);
 
-        getActivity().getLifecycle().addObserver(this);
+        MainActivity main = (MainActivity) getActivity();
+        if (main != null) {
+            main.getLifecycle().addObserver(this);
+        }
     }
 
     @Override
@@ -47,22 +52,29 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         // Add click listener for fragment view.
         Button calibrateButton = view.findViewById(R.id.calibrate_button);
         calibrateButton.setOnClickListener(this::onClickCalibrate);
+
         ToggleButton jumpButton = view.findViewById(R.id.jump_button);
+        jumpButton.setOnCheckedChangeListener(null);
+        if (savedInstanceState != null) {
+            jumpButton.setChecked(savedInstanceState.getBoolean("jumpButton", false));
+        }
         jumpButton.setOnCheckedChangeListener(onClickJump());
 
         return view;
     }
 
-    public void onClickCalibrate(View view) {
+    private void onClickCalibrate(View view) {
         Log.d(TAG, "Calibrating.");
         jumpPresenter.calibrate();
     }
 
-    public CompoundButton.OnCheckedChangeListener onClickJump() {
+    private CompoundButton.OnCheckedChangeListener onClickJump() {
         return (compoundButton, isChecked) -> {
             if (isChecked) {
+                isJumping = true;
                 jumpPresenter.startJump();
             } else {
+                isJumping = false;
                 jumpPresenter.stopJump();
             }
         };
@@ -72,6 +84,13 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure_altitude);
         text.setText(Util.getAltitudeText(altitude, unit));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("jumpButton", isJumping);
     }
 
     @Override

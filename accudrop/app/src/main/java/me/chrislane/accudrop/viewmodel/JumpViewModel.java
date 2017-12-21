@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import me.chrislane.accudrop.db.AccudropDb;
 
 public class JumpViewModel extends AndroidViewModel {
-    private AccudropDb db;
+    private final AccudropDb db;
 
     public JumpViewModel(@NonNull Application application) {
         super(application);
@@ -16,7 +16,11 @@ public class JumpViewModel extends AndroidViewModel {
         db = AccudropDb.getDatabase(application);
     }
 
-    public LiveData<Integer> getLastJumpId() {
+    public LiveData<Integer> findLastJumpId() {
         return db.jumpModel().findLastJumpId();
+    }
+
+    public Integer getLastJumpId() {
+        return db.jumpModel().getLastJumpId();
     }
 }

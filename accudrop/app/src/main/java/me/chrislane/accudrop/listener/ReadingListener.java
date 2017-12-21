@@ -25,6 +25,7 @@ public class ReadingListener {
     private final PressureViewModel pressureViewModel;
     private final JumpViewModel jumpViewModel;
     private boolean logging = false;
+    private Integer jumpId;
 
     public ReadingListener(AppCompatActivity activity) {
         this.activity = activity;
@@ -33,8 +34,19 @@ public class ReadingListener {
         locationViewModel = ViewModelProviders.of(activity).get(LocationViewModel.class);
         jumpViewModel = ViewModelProviders.of(activity).get(JumpViewModel.class);
 
+        subscribeToJumpId();
         subscribeToLocation();
         subscribeToAltitude();
+    }
+
+    private void subscribeToJumpId() {
+        final Observer<Integer> jumpIdObserver = jumpId -> {
+            if (jumpId != null) {
+                this.jumpId = jumpId;
+            }
+        };
+
+        jumpViewModel.findLastJumpId().observe(activity, jumpIdObserver);
     }
 
     /**
@@ -45,7 +57,6 @@ public class ReadingListener {
             // Add entry to db
             if (altitude != null && logging) {
                 Location location = locationViewModel.getLastLocation().getValue();
-                Integer jumpId = jumpViewModel.getLastJumpId().getValue();
                 if (location != null && jumpId != null) {
                     addPositionToDb(jumpId, location, altitude);
                 }
@@ -61,7 +72,6 @@ public class ReadingListener {
             // Add entry to db
             if (location != null && logging) {
                 Float altitude = pressureViewModel.getLastAltitude().getValue();
-                Integer jumpId = jumpViewModel.getLastJumpId().getValue();
                 if (altitude != null && jumpId != null) {
                     addPositionToDb(jumpId, location, altitude);
                 }

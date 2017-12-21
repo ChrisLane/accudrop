@@ -25,6 +25,9 @@ public interface JumpDao {
     @Query("SELECT CAST(MAX(id) AS INTEGER) FROM jump")
     LiveData<Integer> findLastJumpId();
 
+    @Query("SELECT CAST(MAX(id) AS INTEGER) FROM jump")
+    Integer getLastJumpId();
+
     @Insert
     void insertJump(Jump jump);
 
