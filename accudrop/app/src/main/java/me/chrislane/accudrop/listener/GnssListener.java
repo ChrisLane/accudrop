@@ -1,5 +1,6 @@
 package me.chrislane.accudrop.listener;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -22,6 +23,7 @@ public class GnssListener implements android.location.LocationListener {
     /**
      * Tell the location manager to start collecting location updates.
      */
+    @SuppressLint("MissingPermission")
     public void startListening() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.d(TAG, "Listening on location.");

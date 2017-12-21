@@ -64,10 +64,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Check that the device has a barometer.
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
-            // No barometer, do not continue.
-            Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
-            //return;
+        if (sensorManager != null) {
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
+                // No barometer, do not continue.
+                Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
+                //return;
+            }
         }
 
         // Create or get ViewModels

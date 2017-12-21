@@ -7,7 +7,7 @@ import android.hardware.SensorEventListener;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class PressureListener implements SensorEventListener {
-    private PressureViewModel pressureViewModel;
+    private final PressureViewModel pressureViewModel;
 
     public PressureListener(PressureViewModel pressureViewModel) {
         this.pressureViewModel = pressureViewModel;

@@ -12,8 +12,8 @@ import android.view.View;
 
 public class PermissionManager {
 
-    public static final String TAG = PermissionManager.class.getSimpleName();
-    public static final int PERMISSIONS_REQUEST_LOCATION = 0;
+    private static final String TAG = PermissionManager.class.getSimpleName();
+    private static final int PERMISSIONS_REQUEST_LOCATION = 0;
     private final Activity activity;
     private final View parentLayout;
 

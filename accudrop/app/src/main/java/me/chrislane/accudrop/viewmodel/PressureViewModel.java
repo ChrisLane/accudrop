@@ -16,18 +16,20 @@ public class PressureViewModel extends AndroidViewModel {
     private static final String TAG = PressureViewModel.class.getSimpleName();
     private static final int ONE_SECOND_DELAY = 1000000;
     private final SensorManager sensorManager;
-    private final Sensor barometer;
-    private PressureListener pressureListener;
-    private MutableLiveData<Float> lastPressure = new MutableLiveData<>();
-    private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
-    private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
+    private final PressureListener pressureListener;
+    private final MutableLiveData<Float> lastPressure = new MutableLiveData<>();
+    private final MutableLiveData<Float> groundPressure = new MutableLiveData<>();
+    private final MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
+    private Sensor barometer = null;
 
     public PressureViewModel(@NonNull Application application) {
         super(application);
 
         pressureListener = new PressureListener(this);
         sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
-        barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if (sensorManager != null) {
+            barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        }
     }
 
     public void startListening() {
@@ -44,7 +46,7 @@ public class PressureViewModel extends AndroidViewModel {
         return groundPressure;
     }
 
-    public void setGroundPressure(float groundPressure) {
+    private void setGroundPressure(float groundPressure) {
         this.groundPressure.setValue(groundPressure);
     }
 
@@ -61,7 +63,7 @@ public class PressureViewModel extends AndroidViewModel {
         return lastAltitude;
     }
 
-    public void setLastAltitude(float lastAltitude) {
+    private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
     }
 

@@ -39,7 +39,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Add this as a location listener
         if (savedInstanceState == null) {
-            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+            MainActivity main = (MainActivity) getActivity();
+            if (main != null) {
+                locationViewModel = ViewModelProviders.of(main).get(LocationViewModel.class);
+            }
         }
 
         camPosBuilder = new CameraPosition.Builder()
@@ -81,17 +84,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void setupMap() {
         Location loc = locationViewModel.getLastLocation().getValue();
         CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
-        MainActivity main = (MainActivity) getActivity();
-        PermissionManager permissionManager = main.getPermissionManager();
 
-        // Initial map setup
+        MainActivity main = (MainActivity) getActivity();
+        if (main != null) {
+            PermissionManager permissionManager = main.getPermissionManager();
+
+            // Initial map setup
+            if (permissionManager.checkLocationPermission()) {
+                map.setMyLocationEnabled(true);
+            } else {
+                permissionManager.requestLocationPermission("Location access is required to find your location.");
+            }
+        }
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        if (permissionManager.checkLocationPermission()) {
-            map.setMyLocationEnabled(true);
-        } else {
-            permissionManager.requestLocationPermission("Location access is required to find your location.");
-        }
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         //TODO : Remove example line drawing

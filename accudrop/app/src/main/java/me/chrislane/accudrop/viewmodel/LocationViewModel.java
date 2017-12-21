@@ -13,8 +13,8 @@ import me.chrislane.accudrop.listener.GnssListener;
 
 public class LocationViewModel extends AndroidViewModel {
     private static final String TAG = LocationViewModel.class.getSimpleName();
-    private MutableLiveData<Location> lastLocation = new MutableLiveData<>();
-    private GnssListener gnssListener;
+    private final MutableLiveData<Location> lastLocation = new MutableLiveData<>();
+    private final GnssListener gnssListener;
 
     public LocationViewModel(@NonNull Application application) {
         super(application);
