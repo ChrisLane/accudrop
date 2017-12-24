@@ -14,6 +14,15 @@
             android:layout_marginTop="20dp"
             android:textAlignment="center"/>
 
+    <ToggleButton
+        android:id="@+id/jump_button"
+        android:textOn="@string/jump_button_on"
+        android:textOff="@string/jump_button_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"/>
+
     <TextView
             android:text="@string/pressure_altitude_label"
             android:layout_width="wrap_content"

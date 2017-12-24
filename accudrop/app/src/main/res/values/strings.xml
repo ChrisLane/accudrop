@@ -13,4 +13,6 @@
     <string name="calibrate_button">Calibrate</string>
     <string name="pressure_altitude_label">Altitude</string>
     <string name="unknown_value">\?</string>
+    <string name="jump_button_off">Jump!</string>
+    <string name="jump_button_on">Stop Jump</string>
 </resources>

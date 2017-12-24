@@ -6,6 +6,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,24 +19,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import me.chrislane.accudrop.fragment.JumpFragment;
-import me.chrislane.accudrop.fragment.MainFragment;
-import me.chrislane.accudrop.fragment.MapFragment;
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
-import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 import java.util.Locale;
 
+import me.chrislane.accudrop.fragment.JumpFragment;
+import me.chrislane.accudrop.fragment.MainFragment;
+import me.chrislane.accudrop.fragment.MapFragment;
+import me.chrislane.accudrop.listener.ReadingListener;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.PressureViewModel;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
+    private ReadingListener readingListener;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         permissionManager = new PermissionManager(this);
+        readingListener = new ReadingListener(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -55,15 +64,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Check that the device has a barometer.
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
-            // No barometer, do not continue.
-            Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
-            //return;
+        if (sensorManager != null) {
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
+                // No barometer, do not continue.
+                Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
+                //return;
+            }
         }
 
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
         ViewModelProviders.of(this).get(LocationViewModel.class);
+        ViewModelProviders.of(this).get(JumpViewModel.class);
 
         // Set the fragment to be displayed
         setCurrentFragment();
@@ -118,11 +130,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
-        Class fragmentClass = MapFragment.class;
+        Class<?> fragmentClass = MapFragment.class;
 
         switch (id) {
             case R.id.nav_jump:
@@ -177,5 +189,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
+    }
+
+    public ReadingListener getReadingListener() {
+        return readingListener;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

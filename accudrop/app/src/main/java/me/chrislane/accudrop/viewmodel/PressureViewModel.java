@@ -6,55 +6,47 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class PressureViewModel extends AndroidViewModel implements SensorEventListener {
+import me.chrislane.accudrop.listener.PressureListener;
+
+public class PressureViewModel extends AndroidViewModel {
     private static final String TAG = PressureViewModel.class.getSimpleName();
     private static final int ONE_SECOND_DELAY = 1000000;
     private final SensorManager sensorManager;
-    private final Sensor barometer;
-    private MutableLiveData<Float> lastPressure = new MutableLiveData<>();
-    private MutableLiveData<Float> groundPressure = new MutableLiveData<>();
-    private MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
+    private final PressureListener pressureListener;
+    private final MutableLiveData<Float> lastPressure = new MutableLiveData<>();
+    private final MutableLiveData<Float> groundPressure = new MutableLiveData<>();
+    private final MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
+    private Sensor barometer = null;
 
     public PressureViewModel(@NonNull Application application) {
         super(application);
 
+        pressureListener = new PressureListener(this);
         sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
-        barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if (sensorManager != null) {
+            barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        }
     }
 
     public void startListening() {
         Log.d(TAG, "Listening on pressure.");
-        sensorManager.registerListener(this, barometer, ONE_SECOND_DELAY);
+        sensorManager.registerListener(pressureListener, barometer, ONE_SECOND_DELAY);
     }
 
     public void stopListening() {
         Log.d(TAG, "Stopped listening on pressure.");
-        sensorManager.unregisterListener(this);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        Log.v(TAG, "Sensor changed.");
-        lastPressure.setValue(event.values[0]);
-        updateAltitude();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        sensorManager.unregisterListener(pressureListener);
     }
 
     public LiveData<Float> getGroundPressure() {
         return groundPressure;
     }
 
-    public void setGroundPressure(float groundPressure) {
+    private void setGroundPressure(float groundPressure) {
         this.groundPressure.setValue(groundPressure);
     }
 
@@ -62,11 +54,16 @@ public class PressureViewModel extends AndroidViewModel implements SensorEventLi
         return lastPressure;
     }
 
+    public void setLastPressure(float lastPressure) {
+        this.lastPressure.setValue(lastPressure);
+        updateAltitude();
+    }
+
     public LiveData<Float> getLastAltitude() {
         return lastAltitude;
     }
 
-    public void setLastAltitude(float lastAltitude) {
+    private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
     }
 

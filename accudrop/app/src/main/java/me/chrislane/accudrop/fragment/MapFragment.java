@@ -4,11 +4,13 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.R;
@@ -36,7 +39,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Add this as a location listener
         if (savedInstanceState == null) {
-            locationViewModel = ViewModelProviders.of(getActivity()).get(LocationViewModel.class);
+            MainActivity main = (MainActivity) getActivity();
+            if (main != null) {
+                locationViewModel = ViewModelProviders.of(main).get(LocationViewModel.class);
+            }
         }
 
         camPosBuilder = new CameraPosition.Builder()
@@ -46,7 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -78,17 +84,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void setupMap() {
         Location loc = locationViewModel.getLastLocation().getValue();
         CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
-        MainActivity main = (MainActivity) getActivity();
-        PermissionManager permissionManager = main.getPermissionManager();
 
-        // Initial map setup
+        MainActivity main = (MainActivity) getActivity();
+        if (main != null) {
+            PermissionManager permissionManager = main.getPermissionManager();
+
+            // Initial map setup
+            if (permissionManager.checkLocationPermission()) {
+                map.setMyLocationEnabled(true);
+            } else {
+                permissionManager.requestLocationPermission("Location access is required to find your location.");
+            }
+        }
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        if (permissionManager.checkLocationPermission()) {
-            map.setMyLocationEnabled(true);
-        } else {
-            permissionManager.requestLocationPermission("Location access is required to find your location.");
-        }
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         //TODO : Remove example line drawing
