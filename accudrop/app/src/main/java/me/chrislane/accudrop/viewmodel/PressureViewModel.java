@@ -14,32 +14,20 @@ import me.chrislane.accudrop.listener.PressureListener;
 
 public class PressureViewModel extends AndroidViewModel {
     private static final String TAG = PressureViewModel.class.getSimpleName();
-    private static final int ONE_SECOND_DELAY = 1000000;
-    private final SensorManager sensorManager;
     private final PressureListener pressureListener;
     private final MutableLiveData<Float> lastPressure = new MutableLiveData<>();
     private final MutableLiveData<Float> groundPressure = new MutableLiveData<>();
     private final MutableLiveData<Float> lastAltitude = new MutableLiveData<>();
-    private Sensor barometer = null;
 
     public PressureViewModel(@NonNull Application application) {
         super(application);
 
-        pressureListener = new PressureListener(this);
-        sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager != null) {
-            barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-        }
+        pressureListener = new PressureListener(application, this);
+
     }
 
-    public void startListening() {
-        Log.d(TAG, "Listening on pressure.");
-        sensorManager.registerListener(pressureListener, barometer, ONE_SECOND_DELAY);
-    }
-
-    public void stopListening() {
-        Log.d(TAG, "Stopped listening on pressure.");
-        sensorManager.unregisterListener(pressureListener);
+    public PressureListener getPressureListener() {
+        return pressureListener;
     }
 
     public LiveData<Float> getGroundPressure() {

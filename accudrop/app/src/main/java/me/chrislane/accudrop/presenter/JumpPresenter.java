@@ -83,9 +83,9 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
             PermissionManager permissionManager = main.getPermissionManager();
-            pressureViewModel.startListening();
+            pressureViewModel.getPressureListener().startListening();
             if (permissionManager.checkLocationPermission()) {
-                locationViewModel.startListening();
+                locationViewModel.getGnssListener().startListening();
             } else {
                 String reason = "Location access is required to track your jump location.";
                 permissionManager.requestLocationPermission(reason);
@@ -94,8 +94,8 @@ public class JumpPresenter {
     }
 
     public void pause() {
-        pressureViewModel.stopListening();
-        locationViewModel.stopListening();
+        pressureViewModel.getPressureListener().stopListening();
+        locationViewModel.getGnssListener().stopListening();
     }
 
     public static class CreateAndInsertJumpTask extends AsyncTask<JumpViewModel, Void, Integer> {

@@ -49,11 +49,7 @@ public class LocationViewModel extends AndroidViewModel {
         lastLocation.setValue(location);
     }
 
-    public void startListening() {
-        gnssListener.startListening();
-    }
-
-    public void stopListening() {
-        gnssListener.stopListening();
+    public GnssListener getGnssListener() {
+        return gnssListener;
     }
 }
