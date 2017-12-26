@@ -1,5 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.location.Location;
@@ -16,14 +17,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.List;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
+import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -31,6 +35,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
+    private RouteViewModel routeViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MainActivity main = (MainActivity) getActivity();
             if (main != null) {
                 locationViewModel = ViewModelProviders.of(main).get(LocationViewModel.class);
+                routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
             }
         }
 
@@ -49,6 +55,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .zoom(15.5f)
                 .bearing(0)
                 .tilt(0);
+
+        subscribeToRoute();
     }
 
     @Override
@@ -99,11 +107,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+    }
 
-        //TODO : Remove example line drawing
-        Polyline downWind = map.addPolyline(new PolylineOptions()
-                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
-                .width(5)
-                .color(Color.RED));
+    public void subscribeToRoute() {
+        final Observer<List<Point3D>> routeObserver = route -> {
+            if (route != null) {
+                map.clear();
+
+                for (int i = 0; i < route.size() - 1; i++) {
+                    Point3D point1 = route.get(i);
+                    Point3D point2 = route.get(i + 1);
+                    map.addPolyline(new PolylineOptions()
+                            .add(point1.getLatLng(), point2.getLatLng())
+                            .width(5)
+                            .color(Color.RED));
+                    map.addMarker(new MarkerOptions()
+                            .position(point1.getLatLng())
+                            .title("Position at " + point1.getAltitude() + "ft")
+                    );
+                }
+
+                map.addMarker(new MarkerOptions()
+                        .position(route.get(route.size() - 1).getLatLng())
+                        .title("Landing"));
+            }
+        };
+
+        routeViewModel.getRoute().observe(this, routeObserver);
     }
 }
