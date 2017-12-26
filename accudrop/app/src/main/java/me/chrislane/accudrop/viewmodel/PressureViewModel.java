@@ -4,11 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import me.chrislane.accudrop.listener.PressureListener;
 
