@@ -15,4 +15,6 @@
     <string name="unknown_value">\?</string>
     <string name="jump_button_off">Jump!</string>
     <string name="jump_button_on">Stop Jump</string>
+    <string name="pref_unit">Unit of Measurement</string>
+    <string name="pref_unit_default">metric</string>
 </resources>

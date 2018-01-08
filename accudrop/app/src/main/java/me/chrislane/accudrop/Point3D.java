@@ -16,7 +16,7 @@ public class Point3D {
         return latLng;
     }
 
-    public double getAltitude() {
+    public float getAltitude() {
         return altitude;
     }
 

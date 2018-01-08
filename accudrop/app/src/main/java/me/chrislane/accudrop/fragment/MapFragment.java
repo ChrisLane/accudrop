@@ -2,9 +2,11 @@ package me.chrislane.accudrop.fragment;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,6 +28,7 @@ import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
+import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
@@ -114,6 +117,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (route != null) {
                 map.clear();
 
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                String unitString = sharedPref.getString("pref_unit", "");
+
+                Util.Unit unit = Util.getUnit(unitString);
                 for (int i = 0; i < route.size() - 1; i++) {
                     Point3D point1 = route.get(i);
                     Point3D point2 = route.get(i + 1);
@@ -123,14 +130,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             .color(Color.RED));
                     map.addMarker(new MarkerOptions()
                             .position(point1.getLatLng())
-                            .title("Position at " + point1.getAltitude() + "ft")
+                            .title(Util.getAltitudeText(point1.getAltitude(), unit))
                     );
                 }
-
-                map.addMarker(new MarkerOptions()
-                        .position(route.get(route.size() - 1).getLatLng())
-                        .title("Landing"));
             }
+
+            map.addMarker(new MarkerOptions()
+                    .position(route.get(route.size() - 1).getLatLng())
+                    .title("Landing"));
+
         };
 
         routeViewModel.getRoute().observe(this, routeObserver);

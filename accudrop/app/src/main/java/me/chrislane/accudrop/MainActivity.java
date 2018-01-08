@@ -5,6 +5,7 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //return;
             }
         }
+
+        // Initialise preferences
+        initPreferences();
 
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
@@ -188,6 +192,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
+    private void initPreferences() {
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+    }
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
