@@ -133,12 +133,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             .title(Util.getAltitudeText(point1.getAltitude(), unit))
                     );
                 }
+
+                map.addMarker(new MarkerOptions()
+                        .position(route.get(route.size() - 1).getLatLng())
+                        .title("Landing"));
             }
-
-            map.addMarker(new MarkerOptions()
-                    .position(route.get(route.size() - 1).getLatLng())
-                    .title("Landing"));
-
         };
 
         routeViewModel.getRoute().observe(this, routeObserver);
