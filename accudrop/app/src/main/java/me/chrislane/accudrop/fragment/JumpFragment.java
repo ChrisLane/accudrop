@@ -80,7 +80,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         };
     }
 
-    public void updatePressureAltitude(Float altitude, Unit unit) {
+    public void updatePressureAltitude(Double altitude, Unit unit) {
         Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure_altitude);
         text.setText(Util.getAltitudeText(altitude, unit));

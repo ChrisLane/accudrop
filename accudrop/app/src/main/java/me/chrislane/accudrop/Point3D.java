@@ -5,9 +5,9 @@ import com.google.android.gms.maps.model.LatLng;
 public class Point3D {
 
     private LatLng latLng;
-    private float altitude;
+    private double altitude;
 
-    public Point3D(LatLng latLng, float altitude) {
+    public Point3D(LatLng latLng, double altitude) {
         this.latLng = latLng;
         this.altitude = altitude;
     }
@@ -16,11 +16,11 @@ public class Point3D {
         return latLng;
     }
 
-    public float getAltitude() {
+    public double getAltitude() {
         return altitude;
     }
 
-    public void set(LatLng latLng, float altitude) {
+    public void set(LatLng latLng, double altitude) {
         this.latLng = latLng;
         this.altitude = altitude;
     }

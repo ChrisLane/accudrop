@@ -29,6 +29,7 @@ import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
+import me.chrislane.accudrop.presenter.RoutePlanPresenter;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
@@ -39,6 +40,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
     private RouteViewModel routeViewModel;
+    private RoutePlanPresenter routePlanPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,12 +56,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
+        routePlanPresenter = new RoutePlanPresenter(routeViewModel);
+
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
                 .bearing(0)
                 .tilt(0);
-
-        subscribeToRoute();
     }
 
     @Override
@@ -87,6 +89,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
 
         setupMap();
+        subscribeToRoute();
+        routePlanPresenter.calcRoute();
     }
 
     /**

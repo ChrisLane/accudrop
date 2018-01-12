@@ -5,11 +5,11 @@ import java.util.Locale;
 public class Util {
     private static final String TAG = Util.class.getSimpleName();
 
-    public static float metresToFeet(float metres) {
+    public static double metresToFeet(double metres) {
         return 3.281f * metres;
     }
 
-    public static String getAltitudeText(Float altitude, Unit unit) {
+    public static String getAltitudeText(Double altitude, Unit unit) {
         String unitSymbol = "";
         switch (unit) {
             case METRIC:
@@ -32,6 +32,10 @@ public class Util {
             default:
                 return null;
         }
+    }
+
+    public static double metresToKilometres(double metres) {
+        return 0.001f * metres;
     }
 
     public enum Unit {METRIC, IMPERIAL}
