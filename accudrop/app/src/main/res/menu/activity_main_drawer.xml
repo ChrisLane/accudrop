@@ -3,21 +3,21 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/nav_jump"
-                android:icon="@drawable/ic_menu_jump"
-                android:title="Jump"/>
+            android:id="@+id/nav_jump"
+            android:icon="@drawable/ic_menu_jump"
+            android:title="Jump" />
         <item
-                android:id="@+id/nav_landing_pattern"
-                android:icon="@drawable/ic_menu_landing_pattern"
-                android:title="Landing Pattern"/>
+            android:id="@+id/nav_landing_pattern"
+            android:icon="@drawable/ic_menu_landing_pattern"
+            android:title="Landing Pattern" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                    android:id="@+id/nav_share"
-                    android:icon="@drawable/ic_menu_share"
-                    android:title="Share"/>
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
         </menu>
     </item>
 

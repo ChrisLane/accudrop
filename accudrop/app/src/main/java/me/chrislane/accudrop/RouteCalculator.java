@@ -11,9 +11,9 @@ public class RouteCalculator {
     private double airspeed = 8.9408; // Metres per second
     private double descentRate = 8.9408; // Metres per second
     private double windDirection = 90;
-    private double p3Altitude = 91.44;
-    private double p2Altitude = 182.88;
-    private double p1Altitude = 304.8;
+    private double p3Altitude = 91.44; // 300ft
+    private double p2Altitude = 182.88; // 600ft
+    private double p1Altitude = 304.8; // 1000ft
     private Point3D p3;
     private Point3D p2;
     private Point3D p1;

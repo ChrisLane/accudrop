@@ -1,46 +1,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center_horizontal"
-              tools:context="me.chrislane.accudrop.fragment.JumpFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="me.chrislane.accudrop.fragment.JumpFragment">
 
     <Button
-            android:id="@+id/calibrate_button"
-            android:text="@string/calibrate_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAlignment="center"/>
-
-    <ToggleButton
-        android:id="@+id/jump_button"
-        android:textOn="@string/jump_button_on"
-        android:textOff="@string/jump_button_off"
+        android:id="@+id/calibrate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"/>
+        android:text="@string/calibrate_button"
+        android:textAlignment="center" />
+
+    <ToggleButton
+        android:id="@+id/jump_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textOff="@string/jump_button_off"
+        android:textOn="@string/jump_button_on" />
 
     <TextView
-            android:text="@string/pressure_altitude_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pressure_altitude_label"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textAlignment="center"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/pressure_altitude_label"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
     <TextView
-            android:text="@string/unknown_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pressure_altitude"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textAlignment="center"/>
+        android:id="@+id/pressure_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/unknown_value"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 </LinearLayout>
