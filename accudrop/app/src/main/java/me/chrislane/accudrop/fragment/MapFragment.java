@@ -19,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -56,7 +57,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        routePlanPresenter = new RoutePlanPresenter(routeViewModel);
+        LatLng target = locationViewModel.getLatLng(locationViewModel.getLastLocation().getValue());
+        routePlanPresenter = new RoutePlanPresenter(routeViewModel, target);
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -90,6 +92,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         setupMap();
         subscribeToRoute();
+        Location loc = locationViewModel.getLastLocation().getValue();
         routePlanPresenter.calcRoute();
     }
 
@@ -111,9 +114,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 permissionManager.requestLocationPermission("Location access is required to find your location.");
             }
         }
+        map.getUiSettings().setMapToolbarEnabled(false);
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        map.setOnMapLongClickListener(this::onMapLongClick);
+    }
+
+    public void onMapLongClick(LatLng latLng) {
+        // Update map camera position
+        CameraPosition camPos = camPosBuilder.target(latLng).build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
+        // Update route
+        routePlanPresenter.setTarget(latLng);
     }
 
     public void subscribeToRoute() {

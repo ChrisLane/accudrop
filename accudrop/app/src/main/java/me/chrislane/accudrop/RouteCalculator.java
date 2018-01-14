@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RouteCalculator {
     private List<Point3D> route = new ArrayList<>();
-    private LatLng target = new LatLng(51.52, 0.08);
+    private LatLng target;
     private double airspeed = 8.9408; // Metres per second
     private double descentRate = 8.9408; // Metres per second
     private double windDirection = 90;
@@ -18,12 +18,31 @@ public class RouteCalculator {
     private Point3D p2;
     private Point3D p1;
 
+    public RouteCalculator(LatLng target) {
+        this.target = target;
+    }
+
+    public LatLng getTarget() {
+        return target;
+    }
+
+    /**
+     * Set the target location for route calculations.
+     *
+     * @param target The target location.
+     */
+    public void setTarget(LatLng target) {
+        this.target = target;
+    }
+
     /**
      * Calculate the route.
      *
      * @return The route.
      */
     public List<Point3D> calcRoute() {
+        route.clear();
+
         calcP3();
         calcP2();
         calcP1();
