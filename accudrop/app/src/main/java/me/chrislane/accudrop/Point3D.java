@@ -24,4 +24,9 @@ public class Point3D {
         this.latLng = latLng;
         this.altitude = altitude;
     }
+
+    @Override
+    public String toString() {
+        return "(" + latLng + " Alt: " + altitude + "m)";
+    }
 }

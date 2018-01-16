@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="me.chrislane.accudrop.fragment.JumpFragment">
+    tools:ma="me.chrislane.accudrop.fragment.JumpFragment">
 
     <Button
         android:id="@+id/calibrate_button"

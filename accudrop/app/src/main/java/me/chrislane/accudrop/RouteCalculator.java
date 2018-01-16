@@ -1,16 +1,22 @@
 package me.chrislane.accudrop;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import me.chrislane.accudrop.task.WindTask;
+
 public class RouteCalculator {
+    private static final String TAG = RouteCalculator.class.getSimpleName();
     private List<Point3D> route = new ArrayList<>();
     private LatLng target;
-    private double airspeed = 8.9408; // Metres per second
-    private double descentRate = 8.9408; // Metres per second
-    private double windDirection = 90;
+    private double airspeed = 15.4; // Metres per second
+    private double descentRate = 6.16; // Metres per second
+    private double windDirection;
+    private double windSpeed;
     private double p3Altitude = 91.44; // 300ft
     private double p2Altitude = 182.88; // 600ft
     private double p1Altitude = 304.8; // 1000ft
@@ -18,7 +24,9 @@ public class RouteCalculator {
     private Point3D p2;
     private Point3D p1;
 
-    public RouteCalculator(LatLng target) {
+    public RouteCalculator(WindTask.WindTuple wind, LatLng target) {
+        this.windDirection = wind.windDirection;
+        this.windSpeed = wind.windSpeed;
         this.target = target;
     }
 
@@ -52,6 +60,8 @@ public class RouteCalculator {
         route.add(p3);
         route.add(new Point3D(target, 0));
 
+        Log.d(TAG, "Route calculated: " + route);
+
         return route;
     }
 
@@ -60,7 +70,7 @@ public class RouteCalculator {
      */
     public void calcP1() {
         double altitudeChange = p1Altitude - p2Altitude;
-        double distance = distanceFromHeight(8.9408, altitudeChange);
+        double distance = distanceFromHeight(airspeed + windSpeed, altitudeChange);
 
         LatLng loc = getPosAfterMove(p2.getLatLng(), distance, windDirection);
         p1 = new Point3D(loc, p1Altitude);
@@ -82,7 +92,7 @@ public class RouteCalculator {
      * Calculate the position of the final turn in the route.
      */
     public void calcP3() {
-        double distance = distanceFromHeight(8.9408, p3Altitude);
+        double distance = distanceFromHeight(airspeed - windSpeed, p3Altitude);
 
         // Subtract distance along upwind direction from coordinates
         LatLng loc = getPosAfterMove(target, distance, getOppositeBearing(windDirection));
@@ -106,7 +116,7 @@ public class RouteCalculator {
 
     /**
      * <p>Get coordinates after a move of a certain distance in a bearing from an initial location.</p>
-     * <p>Adapted from a <a href=https://stackoverflow.com/a/7835325>StackOverflow answer</a></p>
+     * <p>Adapted from a <a href="https://stackoverflow.com/a/7835325">StackOverflow answer</a></p>
      *
      * @param initialPosition The initial position before a move.
      * @param distance        The distance to be travelled from the initial position.
@@ -174,5 +184,9 @@ public class RouteCalculator {
             result = 360 + result;
         }
         return result;
+    }
+
+    public double getSinkSpeed(double airspeed, double glideRatio) {
+        return airspeed / glideRatio;
     }
 }

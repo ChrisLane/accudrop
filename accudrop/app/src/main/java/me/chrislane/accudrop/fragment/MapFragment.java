@@ -1,5 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,7 +36,7 @@ import me.chrislane.accudrop.presenter.RoutePlanPresenter;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
 
     public static final String TAG = MapFragment.class.getSimpleName();
     private GoogleMap map;
@@ -56,9 +58,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
             }
         }
-
-        LatLng target = locationViewModel.getLatLng(locationViewModel.getLastLocation().getValue());
-        routePlanPresenter = new RoutePlanPresenter(routeViewModel, target);
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -92,8 +91,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         setupMap();
         subscribeToRoute();
-        Location loc = locationViewModel.getLastLocation().getValue();
-        routePlanPresenter.calcRoute();
+
+        LatLng target = locationViewModel.getLatLng(locationViewModel.getLastLocation().getValue());
+        routePlanPresenter = new RoutePlanPresenter(this, target);
     }
 
     /**
@@ -127,7 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         // Update route
-        routePlanPresenter.setTarget(latLng);
+        routePlanPresenter.calcRoute(latLng);
     }
 
     public void subscribeToRoute() {
@@ -159,5 +159,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         };
 
         routeViewModel.getRoute().observe(this, routeObserver);
+    }
+
+    public void setProgressBarVisibility(boolean showBar) {
+        ProgressBar progressBar = getView().findViewById(R.id.progressbar);
+        if (showBar) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

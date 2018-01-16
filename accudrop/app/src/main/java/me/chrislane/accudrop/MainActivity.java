@@ -31,6 +31,7 @@ import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
+import me.chrislane.accudrop.viewmodel.WindViewModel;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ViewModelProviders.of(this).get(LocationViewModel.class);
         ViewModelProviders.of(this).get(JumpViewModel.class);
         ViewModelProviders.of(this).get(RouteViewModel.class);
+        ViewModelProviders.of(this).get(WindViewModel.class);
 
         // Set the fragment to be displayed
         setCurrentFragment();
