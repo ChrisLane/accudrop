@@ -18,7 +18,6 @@ public class RoutePlanPresenter {
     private RouteViewModel routeViewModel = null;
     private WindViewModel windViewModel = null;
     private String apiKey;
-    private boolean taskRunning;
 
     public RoutePlanPresenter(MapFragment mapFragment, LatLng target) {
         this.mapFragment = mapFragment;
@@ -29,6 +28,7 @@ public class RoutePlanPresenter {
             windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
         }
 
+        // Get the OpenWeatherMap API key
         apiKey = mapFragment.getResources().getString(R.string.owmApiKey);
 
         // Calculate a route to the target
@@ -36,9 +36,9 @@ public class RoutePlanPresenter {
     }
 
     /**
-     * Update wind data and calculate a route
+     * Update wind data and calculate a route.
      *
-     * @param target
+     * @param target The target landing coordinates.
      */
     public void calcRoute(LatLng target) {
         WindTask.WeatherTaskListener windListener = windTuple -> {
@@ -53,8 +53,12 @@ public class RoutePlanPresenter {
         new WindTask(windListener, this, apiKey).execute(target);
     }
 
+    /**
+     * Set the visibility of the map fragment's progress bar.
+     *
+     * @param taskRunning Whether to show the progress bar.
+     */
     public void setTaskRunning(boolean taskRunning) {
-        this.taskRunning = taskRunning;
         mapFragment.setProgressBarVisibility(taskRunning);
     }
 }

@@ -21,9 +21,6 @@ import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.Util.Unit;
 import me.chrislane.accudrop.presenter.JumpPresenter;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
     private static final String TAG = JumpFragment.class.getSimpleName();
@@ -63,6 +60,11 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         return view;
     }
 
+    /**
+     * Zeros the altitude.
+     *
+     * @param view The view calling the method.
+     */
     private void onClickCalibrate(View view) {
         Log.d(TAG, "Calibrating.");
         jumpPresenter.calibrate();
@@ -80,6 +82,12 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         };
     }
 
+    /**
+     * Update the altitude text.
+     *
+     * @param altitude The altitude to set.
+     * @param unit The unit to display after the altitude.
+     */
     public void updatePressureAltitude(Double altitude, Unit unit) {
         Log.v(TAG, "Updating pressure altitude text.");
         TextView text = view.findViewById(R.id.pressure_altitude);
