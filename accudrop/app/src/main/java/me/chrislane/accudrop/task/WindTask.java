@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import me.chrislane.accudrop.presenter.RoutePlanPresenter;
+import me.chrislane.accudrop.presenter.PlanPresenter;
 
 /**
  * <p>AsyncTask to fetch the current weather from the OpenWeatherMap API.</p>
@@ -23,13 +23,13 @@ import me.chrislane.accudrop.presenter.RoutePlanPresenter;
  */
 public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
     private static final String TAG = WindTask.class.getSimpleName();
-    private final RoutePlanPresenter routePlanPresenter;
+    private final PlanPresenter planPresenter;
     private final String apiKey;
     private final WeatherTaskListener listener;
 
-    public WindTask(WeatherTaskListener listener, RoutePlanPresenter routePlanPresenter, String apiKey) {
+    public WindTask(WeatherTaskListener listener, PlanPresenter planPresenter, String apiKey) {
         this.listener = listener;
-        this.routePlanPresenter = routePlanPresenter;
+        this.planPresenter = planPresenter;
         this.apiKey = apiKey;
     }
 
@@ -84,7 +84,7 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
         super.onPreExecute();
         Log.d("WindTask", "Task pre execute");
 
-        routePlanPresenter.setTaskRunning(true);
+        planPresenter.setTaskRunning(true);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
         }
 
         // Task is no longer running
-        routePlanPresenter.setTaskRunning(false);
+        planPresenter.setTaskRunning(false);
     }
 
     public interface WeatherTaskListener {

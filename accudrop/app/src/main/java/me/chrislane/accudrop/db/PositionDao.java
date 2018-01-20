@@ -17,6 +17,10 @@ public interface PositionDao {
             "WHERE jump_id = :jumpNumber ")
     LiveData<List<Position>> findLocationsByJumpNumber(int jumpNumber);
 
+    @Query("SELECT * FROM Position " +
+            "WHERE jump_id = :jumpNumber ")
+    List<Position> getLocationsByJumpNumber(int jumpNumber);
+
     @Insert
     void insertPosition(Position position);
 

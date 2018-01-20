@@ -10,6 +10,10 @@
             android:id="@+id/nav_landing_pattern"
             android:icon="@drawable/ic_menu_landing_pattern"
             android:title="Landing Pattern" />
+        <item
+            android:id="@+id/nav_replay"
+            android:icon="@drawable/ic_menu_replay"
+            android:title="Replay" />
     </group>
 
     <item android:title="Communicate">

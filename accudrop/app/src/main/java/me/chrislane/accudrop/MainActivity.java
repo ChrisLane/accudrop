@@ -25,7 +25,8 @@ import java.util.Locale;
 
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
-import me.chrislane.accudrop.fragment.MapFragment;
+import me.chrislane.accudrop.fragment.PlanFragment;
+import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.listener.ReadingListener;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
@@ -128,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (status == TextToSpeech.SUCCESS) {
                         tts.setLanguage(Locale.UK);
                         tts.speak("At 500 feet, turn upwind", TextToSpeech.QUEUE_FLUSH, null, null);
-
                     }
                 });
                 return true;
@@ -142,14 +142,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
-        Class<?> fragmentClass = MapFragment.class;
+        Class<?> fragmentClass = PlanFragment.class;
 
         switch (id) {
             case R.id.nav_jump:
                 fragmentClass = JumpFragment.class;
                 break;
             case R.id.nav_landing_pattern:
-                fragmentClass = MapFragment.class;
+                fragmentClass = PlanFragment.class;
+                break;
+            case R.id.nav_replay:
+                fragmentClass = ReplayFragment.class;
                 break;
             case R.id.nav_share:
                 break;

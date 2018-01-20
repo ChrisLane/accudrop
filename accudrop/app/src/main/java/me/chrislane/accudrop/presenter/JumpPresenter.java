@@ -45,7 +45,7 @@ public class JumpPresenter {
         Log.i(TAG, "Starting jump.");
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
-            new CreateAndInsertJumpTask(main, db).execute(jumpViewModel);
+            new CreateAndInsertJumpTask(main, jumpViewModel).execute();
         } else {
             Log.e(TAG, "Could not get main activity.");
         }
@@ -98,19 +98,18 @@ public class JumpPresenter {
         locationViewModel.getGnssListener().stopListening();
     }
 
-    public static class CreateAndInsertJumpTask extends AsyncTask<JumpViewModel, Void, Integer> {
+    public static class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
 
         private final WeakReference<MainActivity> mainRef;
-        private final AccudropDb db;
+        private final JumpViewModel jumpViewModel;
 
-        CreateAndInsertJumpTask(MainActivity main, AccudropDb db) {
+        CreateAndInsertJumpTask(MainActivity main, JumpViewModel jumpViewModel) {
             this.mainRef = new WeakReference<>(main);
-            this.db = db;
+            this.jumpViewModel = jumpViewModel;
         }
 
         @Override
-        protected Integer doInBackground(JumpViewModel... params) {
-            JumpViewModel jumpViewModel = params[0];
+        protected Integer doInBackground(Void... params) {
             return jumpViewModel.getLastJumpId();
         }
 
@@ -130,22 +129,22 @@ public class JumpPresenter {
             jump.id = jumpId;
             jump.time = new Date();
 
-            new InsertJumpTask(mainRef, db).execute(jump);
+            new InsertJumpTask(mainRef, jumpViewModel).execute(jump);
         }
     }
 
     public static class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
         private final WeakReference<MainActivity> mainRef;
-        private final AccudropDb db;
+        private final JumpViewModel jumpViewModel;
 
-        InsertJumpTask(WeakReference<MainActivity> mainRef, AccudropDb db) {
+        InsertJumpTask(WeakReference<MainActivity> mainRef, JumpViewModel jumpViewModel) {
             this.mainRef = mainRef;
-            this.db = db;
+            this.jumpViewModel = jumpViewModel;
         }
 
         @Override
         protected Void doInBackground(Jump... jumps) {
-            db.jumpModel().insertJump(jumps[0]);
+            jumpViewModel.addJump(jumps[0]);
             return null;
         }
 

@@ -5,7 +5,11 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import me.chrislane.accudrop.db.AccudropDb;
+import me.chrislane.accudrop.db.Jump;
+import me.chrislane.accudrop.db.Position;
 
 public class JumpViewModel extends AndroidViewModel {
     private final AccudropDb db;
@@ -22,5 +26,13 @@ public class JumpViewModel extends AndroidViewModel {
 
     public Integer getLastJumpId() {
         return db.jumpModel().getLastJumpId();
+    }
+
+    public void addJump(Jump jump) {
+        db.jumpModel().insertJump(jump);
+    }
+
+    public List<Position> getPositionsForJump(int jumpId) {
+        return db.locationModel().getLocationsByJumpNumber(jumpId);
     }
 }
