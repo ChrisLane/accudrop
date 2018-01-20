@@ -13,13 +13,13 @@ import java.util.Locale;
 import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class ReadingListener {
 
     private static final String TAG = ReadingListener.class.getSimpleName();
-    private final LocationViewModel locationViewModel;
+    private final GnssViewModel gnssViewModel;
     private final AccudropDb db;
     private final AppCompatActivity activity;
     private final PressureViewModel pressureViewModel;
@@ -31,7 +31,7 @@ public class ReadingListener {
         this.activity = activity;
         db = AccudropDb.getDatabase(activity);
         pressureViewModel = ViewModelProviders.of(activity).get(PressureViewModel.class);
-        locationViewModel = ViewModelProviders.of(activity).get(LocationViewModel.class);
+        gnssViewModel = ViewModelProviders.of(activity).get(GnssViewModel.class);
         jumpViewModel = ViewModelProviders.of(activity).get(JumpViewModel.class);
 
         subscribeToJumpId();
@@ -56,7 +56,7 @@ public class ReadingListener {
         final Observer<Float> altitudeObserver = altitude -> {
             // Add entry to db
             if (altitude != null && logging) {
-                Location location = locationViewModel.getLastLocation().getValue();
+                Location location = gnssViewModel.getLastLocation().getValue();
                 if (location != null && jumpId != null) {
                     addPositionToDb(jumpId, location, altitude);
                 }
@@ -78,7 +78,7 @@ public class ReadingListener {
             }
         };
 
-        locationViewModel.getLastLocation().observe(activity, locationObserver);
+        gnssViewModel.getLastLocation().observe(activity, locationObserver);
     }
 
     private void addPositionToDb(Integer jumpId, Location location, Float altitude) {

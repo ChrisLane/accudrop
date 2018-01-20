@@ -11,12 +11,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 import me.chrislane.accudrop.listener.GnssListener;
 
-public class LocationViewModel extends AndroidViewModel {
-    private static final String TAG = LocationViewModel.class.getSimpleName();
+public class GnssViewModel extends AndroidViewModel {
+    private static final String TAG = GnssViewModel.class.getSimpleName();
     private final MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private final GnssListener gnssListener;
 
-    public LocationViewModel(@NonNull Application application) {
+    public GnssViewModel(@NonNull Application application) {
         super(application);
         gnssListener = new GnssListener(this);
 

@@ -7,16 +7,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class GnssListener implements android.location.LocationListener {
     private static final String TAG = GnssListener.class.getSimpleName();
-    private final LocationViewModel locationViewModel;
+    private final GnssViewModel gnssViewModel;
     private final LocationManager locationManager;
 
-    public GnssListener(LocationViewModel locationViewModel) {
-        this.locationViewModel = locationViewModel;
-        locationManager = (LocationManager) locationViewModel.getApplication()
+    public GnssListener(GnssViewModel gnssViewModel) {
+        this.gnssViewModel = gnssViewModel;
+        locationManager = (LocationManager) gnssViewModel.getApplication()
                 .getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -48,7 +48,7 @@ public class GnssListener implements android.location.LocationListener {
      */
     @Override
     public void onLocationChanged(Location location) {
-        locationViewModel.setLastLocation(location);
+        gnssViewModel.setLastLocation(location);
     }
 
     @Override

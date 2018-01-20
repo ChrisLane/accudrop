@@ -15,7 +15,7 @@ import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class JumpPresenter {
@@ -24,7 +24,7 @@ public class JumpPresenter {
     private final JumpFragment jumpFragment;
     private final AccudropDb db;
     private PressureViewModel pressureViewModel = null;
-    private LocationViewModel locationViewModel = null;
+    private GnssViewModel gnssViewModel = null;
     private JumpViewModel jumpViewModel = null;
 
     public JumpPresenter(JumpFragment jumpFragment) {
@@ -32,7 +32,7 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
             pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
-            locationViewModel = ViewModelProviders.of(main).get(LocationViewModel.class);
+            gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
             jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
         }
 
@@ -85,7 +85,7 @@ public class JumpPresenter {
             PermissionManager permissionManager = main.getPermissionManager();
             pressureViewModel.getPressureListener().startListening();
             if (permissionManager.checkLocationPermission()) {
-                locationViewModel.getGnssListener().startListening();
+                gnssViewModel.getGnssListener().startListening();
             } else {
                 String reason = "Location access is required to track your jump location.";
                 permissionManager.requestLocationPermission(reason);
@@ -95,7 +95,7 @@ public class JumpPresenter {
 
     public void pause() {
         pressureViewModel.getPressureListener().stopListening();
-        locationViewModel.getGnssListener().stopListening();
+        gnssViewModel.getGnssListener().stopListening();
     }
 
     public static class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {

@@ -33,14 +33,14 @@ import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.presenter.PlanPresenter;
-import me.chrislane.accudrop.viewmodel.LocationViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
 
     public static final String TAG = PlanFragment.class.getSimpleName();
     private GoogleMap map;
-    private LocationViewModel locationViewModel;
+    private GnssViewModel gnssViewModel;
     private CameraPosition.Builder camPosBuilder;
     private RouteViewModel routeViewModel;
     private PlanPresenter planPresenter;
@@ -54,7 +54,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         if (savedInstanceState == null) {
             MainActivity main = (MainActivity) getActivity();
             if (main != null) {
-                locationViewModel = ViewModelProviders.of(main).get(LocationViewModel.class);
+                gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
                 routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
             }
         }
@@ -92,7 +92,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         setupMap();
         subscribeToRoute();
 
-        LatLng target = locationViewModel.getLatLng(locationViewModel.getLastLocation().getValue());
+        LatLng target = gnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
         planPresenter = new PlanPresenter(this, target);
     }
 
@@ -100,8 +100,8 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
      * Set up the GoogleMap with initial settings and location.
      */
     private void setupMap() {
-        Location loc = locationViewModel.getLastLocation().getValue();
-        CameraPosition camPos = camPosBuilder.target(locationViewModel.getLatLng(loc)).build();
+        Location loc = gnssViewModel.getLastLocation().getValue();
+        CameraPosition camPos = camPosBuilder.target(gnssViewModel.getLatLng(loc)).build();
 
         MainActivity main = (MainActivity) getActivity();
         if (main != null) {
