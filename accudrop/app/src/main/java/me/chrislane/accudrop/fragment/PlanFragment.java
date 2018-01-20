@@ -32,18 +32,18 @@ import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
-import me.chrislane.accudrop.presenter.RoutePlanPresenter;
+import me.chrislane.accudrop.presenter.PlanPresenter;
 import me.chrislane.accudrop.viewmodel.LocationViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
-public class MapFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
+public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
 
-    public static final String TAG = MapFragment.class.getSimpleName();
+    public static final String TAG = PlanFragment.class.getSimpleName();
     private GoogleMap map;
     private LocationViewModel locationViewModel;
     private CameraPosition.Builder camPosBuilder;
     private RouteViewModel routeViewModel;
-    private RoutePlanPresenter routePlanPresenter;
+    private PlanPresenter planPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,10 +68,10 @@ public class MapFragment extends Fragment implements LifecycleOwner, OnMapReadyC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_plan, container, false);
 
         // Set up the map
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.plan_map_fragment);
         mapFragment.getMapAsync(this);
 
         return view;
@@ -86,14 +86,14 @@ public class MapFragment extends Fragment implements LifecycleOwner, OnMapReadyC
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MapFragment", "Map ready");
+        Log.d(TAG, "Map ready");
         map = googleMap;
 
         setupMap();
         subscribeToRoute();
 
         LatLng target = locationViewModel.getLatLng(locationViewModel.getLastLocation().getValue());
-        routePlanPresenter = new RoutePlanPresenter(this, target);
+        planPresenter = new PlanPresenter(this, target);
     }
 
     /**
@@ -127,7 +127,7 @@ public class MapFragment extends Fragment implements LifecycleOwner, OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         // Update route
-        routePlanPresenter.calcRoute(latLng);
+        planPresenter.calcRoute(latLng);
     }
 
     public void subscribeToRoute() {

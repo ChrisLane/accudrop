@@ -12,9 +12,9 @@
         android:indeterminate="true" />
 
     <fragment
-        android:id="@+id/map"
+        android:id="@+id/plan_map_fragment"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ma="me.chrislane.accudrop.fragment.MapFragment" />
+        tools:ma="me.chrislane.accudrop.fragment.PlanFragment" />
 </LinearLayout>

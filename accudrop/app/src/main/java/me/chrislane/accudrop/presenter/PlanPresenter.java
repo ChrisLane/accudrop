@@ -6,30 +6,30 @@ import com.google.android.gms.maps.model.LatLng;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.R;
-import me.chrislane.accudrop.fragment.MapFragment;
+import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.task.RouteTask;
 import me.chrislane.accudrop.task.WindTask;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 import me.chrislane.accudrop.viewmodel.WindViewModel;
 
-public class RoutePlanPresenter {
-    private static final String TAG = RoutePlanPresenter.class.getSimpleName();
-    private final MapFragment mapFragment;
+public class PlanPresenter {
+    private static final String TAG = PlanPresenter.class.getSimpleName();
+    private final PlanFragment planFragment;
     private RouteViewModel routeViewModel = null;
     private WindViewModel windViewModel = null;
     private String apiKey;
 
-    public RoutePlanPresenter(MapFragment mapFragment, LatLng target) {
-        this.mapFragment = mapFragment;
+    public PlanPresenter(PlanFragment planFragment, LatLng target) {
+        this.planFragment = planFragment;
 
-        MainActivity main = (MainActivity) mapFragment.getActivity();
+        MainActivity main = (MainActivity) planFragment.getActivity();
         if (main != null) {
             routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
             windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
         }
 
         // Get the OpenWeatherMap API key
-        apiKey = mapFragment.getResources().getString(R.string.owmApiKey);
+        apiKey = planFragment.getResources().getString(R.string.owmApiKey);
 
         // Calculate a route to the target
         calcRoute(target);
@@ -59,6 +59,6 @@ public class RoutePlanPresenter {
      * @param taskRunning Whether to show the progress bar.
      */
     public void setTaskRunning(boolean taskRunning) {
-        mapFragment.setProgressBarVisibility(taskRunning);
+        planFragment.setProgressBarVisibility(taskRunning);
     }
 }
