@@ -26,7 +26,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     private static final String TAG = JumpFragment.class.getSimpleName();
     private View view;
     private JumpPresenter jumpPresenter;
-    private Boolean isJumping;
+    private Boolean isJumping = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
      * Update the altitude text.
      *
      * @param altitude The altitude to set.
-     * @param unit The unit to display after the altitude.
+     * @param unit     The unit to display after the altitude.
      */
     public void updatePressureAltitude(Double altitude, Unit unit) {
         Log.v(TAG, "Updating pressure altitude text.");
