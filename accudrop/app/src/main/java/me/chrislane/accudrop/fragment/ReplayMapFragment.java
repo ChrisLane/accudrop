@@ -70,7 +70,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * Set up the GoogleMap with initial settings and location.
+     * Set up the GoogleMap with initial settings and get last jump data.
      */
     private void setupMap() {
         // Set map settings
@@ -83,6 +83,11 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Place a jump route on the map.
+     *
+     * @param points Points visited during the jump.
+     */
     public void setPoints(List<Point3D> points) {
         map.clear();
 
