@@ -1,6 +1,5 @@
 package me.chrislane.accudrop.listener;
 
-import android.app.Application;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -18,10 +17,11 @@ public class PressureListener implements SensorEventListener {
     private final SensorManager sensorManager;
     private Sensor barometer = null;
 
-    public PressureListener(Application application, PressureViewModel pressureViewModel) {
+    public PressureListener(PressureViewModel pressureViewModel) {
         this.pressureViewModel = pressureViewModel;
 
-        sensorManager = (SensorManager) application.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) pressureViewModel.getApplication()
+                .getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {
             barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         }
