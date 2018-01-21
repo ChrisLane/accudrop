@@ -1,38 +1,32 @@
 package me.chrislane.accudrop.listener;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.Date;
 import java.util.Locale;
 
-import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Position;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class ReadingListener {
 
     private static final String TAG = ReadingListener.class.getSimpleName();
     private final GnssViewModel gnssViewModel;
-    private final AccudropDb db;
-    private final AppCompatActivity activity;
     private final PressureViewModel pressureViewModel;
     private final JumpViewModel jumpViewModel;
     private boolean logging = false;
     private Integer jumpId;
 
-    public ReadingListener(AppCompatActivity activity) {
-        this.activity = activity;
-        db = AccudropDb.getDatabase(activity);
-        pressureViewModel = ViewModelProviders.of(activity).get(PressureViewModel.class);
-        gnssViewModel = ViewModelProviders.of(activity).get(GnssViewModel.class);
-        jumpViewModel = ViewModelProviders.of(activity).get(JumpViewModel.class);
+    public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
+                           JumpViewModel jumpViewModel) {
+        this.pressureViewModel = pressureViewModel;
+        this.gnssViewModel = gnssViewModel;
+        this.jumpViewModel = jumpViewModel;
 
         subscribeToJumpId();
         subscribeToLocation();
@@ -46,7 +40,7 @@ public class ReadingListener {
             }
         };
 
-        jumpViewModel.findLastJumpId().observe(activity, jumpIdObserver);
+        jumpViewModel.findLastJumpId().observeForever(jumpIdObserver);
     }
 
     /**
@@ -63,7 +57,7 @@ public class ReadingListener {
             }
         };
 
-        pressureViewModel.getLastAltitude().observe(activity, altitudeObserver);
+        pressureViewModel.getLastAltitude().observeForever(altitudeObserver);
 
     }
 
@@ -78,7 +72,7 @@ public class ReadingListener {
             }
         };
 
-        gnssViewModel.getLastLocation().observe(activity, locationObserver);
+        gnssViewModel.getLastLocation().observeForever(locationObserver);
     }
 
     private void addPositionToDb(Integer jumpId, Location location, Float altitude) {
@@ -96,7 +90,7 @@ public class ReadingListener {
                 "\tTime: %s", pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
         Log.d(TAG, msg);
 
-        AsyncTask.execute(() -> db.locationModel().insertPosition(pos));
+        AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
     }
 
     public void enableLogging() {

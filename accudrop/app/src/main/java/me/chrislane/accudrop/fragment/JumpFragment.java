@@ -26,7 +26,6 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     private static final String TAG = JumpFragment.class.getSimpleName();
     private View view;
     private JumpPresenter jumpPresenter;
-    private Boolean isJumping = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,10 +72,8 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     private CompoundButton.OnCheckedChangeListener onClickJump() {
         return (compoundButton, isChecked) -> {
             if (isChecked) {
-                isJumping = true;
                 jumpPresenter.startJump();
             } else {
-                isJumping = false;
                 jumpPresenter.stopJump();
             }
         };
@@ -98,7 +95,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean("jumpButton", isJumping);
+        outState.putBoolean("jumpButton", jumpPresenter.isJumping());
     }
 
     @Override

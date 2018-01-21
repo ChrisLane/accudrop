@@ -19,7 +19,7 @@ public class PressureViewModel extends AndroidViewModel {
     public PressureViewModel(@NonNull Application application) {
         super(application);
 
-        pressureListener = new PressureListener(application, this);
+        pressureListener = new PressureListener(this);
 
     }
 

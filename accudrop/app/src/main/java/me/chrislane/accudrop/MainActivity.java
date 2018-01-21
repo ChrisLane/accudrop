@@ -27,9 +27,8 @@ import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
-import me.chrislane.accudrop.listener.ReadingListener;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 import me.chrislane.accudrop.viewmodel.WindViewModel;
@@ -40,14 +39,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
-    private ReadingListener readingListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         permissionManager = new PermissionManager(this);
-        readingListener = new ReadingListener(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -203,10 +200,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public PermissionManager getPermissionManager() {
         return permissionManager;
-    }
-
-    public ReadingListener getReadingListener() {
-        return readingListener;
     }
 
     @Override

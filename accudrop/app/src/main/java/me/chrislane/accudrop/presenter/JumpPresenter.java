@@ -2,6 +2,7 @@ package me.chrislane.accudrop.presenter;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,21 +12,21 @@ import java.util.Date;
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.Util;
-import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.fragment.JumpFragment;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class JumpPresenter {
 
     private static final String TAG = JumpPresenter.class.getSimpleName();
     private final JumpFragment jumpFragment;
-    private final AccudropDb db;
     private PressureViewModel pressureViewModel = null;
     private GnssViewModel gnssViewModel = null;
     private JumpViewModel jumpViewModel = null;
+    private boolean isJumping = false;
 
     public JumpPresenter(JumpFragment jumpFragment) {
         this.jumpFragment = jumpFragment;
@@ -36,15 +37,15 @@ public class JumpPresenter {
             jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
         }
 
-        db = AccudropDb.getDatabase(jumpFragment.getContext());
-
         subscribeToPressure();
     }
 
     public void startJump() {
         Log.i(TAG, "Starting jump.");
+        isJumping = true;
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
+            gnssViewModel.getGnssListener().stopListening();
             new CreateAndInsertJumpTask(main, jumpViewModel).execute();
         } else {
             Log.e(TAG, "Could not get main activity.");
@@ -53,9 +54,11 @@ public class JumpPresenter {
 
     public void stopJump() {
         Log.i(TAG, "Stopping jump.");
+        isJumping = false;
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
-            main.getReadingListener().disableLogging();
+            main.stopService(new Intent(main, LocationService.class));
+            gnssViewModel.getGnssListener().startListening();
         } else {
             Log.e(TAG, "Could not get main activity.");
         }
@@ -80,22 +83,30 @@ public class JumpPresenter {
     }
 
     public void resume() {
-        MainActivity main = (MainActivity) jumpFragment.getActivity();
-        if (main != null) {
-            PermissionManager permissionManager = main.getPermissionManager();
-            pressureViewModel.getPressureListener().startListening();
-            if (permissionManager.checkLocationPermission()) {
-                gnssViewModel.getGnssListener().startListening();
-            } else {
-                String reason = "Location access is required to track your jump location.";
-                permissionManager.requestLocationPermission(reason);
+        if (!isJumping) {
+            MainActivity main = (MainActivity) jumpFragment.getActivity();
+            if (main != null) {
+                PermissionManager permissionManager = main.getPermissionManager();
+                pressureViewModel.getPressureListener().startListening();
+                if (permissionManager.checkLocationPermission()) {
+                    gnssViewModel.getGnssListener().startListening();
+                } else {
+                    String reason = "Location access is required to track your jump location.";
+                    permissionManager.requestLocationPermission(reason);
+                }
             }
         }
     }
 
     public void pause() {
-        pressureViewModel.getPressureListener().stopListening();
-        gnssViewModel.getGnssListener().stopListening();
+        if (!isJumping) {
+            pressureViewModel.getPressureListener().stopListening();
+            gnssViewModel.getGnssListener().stopListening();
+        }
+    }
+
+    public boolean isJumping() {
+        return isJumping;
     }
 
     public static class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
@@ -154,7 +165,7 @@ public class JumpPresenter {
 
             MainActivity main = mainRef.get();
             if (main != null) {
-                main.getReadingListener().enableLogging();
+                main.startService(new Intent(main, LocationService.class));
             }
         }
     }

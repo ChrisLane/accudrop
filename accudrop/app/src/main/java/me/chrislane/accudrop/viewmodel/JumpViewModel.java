@@ -35,4 +35,8 @@ public class JumpViewModel extends AndroidViewModel {
     public List<Position> getPositionsForJump(int jumpId) {
         return db.locationModel().getLocationsByJumpNumber(jumpId);
     }
+
+    public void addPosition(Position position) {
+        db.locationModel().insertPosition(position);
+    }
 }
