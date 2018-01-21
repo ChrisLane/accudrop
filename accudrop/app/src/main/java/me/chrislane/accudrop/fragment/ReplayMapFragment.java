@@ -49,7 +49,8 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
                 .bearing(0)
                 .tilt(0);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.replay_map_fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getParentFragment()
+                .getChildFragmentManager().findFragmentById(R.id.replay_map);
         mapFragment.getMapAsync(this);
     }
 
