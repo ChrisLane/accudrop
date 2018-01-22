@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import me.chrislane.accudrop.listener.ReadingListener;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
@@ -12,6 +13,7 @@ import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class LocationService extends Service {
     private static final String TAG = LocationService.class.getSimpleName();
+    private static final float NO_VALUE = 1337;
     private static int FOREGROUND_ID = 1237;
     private PressureViewModel pressureViewModel;
     private GnssViewModel gnssViewModel;
@@ -29,6 +31,14 @@ public class LocationService extends Service {
         jumpViewModel = new JumpViewModel(getApplication());
         readingListener = new ReadingListener(gnssViewModel, pressureViewModel, jumpViewModel);
 
+        // Set ground pressure value
+        float groundPressure = intent.getFloatExtra("groundPressure", NO_VALUE);
+        if (groundPressure == NO_VALUE) {
+            pressureViewModel.setGroundPressure();
+        } else {
+            pressureViewModel.setGroundPressure(groundPressure);
+        }
+
         gnssViewModel.getGnssListener().startListening();
         pressureViewModel.getPressureListener().startListening();
 
@@ -43,6 +53,7 @@ public class LocationService extends Service {
 
 
         startForeground(FOREGROUND_ID, notification);
+        Log.d(TAG, "Location service started.");
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -56,6 +67,7 @@ public class LocationService extends Service {
         pressureViewModel.getPressureListener().stopListening();
 
         stopForeground(true);
+        Log.d(TAG, "Location service stopped.");
     }
 
     @Override

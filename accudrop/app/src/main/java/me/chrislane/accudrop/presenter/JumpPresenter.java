@@ -46,7 +46,7 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
             gnssViewModel.getGnssListener().stopListening();
-            new CreateAndInsertJumpTask(main, jumpViewModel).execute();
+            new CreateAndInsertJumpTask(main).execute();
         } else {
             Log.e(TAG, "Could not get main activity.");
         }
@@ -57,7 +57,8 @@ public class JumpPresenter {
         isJumping = false;
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
-            main.stopService(new Intent(main, LocationService.class));
+            Intent intent = new Intent(main, LocationService.class);
+            main.stopService(intent);
             gnssViewModel.getGnssListener().startListening();
         } else {
             Log.e(TAG, "Could not get main activity.");
@@ -114,9 +115,10 @@ public class JumpPresenter {
         private final WeakReference<MainActivity> mainRef;
         private final JumpViewModel jumpViewModel;
 
-        CreateAndInsertJumpTask(MainActivity main, JumpViewModel jumpViewModel) {
-            this.mainRef = new WeakReference<>(main);
-            this.jumpViewModel = jumpViewModel;
+        CreateAndInsertJumpTask(MainActivity main) {
+            mainRef = new WeakReference<>(main);
+            jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
+
         }
 
         @Override
@@ -148,6 +150,7 @@ public class JumpPresenter {
         private final WeakReference<MainActivity> mainRef;
         private final JumpViewModel jumpViewModel;
 
+
         InsertJumpTask(WeakReference<MainActivity> mainRef, JumpViewModel jumpViewModel) {
             this.mainRef = mainRef;
             this.jumpViewModel = jumpViewModel;
@@ -165,7 +168,19 @@ public class JumpPresenter {
 
             MainActivity main = mainRef.get();
             if (main != null) {
-                main.startService(new Intent(main, LocationService.class));
+                // Get ground pressure
+                PressureViewModel pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
+                Float groundPressure = pressureViewModel.getGroundPressure().getValue();
+
+                // Create intent and add ground pressure
+                Intent locationService = new Intent(main, LocationService.class);
+                if (groundPressure != null) {
+                    locationService.putExtra("groundPressure", groundPressure);
+
+                }
+
+                // Start the service
+                main.startService(locationService);
             }
         }
     }

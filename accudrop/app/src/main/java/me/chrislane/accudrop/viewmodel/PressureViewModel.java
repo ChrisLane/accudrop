@@ -31,7 +31,7 @@ public class PressureViewModel extends AndroidViewModel {
         return groundPressure;
     }
 
-    private void setGroundPressure(float groundPressure) {
+    public void setGroundPressure(float groundPressure) {
         this.groundPressure.setValue(groundPressure);
     }
 
