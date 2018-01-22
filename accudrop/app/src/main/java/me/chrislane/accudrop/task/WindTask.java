@@ -82,7 +82,7 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.d("WindTask", "Task pre execute");
+        Log.d(TAG, "Task pre execute");
 
         planPresenter.setTaskRunning(true);
     }
