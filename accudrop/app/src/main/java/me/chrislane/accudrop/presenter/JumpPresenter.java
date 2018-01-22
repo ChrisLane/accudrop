@@ -25,7 +25,6 @@ public class JumpPresenter {
     private final JumpFragment jumpFragment;
     private PressureViewModel pressureViewModel = null;
     private GnssViewModel gnssViewModel = null;
-    private JumpViewModel jumpViewModel = null;
     private boolean isJumping = false;
 
     public JumpPresenter(JumpFragment jumpFragment) {
@@ -34,7 +33,6 @@ public class JumpPresenter {
         if (main != null) {
             pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
             gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
-            jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
         }
 
         subscribeToPressure();
