@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -19,11 +20,6 @@ public class GnssViewModel extends AndroidViewModel {
     public GnssViewModel(@NonNull Application application) {
         super(application);
         gnssListener = new GnssListener(this);
-
-        Location loc = new Location("");
-        loc.setLatitude(51.52);
-        loc.setLongitude(0.08);
-        lastLocation.setValue(loc);
     }
 
     /**
@@ -32,8 +28,12 @@ public class GnssViewModel extends AndroidViewModel {
      * @param location The location to get latitude and longitude from.
      * @return A LatLng object with latitude and longitude of the given location.
      */
+    @Nullable
     public LatLng getLatLng(Location location) {
-        return new LatLng(location.getLatitude(), location.getLongitude());
+        if (location != null) {
+            return new LatLng(location.getLatitude(), location.getLongitude());
+        }
+        return null;
     }
 
     /**

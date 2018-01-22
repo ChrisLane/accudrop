@@ -93,16 +93,17 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         subscribeToRoute();
 
         LatLng target = gnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
-        planPresenter = new PlanPresenter(this, target);
+        if (target != null) {
+            planPresenter = new PlanPresenter(this, target);
+        } else {
+            planPresenter = new PlanPresenter(this);
+        }
     }
 
     /**
      * Set up the GoogleMap with initial settings and location.
      */
     private void setupMap() {
-        Location loc = gnssViewModel.getLastLocation().getValue();
-        CameraPosition camPos = camPosBuilder.target(gnssViewModel.getLatLng(loc)).build();
-
         MainActivity main = (MainActivity) getActivity();
         if (main != null) {
             PermissionManager permissionManager = main.getPermissionManager();
@@ -114,10 +115,15 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
                 permissionManager.requestLocationPermission("Location access is required to find your location.");
             }
         }
+
+        Location loc = gnssViewModel.getLastLocation().getValue();
+        if (loc != null) {
+            CameraPosition camPos = camPosBuilder.target(gnssViewModel.getLatLng(loc)).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
+        }
         map.getUiSettings().setMapToolbarEnabled(false);
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         map.setOnMapLongClickListener(this::onMapLongClick);
     }
 
