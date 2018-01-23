@@ -14,10 +14,8 @@ import me.chrislane.accudrop.viewmodel.PressureViewModel;
 public class LocationService extends Service {
     private static final String TAG = LocationService.class.getSimpleName();
     private static final float NO_VALUE = 1337;
-    private static int FOREGROUND_ID = 1237;
     private PressureViewModel pressureViewModel;
     private GnssViewModel gnssViewModel;
-    private JumpViewModel jumpViewModel;
     private ReadingListener readingListener;
 
     public LocationService() {
@@ -28,7 +26,7 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         gnssViewModel = new GnssViewModel(getApplication());
         pressureViewModel = new PressureViewModel(getApplication());
-        jumpViewModel = new JumpViewModel(getApplication());
+        JumpViewModel jumpViewModel = new JumpViewModel(getApplication());
         readingListener = new ReadingListener(gnssViewModel, pressureViewModel, jumpViewModel);
 
         // Set ground pressure value
@@ -52,6 +50,7 @@ public class LocationService extends Service {
                         .build();
 
 
+        int FOREGROUND_ID = 1237;
         startForeground(FOREGROUND_ID, notification);
         Log.d(TAG, "Location service started.");
 

@@ -38,7 +38,7 @@ import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
 
-    public static final String TAG = PlanFragment.class.getSimpleName();
+    private static final String TAG = PlanFragment.class.getSimpleName();
     private GoogleMap map;
     private GnssViewModel gnssViewModel;
     private CameraPosition.Builder camPosBuilder;
@@ -127,7 +127,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         map.setOnMapLongClickListener(this::onMapLongClick);
     }
 
-    public void onMapLongClick(LatLng latLng) {
+    private void onMapLongClick(LatLng latLng) {
         // Update map camera position
         CameraPosition camPos = camPosBuilder.target(latLng).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
@@ -136,7 +136,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         planPresenter.calcRoute(latLng);
     }
 
-    public void subscribeToRoute() {
+    private void subscribeToRoute() {
         final Observer<List<Point3D>> routeObserver = route -> {
             if (route != null) {
                 map.clear();

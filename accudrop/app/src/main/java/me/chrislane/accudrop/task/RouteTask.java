@@ -11,7 +11,7 @@ import me.chrislane.accudrop.RouteCalculator;
 
 public class RouteTask extends AsyncTask<LatLng, Void, List<Point3D>> {
     private final RouteTaskListener listener;
-    WindTask.WindTuple windTuple;
+    private final WindTask.WindTuple windTuple;
 
     public RouteTask(RouteTaskListener listener, WindTask.WindTuple windTuple) {
         this.listener = listener;

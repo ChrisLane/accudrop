@@ -10,25 +10,13 @@ import android.view.ViewGroup;
 import me.chrislane.accudrop.R;
 
 public class ReplayFragment extends Fragment {
-    private ReplayMapFragment replayMap;
-    private ReplaySideViewFragment replaySideView;
-
-    public ReplayFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        replayMap = new ReplayMapFragment();
-        replaySideView = new ReplaySideViewFragment();
+        ReplayMapFragment replayMap = new ReplayMapFragment();
+        ReplaySideViewFragment replaySideView = new ReplaySideViewFragment();
         transaction.add(R.id.replay_map_fragment, replayMap);
         transaction.add(R.id.replay_side_view_fragment, replaySideView).commit();
 

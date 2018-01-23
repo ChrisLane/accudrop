@@ -9,7 +9,7 @@ import java.util.List;
 import me.chrislane.accudrop.Point3D;
 
 public class RouteViewModel extends ViewModel {
-    private MutableLiveData<List<Point3D>> route = new MutableLiveData<>();
+    private final MutableLiveData<List<Point3D>> route = new MutableLiveData<>();
 
     public LiveData<List<Point3D>> getRoute() {
         return route;

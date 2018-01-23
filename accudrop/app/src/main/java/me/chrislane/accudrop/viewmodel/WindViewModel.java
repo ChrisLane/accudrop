@@ -5,8 +5,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 public class WindViewModel extends ViewModel {
-    private MutableLiveData<Double> windDirection = new MutableLiveData<>();
-    private MutableLiveData<Double> windSpeed = new MutableLiveData<>();
+    private final MutableLiveData<Double> windDirection = new MutableLiveData<>();
+    private final MutableLiveData<Double> windSpeed = new MutableLiveData<>();
 
     public LiveData<Double> getWindSpeed() {
         return windSpeed;

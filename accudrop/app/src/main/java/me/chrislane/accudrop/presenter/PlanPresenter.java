@@ -17,7 +17,7 @@ public class PlanPresenter {
     private final PlanFragment planFragment;
     private RouteViewModel routeViewModel = null;
     private WindViewModel windViewModel = null;
-    private String apiKey;
+    private final String apiKey;
 
     public PlanPresenter(PlanFragment planFragment) {
         this.planFragment = planFragment;

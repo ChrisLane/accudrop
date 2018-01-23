@@ -11,15 +11,15 @@ import me.chrislane.accudrop.task.WindTask;
 
 public class RouteCalculator {
     private static final String TAG = RouteCalculator.class.getSimpleName();
-    private List<Point3D> route = new ArrayList<>();
+    private final List<Point3D> route = new ArrayList<>();
     private LatLng target;
-    private double airspeed = 15.4; // Metres per second
-    private double descentRate = 6.16; // Metres per second
-    private double windDirection;
-    private double windSpeed;
-    private double p3Altitude = 91.44; // 300ft
-    private double p2Altitude = 182.88; // 600ft
-    private double p1Altitude = 304.8; // 1000ft
+    private final double airspeed = 15.4; // Metres per second
+    private final double descentRate = 6.16; // Metres per second
+    private final double windDirection;
+    private final double windSpeed;
+    private final double p3Altitude = 91.44; // 300ft
+    private final double p2Altitude = 182.88; // 600ft
+    private final double p1Altitude = 304.8; // 1000ft
     private Point3D p3;
     private Point3D p2;
     private Point3D p1;
@@ -68,7 +68,7 @@ public class RouteCalculator {
     /**
      * Calculate the position of the start location of the route.
      */
-    public void calcP1() {
+    private void calcP1() {
         double altitudeChange = p1Altitude - p2Altitude;
         double distance = distanceFromHeight(airspeed + windSpeed, altitudeChange);
 
@@ -80,7 +80,7 @@ public class RouteCalculator {
     /**
      * Calculate the position of the second turn in the route.
      */
-    public void calcP2() {
+    private void calcP2() {
         double altitudeChange = p2Altitude - p3Altitude;
         double distance = distanceFromHeight(8.9408, altitudeChange);
 
@@ -91,7 +91,7 @@ public class RouteCalculator {
     /**
      * Calculate the position of the final turn in the route.
      */
-    public void calcP3() {
+    private void calcP3() {
         double distance = distanceFromHeight(airspeed - windSpeed, p3Altitude);
 
         // Subtract distance along upwind direction from coordinates
@@ -106,7 +106,7 @@ public class RouteCalculator {
      * @param altitude    The altitude of the canopy in metres.
      * @return The distance in metres that can be travelled.
      */
-    public double distanceFromHeight(double groundSpeed, double altitude) {
+    private double distanceFromHeight(double groundSpeed, double altitude) {
         // We know descent rate, calculate time to ground
         double seconds = altitude / descentRate;
 
@@ -123,7 +123,7 @@ public class RouteCalculator {
      * @param bearing         The bearing to travel in from the initial position.
      * @return The coordinates after the move.
      */
-    public LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
+    private LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
         double R = 6378.1; // Radius of Earth
         double b = Math.toRadians(bearing); // Bearing is converted to radians.
         double d = Util.metresToKilometres(distance); // Distance in km
@@ -149,7 +149,7 @@ public class RouteCalculator {
      * @param bearing The initial bearing.
      * @return The opposite bearing to the input bearing.
      */
-    public double getOppositeBearing(double bearing) {
+    private double getOppositeBearing(double bearing) {
         double opposite = bearing - 180;
         if (opposite < 0) {
             opposite += 360;
@@ -178,7 +178,7 @@ public class RouteCalculator {
      * @param bearing The initial bearing.
      * @return The bearing 270 degrees from the input.
      */
-    public double get270Bearing(double bearing) {
+    private double get270Bearing(double bearing) {
         double result = bearing - 90;
         if (result < 0) {
             result = 360 + result;
