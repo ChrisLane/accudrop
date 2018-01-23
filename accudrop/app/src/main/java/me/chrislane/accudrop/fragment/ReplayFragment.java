@@ -1,6 +1,7 @@
 package me.chrislane.accudrop.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -12,7 +13,7 @@ import me.chrislane.accudrop.R;
 public class ReplayFragment extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         ReplayMapFragment replayMap = new ReplayMapFragment();

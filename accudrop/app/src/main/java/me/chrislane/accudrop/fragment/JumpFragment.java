@@ -1,6 +1,7 @@
 package me.chrislane.accudrop.fragment;
 
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.arch.lifecycle.DefaultLifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
@@ -119,10 +120,16 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
      * @return Whether the service is running.
      */
     private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+        Activity activity = getActivity();
+        if (activity != null) {
+            ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+
+            if (manager != null) {
+                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                    if (serviceClass.getName().equals(service.service.getClassName())) {
+                        return true;
+                    }
+                }
             }
         }
         return false;

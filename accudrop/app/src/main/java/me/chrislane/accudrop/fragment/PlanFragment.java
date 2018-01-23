@@ -168,11 +168,14 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
     }
 
     public void setProgressBarVisibility(boolean showBar) {
-        ProgressBar progressBar = getView().findViewById(R.id.progressbar);
-        if (showBar) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
+        View view = getView();
+        if (view != null) {
+            ProgressBar progressBar = view.findViewById(R.id.progressbar);
+            if (showBar) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 }
