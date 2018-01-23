@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
@@ -29,7 +30,8 @@ public class GnssListener implements android.location.LocationListener {
             Log.d(TAG, "Listening on location.");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         } else {
-            // TODO: Do something if GPS is disabled
+            // TODO: Change to more appropriate notification. Be more useful.
+            Toast.makeText(gnssViewModel.getApplication(), "GPS is disabled.", Toast.LENGTH_SHORT).show();
         }
     }
 

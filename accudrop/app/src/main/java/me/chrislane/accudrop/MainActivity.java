@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (sensorManager != null) {
             if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) == null) {
                 // No barometer, do not continue.
+                // TODO: Change to a more appropriate notification and close app
                 Toast.makeText(this, "No barometer in device.", Toast.LENGTH_SHORT).show();
                 //return;
             }
