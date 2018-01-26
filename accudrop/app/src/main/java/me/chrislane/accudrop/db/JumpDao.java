@@ -22,10 +22,10 @@ public interface JumpDao {
             "SELECT MAX(id) FROM jump ) ")
     LiveData<Jump> findLastJump();
 
-    @Query("SELECT CAST(MAX(id) AS INTEGER) FROM jump")
+    @Query("SELECT MAX(id) FROM jump")
     LiveData<Integer> findLastJumpId();
 
-    @Query("SELECT CAST(MAX(id) AS INTEGER) FROM jump")
+    @Query("SELECT MAX(id) FROM jump")
     Integer getLastJumpId();
 
     @Insert
