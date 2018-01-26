@@ -10,14 +10,14 @@ import java.util.List;
 @Dao
 public interface PositionDao {
 
-    @Query("SELECT * FROM Position")
+    @Query("SELECT * FROM position")
     LiveData<List<Position>> findAllLocations();
 
-    @Query("SELECT * FROM Position " +
+    @Query("SELECT * FROM position " +
             "WHERE jump_id = :jumpNumber ")
     LiveData<List<Position>> findLocationsByJumpNumber(int jumpNumber);
 
-    @Query("SELECT * FROM Position " +
+    @Query("SELECT * FROM position " +
             "WHERE jump_id = :jumpNumber ")
     List<Position> getLocationsByJumpNumber(int jumpNumber);
 
