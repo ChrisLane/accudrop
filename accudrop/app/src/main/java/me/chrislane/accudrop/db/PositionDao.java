@@ -21,6 +21,30 @@ public interface PositionDao {
             "WHERE jump_id = :jumpNumber ")
     List<Position> getLocationsByJumpNumber(int jumpNumber);
 
+    @Query("SELECT MAX(latitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Double getMaxLatitudeByJumpNumber(int jumpNumber);
+
+    @Query("SELECT MIN(longitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Double getMinLatitudeByJumpNumber(int jumpNumber);
+
+    @Query("SELECT MAX(longitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Double getMaxLongitudeByJumpNumber(int jumpNumber);
+
+    @Query("SELECT MIN(longitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Double getMinLongitudeByJumpNumber(int jumpNumber);
+
+    @Query("SELECT MAX(altitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Integer getMaxAltitudeByJumpNumber(int jumpNumber);
+
+    @Query("SELECT MIN(altitude) FROM position " +
+            "WHERE jump_id = :jumpNumber")
+    Integer getMinAltitudeByJumpNumber(int jumpNumber);
+
     @Insert
     void insertPosition(Position position);
 
