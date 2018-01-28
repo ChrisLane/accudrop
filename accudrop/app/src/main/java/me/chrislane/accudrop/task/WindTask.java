@@ -135,7 +135,7 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
         void onFinished(WindTuple windTuple);
     }
 
-    public class WindTuple {
+    public static class WindTuple {
         public final double windSpeed;
         public final double windDirection;
 
