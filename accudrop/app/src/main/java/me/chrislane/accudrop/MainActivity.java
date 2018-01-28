@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -17,16 +18,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
+import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
+import me.chrislane.accudrop.task.InsertJumpTask;
+import me.chrislane.accudrop.task.RouteTask;
+import me.chrislane.accudrop.task.WindTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
@@ -35,10 +46,12 @@ import me.chrislane.accudrop.viewmodel.WindViewModel;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
+    private JumpViewModel jumpViewModel;
+    private int jumpId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
         ViewModelProviders.of(this).get(GnssViewModel.class);
-        ViewModelProviders.of(this).get(JumpViewModel.class);
+        jumpViewModel = ViewModelProviders.of(this).get(JumpViewModel.class);
         ViewModelProviders.of(this).get(RouteViewModel.class);
         ViewModelProviders.of(this).get(WindViewModel.class);
 
@@ -130,9 +143,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 return true;
+            case R.id.generate_jump:
+                calcRoute(new LatLng(51.52, 0.08));
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Calculate a route and add it as a jump.
+     *
+     * @param target The target landing coordinates.
+     */
+    private void calcRoute(LatLng target) {
+        // Run a route calculation task with the updated wind
+        RouteTask.RouteTaskListener routeListener = this::addJump;
+        new RouteTask(routeListener, new WindTask.WindTuple(0, 0)).execute(target);
+    }
+
+    private void addJump(List<Point3D> route) {
+        CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
+        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, route);
+        new CreateAndInsertJumpTask(this, createListener, insertListener).execute();
+    }
+
+    private void addPositions(int jumpId, List<Point3D> route) {
+        for (Point3D point : route) {
+            Position pos = new Position();
+            pos.latitude = point.getLatLng().latitude;
+            pos.longitude = point.getLatLng().longitude;
+            pos.altitude = (int) point.getAltitude();
+            pos.time = new Date();
+            pos.jumpId = jumpId;
+
+            String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
+                    "\tJump ID: %d" +
+                    "\t(Lat, Long): (%f,%f)\n" +
+                    "\tAltitude: %d\n" +
+                    "\tTime: %s", pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
+            Log.d(TAG, msg);
+
+            AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
+        }
     }
 
     @Override

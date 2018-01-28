@@ -3,20 +3,16 @@ package me.chrislane.accudrop.presenter;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.util.Log;
-
-import java.lang.ref.WeakReference;
-import java.util.Date;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
 import me.chrislane.accudrop.Util;
-import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.service.LocationService;
+import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
+import me.chrislane.accudrop.task.InsertJumpTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class JumpPresenter {
@@ -44,9 +40,31 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
             gnssViewModel.getGnssListener().stopListening();
-            new CreateAndInsertJumpTask(main).execute();
+            CreateAndInsertJumpTask.Listener createListener = jumpId -> {
+            };
+            InsertJumpTask.Listener insertListener = this::startLocationService;
+            new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
         } else {
             Log.e(TAG, "Could not get main activity.");
+        }
+    }
+
+    private void startLocationService() {
+        MainActivity main = (MainActivity) jumpFragment.getActivity();
+        if (main != null) {
+            // Get ground pressure
+            PressureViewModel pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
+            Float groundPressure = pressureViewModel.getGroundPressure().getValue();
+
+            // Create intent and add ground pressure
+            Intent locationService = new Intent(main, LocationService.class);
+            if (groundPressure != null) {
+                locationService.putExtra("groundPressure", groundPressure);
+
+            }
+
+            // Start the service
+            main.startService(locationService);
         }
     }
 
@@ -106,80 +124,5 @@ public class JumpPresenter {
 
     public boolean isJumping() {
         return isJumping;
-    }
-
-    public static class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
-
-        private final WeakReference<MainActivity> mainRef;
-        private final JumpViewModel jumpViewModel;
-
-        CreateAndInsertJumpTask(MainActivity main) {
-            mainRef = new WeakReference<>(main);
-            jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
-
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            return jumpViewModel.getLastJumpId();
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            int jumpId;
-
-            if (result != null) {
-                Log.d(TAG, "Previous jump id: " + result);
-                jumpId = result + 1;
-            } else {
-                Log.d(TAG, "No previous jump id.");
-                jumpId = 1;
-            }
-
-            Jump jump = new Jump();
-            jump.id = jumpId;
-            jump.time = new Date();
-
-            new InsertJumpTask(mainRef, jumpViewModel).execute(jump);
-        }
-    }
-
-    public static class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
-        private final WeakReference<MainActivity> mainRef;
-        private final JumpViewModel jumpViewModel;
-
-
-        InsertJumpTask(WeakReference<MainActivity> mainRef, JumpViewModel jumpViewModel) {
-            this.mainRef = mainRef;
-            this.jumpViewModel = jumpViewModel;
-        }
-
-        @Override
-        protected Void doInBackground(Jump... jumps) {
-            jumpViewModel.addJump(jumps[0]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            MainActivity main = mainRef.get();
-            if (main != null) {
-                // Get ground pressure
-                PressureViewModel pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
-                Float groundPressure = pressureViewModel.getGroundPressure().getValue();
-
-                // Create intent and add ground pressure
-                Intent locationService = new Intent(main, LocationService.class);
-                if (groundPressure != null) {
-                    locationService.putExtra("groundPressure", groundPressure);
-
-                }
-
-                // Start the service
-                main.startService(locationService);
-            }
-        }
     }
 }
