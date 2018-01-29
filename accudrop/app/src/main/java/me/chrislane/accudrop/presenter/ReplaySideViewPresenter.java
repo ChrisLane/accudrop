@@ -86,15 +86,21 @@ public class ReplaySideViewPresenter {
         findJumpData(direction);
     }
 
-    public List<PointF> produceViewPositions(int width, int height) {
+    public List<PointF> produceViewPositions(int width, int height, int margin) {
         List<PointF> screenPos = new ArrayList<>();
+        int min = 0;
+        int max = width > height ? height : width;
+        int diff = Math.abs(width - height);
+        max -= margin;
+        min += margin;
 
         if (direction == 0 || direction == 180 || direction == 360) {
             for (Point3D point : jump) {
                 float x =
-                        (float) getScaledValue(point.getLatLng().longitude, minLong, maxLong, 0, width);
+                        (float) getScaledValue(point.getLatLng().longitude, minLong, maxLong, min, max);
                 float y =
-                        (float) getScaledValue(point.getAltitude(), minAltitude, maxAltitude, 0, height);
+                        (float) getScaledValue(point.getAltitude(), minAltitude, maxAltitude, min, max);
+                x += diff / 2;
                 if (direction == 0 || direction == 360) {
                     // Do stuff for north
                     screenPos.add(new PointF(x, height - y));
@@ -106,16 +112,16 @@ public class ReplaySideViewPresenter {
         } else {
             for (Point3D point : jump) {
                 float x =
-                        (float) getScaledValue(point.getLatLng().latitude, minLat, maxLat, 0, width);
+                        (float) getScaledValue(point.getLatLng().latitude, minLat, maxLat, min, max);
                 float y =
-                        (float) getScaledValue(point.getAltitude(), minAltitude, maxAltitude, 0, height);
-
+                        (float) getScaledValue(point.getAltitude(), minAltitude, maxAltitude, min, max);
+                x += diff / 2;
                 if (direction == 90) {
                     // Do stuff for east
-                    screenPos.add(new PointF(x, height - y));
+                    screenPos.add(new PointF(width - x, height - y));
                 } else if (direction == 270) {
                     // Do stuff for west
-                    screenPos.add(new PointF(width - x, height - y));
+                    screenPos.add(new PointF(x, height - y));
                 } else {
                     Log.wtf(TAG, "Direction not N,E,S,W");
                 }

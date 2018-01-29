@@ -25,7 +25,7 @@ public interface PositionDao {
             "WHERE jump_id = :jumpNumber")
     Double getMaxLatitudeByJumpNumber(int jumpNumber);
 
-    @Query("SELECT MIN(longitude) FROM position " +
+    @Query("SELECT MIN(latitude) FROM position " +
             "WHERE jump_id = :jumpNumber")
     Double getMinLatitudeByJumpNumber(int jumpNumber);
 
