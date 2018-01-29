@@ -80,11 +80,19 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         map.getUiSettings().setMapToolbarEnabled(false);
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        map.setOnCameraIdleListener(this::onCameraMove);
 
         // Get target location and set as camera position
         replayMapPresenter.getLastJumpPoints();
     }
 
+    private void onCameraMove() {
+        float bearing = map.getCameraPosition().bearing;
+        ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
+        if (replayFragment != null) {
+            replayFragment.getReplaySideView().updateRotation(bearing);
+        }
+    }
 
     /**
      * Place a jump route on the map.

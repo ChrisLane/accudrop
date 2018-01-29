@@ -29,10 +29,13 @@ public class ReplaySideViewFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         presenter = new ReplaySideViewPresenter(this);
-        presenter.updateRotation(0);
     }
 
-    public void update() {
+    public void updateRotation(float bearing) {
+        presenter.updateRotation(bearing);
+    }
+
+    public void updateDrawable() {
         Activity activity = getActivity();
         if (activity != null) {
             SideViewDrawable drawable = new SideViewDrawable();
@@ -53,11 +56,13 @@ public class ReplaySideViewFragment extends Fragment {
             paint.setStrokeWidth(10);
 
             Path path = new Path();
-            path.moveTo(points.get(0).x, points.get(0).y);
-            for (PointF point : points) {
-                path.lineTo(point.x, point.y);
+            if (!points.isEmpty()) {
+                path.moveTo(points.get(0).x, points.get(0).y);
+                for (PointF point : points) {
+                    path.lineTo(point.x, point.y);
+                }
+                canvas.drawPath(path, paint);
             }
-            canvas.drawPath(path, paint);
         }
 
         @Override

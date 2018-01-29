@@ -145,7 +145,7 @@ public class ReplaySideViewPresenter {
     private void taskFinished() {
         Log.d(TAG, "Task finished");
         if (tasksFinished >= 2) {
-            fragment.update();
+            fragment.updateDrawable();
 
             tasksFinished = 0;
         } else {

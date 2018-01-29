@@ -37,7 +37,7 @@ public class GnssViewModel extends AndroidViewModel {
     }
 
     /**
-     * Get the device location for the last location update.
+     * Get the device location for the last location updateDrawable.
      *
      * @return The last known device location.
      */
