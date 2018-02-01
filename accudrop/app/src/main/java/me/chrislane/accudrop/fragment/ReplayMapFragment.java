@@ -30,6 +30,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     private CameraPosition.Builder camPosBuilder;
     private GoogleMap map;
     private ReplayMapPresenter replayMapPresenter;
+    private float bearing;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,14 +81,26 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         map.getUiSettings().setMapToolbarEnabled(false);
         map.setBuildingsEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        map.setOnCameraIdleListener(this::onCameraMove);
+        map.setOnCameraMoveListener(this::onCameraMove);
+
+        // Initialise side view
+        updateSideView();
 
         // Get target location and set as camera position
         replayMapPresenter.getLastJumpPoints();
     }
 
     private void onCameraMove() {
-        float bearing = map.getCameraPosition().bearing;
+        float newBearing = map.getCameraPosition().bearing;
+
+        if (bearing != newBearing) {
+            bearing = newBearing;
+
+            updateSideView();
+        }
+    }
+
+    private void updateSideView() {
         ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
         if (replayFragment != null) {
             replayFragment.getReplaySideView().updateRotation(bearing);

@@ -80,10 +80,12 @@ public class ReplaySideViewPresenter {
     }
 
     public void updateRotation(double bearing) {
-        direction = Math.round(bearing / 90) * 90;
-        Log.d(TAG, "Direction = " + direction);
+        if (tasksFinished == 0) {
+            direction = Math.round(bearing / 90) * 90;
+            Log.d(TAG, "Direction = " + direction);
 
-        findJumpData(direction);
+            findJumpData(direction);
+        }
     }
 
     public List<PointF> produceViewPositions(int width, int height, int margin) {
