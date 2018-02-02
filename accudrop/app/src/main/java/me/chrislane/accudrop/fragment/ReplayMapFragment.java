@@ -2,6 +2,7 @@ package me.chrislane.accudrop.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.chrislane.accudrop.MainActivity;
@@ -31,6 +33,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private ReplayMapPresenter replayMapPresenter;
     private float bearing;
+    private List<Point3D> route;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,9 +86,6 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.setOnCameraMoveListener(this::onCameraMove);
 
-        // Initialise side view
-        updateSideView();
-
         // Get target location and set as camera position
         replayMapPresenter.getLastJumpPoints();
     }
@@ -100,31 +100,36 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void updateSideView() {
+    public void updateSideView() {
         ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
         if (replayFragment != null) {
-            replayFragment.getReplaySideView().updateRotation(bearing);
+            List<Point> screenPoints = new ArrayList<>();
+            for (Point3D point : route) {
+                screenPoints.add(map.getProjection().toScreenLocation(point.getLatLng()));
+            }
+            replayFragment.getReplaySideView().updateRotation(screenPoints);
         }
     }
 
     /**
      * Place a jump route on the map.
      *
-     * @param points Points visited during the jump.
+     * @param route Positions visited during the jump.
      */
-    public void setPoints(List<Point3D> points) {
+    public void setPoints(List<Point3D> route) {
         map.clear();
+        this.route = route;
 
-        if (points != null && points.size() > 0) {
-            Log.d(TAG, "Setting points");
-            LatLng lastPos = points.get(points.size() - 1).getLatLng();
+        if (route != null && route.size() > 0) {
+            Log.d(TAG, "Setting route");
+            LatLng lastPos = route.get(route.size() - 1).getLatLng();
             Log.d(TAG, lastPos.toString());
             CameraPosition camPos = camPosBuilder.target(lastPos).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
-            for (int i = 0; i < points.size() - 1; i++) {
-                Point3D point1 = points.get(i);
-                Point3D point2 = points.get(i + 1);
+            for (int i = 0; i < route.size() - 1; i++) {
+                Point3D point1 = route.get(i);
+                Point3D point2 = route.get(i + 1);
 
                 map.addPolyline(new PolylineOptions()
                         .add(point1.getLatLng(), point2.getLatLng())
@@ -132,7 +137,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
                         .color(Color.RED));
             }
         } else {
-            Log.e(TAG, "No points available for this jump.");
+            Log.e(TAG, "No route available for this jump.");
         }
     }
 }

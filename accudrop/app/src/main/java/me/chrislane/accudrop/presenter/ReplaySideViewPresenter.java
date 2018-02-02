@@ -1,10 +1,9 @@
 package me.chrislane.accudrop.presenter;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +13,16 @@ import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.fragment.ReplaySideViewFragment;
 import me.chrislane.accudrop.task.FetchJumpTask;
 import me.chrislane.accudrop.task.MinMaxAltiTask;
-import me.chrislane.accudrop.task.MinMaxLatLngTask;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
 public class ReplaySideViewPresenter {
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
-    private JumpViewModel jumpViewModel;
     private final ReplaySideViewFragment fragment;
+    private JumpViewModel jumpViewModel;
     private List<Point3D> jump;
     private int minAltitude, maxAltitude;
-    private double minLat, maxLat, minLong, maxLong;
     private int tasksRunning;
-    private double bearing;
+    private List<Point> mapPoints;
 
     public ReplaySideViewPresenter(ReplaySideViewFragment fragment) {
         this.fragment = fragment;
@@ -67,26 +64,12 @@ public class ReplaySideViewPresenter {
             taskFinished();
         };
         new FetchJumpTask(jumpListener, jumpViewModel).execute();
-
-/*        tasksRunning++;
-        MinMaxLatLngTask.Listener longListener = (min, max) -> {
-            setMinMaxLong(min, max);
-            taskFinished();
-        };
-        new MinMaxLatLngTask(longListener, jumpViewModel, false).execute();
-
-        tasksRunning++;
-        MinMaxLatLngTask.Listener latListener = (min, max) -> {
-            setMinMaxLat(min, max);
-            taskFinished();
-        };
-        new MinMaxLatLngTask(latListener, jumpViewModel, true).execute();*/
     }
 
-    public void updateRotation(double bearing) {
+    public void updateRotation(List<Point> mapPoints) {
         if (tasksRunning == 0) {
-            this.bearing = bearing;
-            Log.d(TAG, "Bearing = " + bearing);
+            this.mapPoints = mapPoints;
+            Log.d(TAG, "Map points: " + mapPoints);
 
             fragment.updateDrawable();
         }
@@ -100,24 +83,25 @@ public class ReplaySideViewPresenter {
         max -= margin;
         min += margin;
 
-        // Hold coordinates in new object
-        List<Point3D> rotated = rotatePointsAboutY(jump, bearing);
-        minLong = rotated.get(0).getLatLng().longitude;
-        maxLong = minLong;
-        for (Point3D point : rotated) {
-            double lng = point.getLatLng().longitude;
+        // Set the minimum and maximum x coordinate
+        int minX = mapPoints.get(0).x;
+        int maxX = minX;
+        for (Point point : mapPoints) {
+            int x = point.x;
 
-            if (lng < minLong) {
-                minLong = lng;
-            } else if (lng > maxLong) {
-                maxLong = lng;
+            if (x < minX) {
+                minX = x;
+            } else if (x > maxX) {
+                maxX = x;
             }
         }
-        for (Point3D point : rotated) {
+
+        // Generate screen points
+        for (int i = 0; i < mapPoints.size(); i++) {
             double x =
-                    getScaledValue(point.getLatLng().longitude, minLong, maxLong, min, max);
+                    getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
             double y =
-                    getScaledValue(point.getAltitude(), minAltitude, maxAltitude, min, max);
+                    getScaledValue(jump.get(i).getAltitude(), minAltitude, maxAltitude, min, max);
             x += diff / 2;
             screenPos.add(new PointF((float) x, (float) (height - y)));
         }
@@ -125,37 +109,6 @@ public class ReplaySideViewPresenter {
         Log.d(TAG, "Generated screen positions: " + screenPos);
 
         return screenPos;
-    }
-
-    private List<Point3D> rotatePointsAboutY(List<Point3D> points, double rotation) {
-        // [cosθ     sinθ] [x(longitude)]
-        // [-sinθ    cosθ] [y(latitude) ]
-
-        List<Point3D> newPoints = new ArrayList<>();
-        for (Point3D point : points) {
-            LatLng latLng = point.getLatLng();
-            double lat = latLng.latitude;
-            double lng = latLng.longitude;
-
-            double radians = Math.toRadians(rotation);
-
-            double newLat = lng * Math.cos(radians) - lat * Math.sin(radians);
-            double newLng = lng * Math.sin(radians) + lat * Math.cos(radians);
-            Point3D newPoint = new Point3D(new LatLng(newLng, newLat), point.getAltitude());
-            newPoints.add(newPoint);
-        }
-
-        return newPoints;
-    }
-
-    private void setMinMaxLat(double min, double max) {
-        minLat = min;
-        maxLat = max;
-    }
-
-    private void setMinMaxLong(double min, double max) {
-        minLong = min;
-        maxLong = max;
     }
 
     private void setJump(List<Point3D> jump) {
@@ -170,8 +123,5 @@ public class ReplaySideViewPresenter {
     private void taskFinished() {
         Log.d(TAG, "Task finished");
         tasksRunning--;
-        if (tasksRunning == 0) {
-            fragment.updateDrawable();
-        }
     }
 }

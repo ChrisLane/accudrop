@@ -15,7 +15,10 @@ public class ReplayMapPresenter {
     }
 
     public void getLastJumpPoints() {
-        FetchJumpTask.FetchJumpListener listener = replayMapFragment::setPoints;
+        FetchJumpTask.FetchJumpListener listener = result -> {
+            replayMapFragment.setPoints(result);
+            replayMapFragment.updateSideView();
+        };
         new FetchJumpTask(listener, jumpViewModel).execute();
     }
 }
