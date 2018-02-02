@@ -12,7 +12,6 @@ import me.chrislane.accudrop.task.WindTask;
 public class RouteCalculator {
     private static final String TAG = RouteCalculator.class.getSimpleName();
     private final List<Point3D> route = new ArrayList<>();
-    private LatLng target;
     private final double airspeed = 15.4; // Metres per second
     private final double descentRate = 6.16; // Metres per second
     private final double windDirection;
@@ -20,6 +19,7 @@ public class RouteCalculator {
     private final double p3Altitude = 91.44; // 300ft
     private final double p2Altitude = 182.88; // 600ft
     private final double p1Altitude = 304.8; // 1000ft
+    private LatLng target;
     private Point3D p3;
     private Point3D p2;
     private Point3D p1;

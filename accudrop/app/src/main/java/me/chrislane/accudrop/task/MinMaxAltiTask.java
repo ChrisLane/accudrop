@@ -8,20 +8,6 @@ public class MinMaxAltiTask extends AsyncTask<Void, Void, MinMaxAltiTask.Result>
     private final MinMaxAltiTask.Listener listener;
     private final JumpViewModel jumpViewModel;
 
-    class Result {
-        final int min;
-        final int max;
-
-        Result(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-    }
-
-    public interface Listener {
-        void onFinished(int min, int max);
-    }
-
     public MinMaxAltiTask(MinMaxAltiTask.Listener listener, JumpViewModel jumpViewModel) {
         this.listener = listener;
         this.jumpViewModel = jumpViewModel;
@@ -48,6 +34,20 @@ public class MinMaxAltiTask extends AsyncTask<Void, Void, MinMaxAltiTask.Result>
 
         if (result != null) {
             listener.onFinished(result.min, result.max);
+        }
+    }
+
+    public interface Listener {
+        void onFinished(int min, int max);
+    }
+
+    class Result {
+        final int min;
+        final int max;
+
+        Result(int min, int max) {
+            this.min = min;
+            this.max = max;
         }
     }
 }

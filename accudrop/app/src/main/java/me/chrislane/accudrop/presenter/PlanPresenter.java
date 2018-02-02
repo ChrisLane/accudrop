@@ -15,9 +15,9 @@ import me.chrislane.accudrop.viewmodel.WindViewModel;
 public class PlanPresenter {
     private static final String TAG = PlanPresenter.class.getSimpleName();
     private final PlanFragment planFragment;
+    private final String apiKey;
     private RouteViewModel routeViewModel = null;
     private WindViewModel windViewModel = null;
-    private final String apiKey;
 
     public PlanPresenter(PlanFragment planFragment) {
         this.planFragment = planFragment;

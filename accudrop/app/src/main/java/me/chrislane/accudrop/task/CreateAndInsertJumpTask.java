@@ -26,10 +26,6 @@ public class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
         this.insertListener = insertListener;
     }
 
-    public interface Listener {
-        void onFinished(int jumpId);
-    }
-
     @Override
     protected Integer doInBackground(Void... params) {
         Integer jumpId = jumpViewModel.getLastJumpId();
@@ -53,5 +49,9 @@ public class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
         listener.onFinished(result);
 
         new InsertJumpTask(jumpViewModel, insertListener).execute(jump);
+    }
+
+    public interface Listener {
+        void onFinished(int jumpId);
     }
 }

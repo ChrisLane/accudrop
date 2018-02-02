@@ -15,10 +15,6 @@ public class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
         this.listener = listener;
     }
 
-    public interface Listener {
-        void onFinished();
-    }
-
     @Override
     protected Void doInBackground(Jump... jumps) {
         jumpViewModel.addJump(jumps[0]);
@@ -30,5 +26,9 @@ public class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
         super.onPostExecute(aVoid);
 
         listener.onFinished();
+    }
+
+    public interface Listener {
+        void onFinished();
     }
 }
