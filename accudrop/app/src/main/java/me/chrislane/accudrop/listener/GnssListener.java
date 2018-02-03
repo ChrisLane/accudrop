@@ -11,6 +11,7 @@ import android.widget.Toast;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class GnssListener implements android.location.LocationListener {
+
     private static final String TAG = GnssListener.class.getSimpleName();
     private final GnssViewModel gnssViewModel;
     private final LocationManager locationManager;

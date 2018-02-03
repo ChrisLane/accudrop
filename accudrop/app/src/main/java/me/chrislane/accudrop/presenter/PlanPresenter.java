@@ -13,6 +13,7 @@ import me.chrislane.accudrop.viewmodel.RouteViewModel;
 import me.chrislane.accudrop.viewmodel.WindViewModel;
 
 public class PlanPresenter {
+
     private static final String TAG = PlanPresenter.class.getSimpleName();
     private final PlanFragment planFragment;
     private final String apiKey;

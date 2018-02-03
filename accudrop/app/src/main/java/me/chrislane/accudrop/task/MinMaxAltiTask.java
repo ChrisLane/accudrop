@@ -4,7 +4,11 @@ import android.os.AsyncTask;
 
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
+/**
+ * Get the minimum and maximum altitude for the latest jump.
+ */
 public class MinMaxAltiTask extends AsyncTask<Void, Void, MinMaxAltiTask.Result> {
+
     private final MinMaxAltiTask.Listener listener;
     private final JumpViewModel jumpViewModel;
 

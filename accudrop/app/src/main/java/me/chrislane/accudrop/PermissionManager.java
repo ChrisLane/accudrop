@@ -22,6 +22,11 @@ public class PermissionManager {
         parentLayout = activity.findViewById(android.R.id.content);
     }
 
+    /**
+     * Check if the app has location permissions.
+     *
+     * @return If the app has location permissions.
+     */
     public boolean checkLocationPermission() {
         Boolean hasPermission = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
@@ -29,12 +34,22 @@ public class PermissionManager {
         return hasPermission;
     }
 
+    /**
+     * Request location permissions.
+     *
+     * @param reason The reason for requiring location permissions to show to the user.
+     */
     public void requestLocationPermission(String reason) {
         Snackbar.make(parentLayout, reason, Snackbar.LENGTH_INDEFINITE).setAction("OK", view ->
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_LOCATION)).show();
     }
 
+    /**
+     * <p>Handle the result from a permissions request.</p>
+     * <p>If the user hasn't chosen to not be asked again for permissions and the permission was denied,
+     * the user will be prompted to grant the permission again.</p>
+     */
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
             switch (requestCode) {

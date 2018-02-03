@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import me.chrislane.accudrop.listener.GnssListener;
 
 public class GnssViewModel extends AndroidViewModel {
+
     private static final String TAG = GnssViewModel.class.getSimpleName();
     private final MutableLiveData<Location> lastLocation = new MutableLiveData<>();
     private final GnssListener gnssListener;
@@ -45,10 +46,20 @@ public class GnssViewModel extends AndroidViewModel {
         return lastLocation;
     }
 
+    /**
+     * Set the last location.
+     *
+     * @param location The last location.
+     */
     public void setLastLocation(Location location) {
         lastLocation.setValue(location);
     }
 
+    /**
+     * Get the GNSS listener.
+     *
+     * @return The GNSS listener.
+     */
     public GnssListener getGnssListener() {
         return gnssListener;
     }

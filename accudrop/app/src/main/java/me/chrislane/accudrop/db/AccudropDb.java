@@ -12,6 +12,12 @@ public abstract class AccudropDb extends RoomDatabase {
 
     private static AccudropDb INSTANCE;
 
+    /**
+     * Get an instance of the database.
+     *
+     * @param context A context in the application.
+     * @return An instance of an <code>AccudropDb</code> database.
+     */
     public static AccudropDb getDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop").build();
@@ -19,11 +25,24 @@ public abstract class AccudropDb extends RoomDatabase {
         return INSTANCE;
     }
 
+    /**
+     * Remove the database instance.
+     */
     public static void destroyInstance() {
         INSTANCE = null;
     }
 
+    /**
+     * Get a data access object for the <code>jump</code> table.
+     *
+     * @return A data access object for the <code>jump</code> table.
+     */
     public abstract JumpDao jumpModel();
 
+    /**
+     * Get a data access object for the <code>position</code> table.
+     *
+     * @return A data access object for the <code>position</code> table.
+     */
     public abstract PositionDao locationModel();
 }

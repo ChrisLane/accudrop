@@ -12,6 +12,7 @@ import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class LocationService extends Service {
+
     private static final String TAG = LocationService.class.getSimpleName();
     private static final float NO_VALUE = 1337;
     private PressureViewModel pressureViewModel;
@@ -22,6 +23,9 @@ public class LocationService extends Service {
 
     }
 
+    /**
+     * Start the foreground service.
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         gnssViewModel = new GnssViewModel(getApplication());
@@ -57,6 +61,9 @@ public class LocationService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    /**
+     * Stop logging, listeners, and service.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -4,7 +4,11 @@ import android.os.AsyncTask;
 
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
+/**
+ * Get the minimum and maximum latitude or longitude for the latest jump.
+ */
 public class MinMaxLatLngTask extends AsyncTask<Void, Void, MinMaxLatLngTask.Result> {
+
     private final Listener listener;
     private final JumpViewModel jumpViewModel;
     private final boolean getLatitude;

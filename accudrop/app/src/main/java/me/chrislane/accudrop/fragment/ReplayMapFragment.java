@@ -90,6 +90,10 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         replayMapPresenter.getLastJumpPoints();
     }
 
+    /**
+     * <p>Called when the Google Maps camera is moved.</p>
+     * <p>This method updates the side view if there are any changes in the camera bearing.</p>
+     */
     private void onCameraMove() {
         float newBearing = map.getCameraPosition().bearing;
 
@@ -100,6 +104,9 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Send screen coordinates to the side view to be updated.
+     */
     public void updateSideView() {
         ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
         if (replayFragment != null) {

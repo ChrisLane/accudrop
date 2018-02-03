@@ -5,7 +5,11 @@ import android.os.AsyncTask;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
+/**
+ * Insert a new jump into the database.
+ */
 public class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
+
     private final JumpViewModel jumpViewModel;
     private final Listener listener;
 

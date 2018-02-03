@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import me.chrislane.accudrop.R;
 
 public class MainFragment extends Fragment {
+
     public static final String TAG = MainFragment.class.getSimpleName();
 
     @Override

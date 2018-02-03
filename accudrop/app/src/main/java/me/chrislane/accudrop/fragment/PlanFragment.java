@@ -127,6 +127,12 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         map.setOnMapLongClickListener(this::onMapLongClick);
     }
 
+    /**
+     * <p>Called when the user touches and holds on the map.</p>
+     * <p>This will set a new landing target for route calculations.</p>
+     *
+     * @param latLng The new landing target location.
+     */
     private void onMapLongClick(LatLng latLng) {
         // Update map camera position
         CameraPosition camPos = camPosBuilder.target(latLng).build();
@@ -136,6 +142,10 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         planPresenter.calcRoute(latLng);
     }
 
+    /**
+     * Subscribes to any changes to the route in the <code>RouteViewModel</code> and
+     * updates the map to display these changes.
+     */
     private void subscribeToRoute() {
         final Observer<List<Point3D>> routeObserver = route -> {
             if (route != null) {
@@ -167,6 +177,12 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         routeViewModel.getRoute().observe(this, routeObserver);
     }
 
+    /**
+     * Sets the visibility of the progress bar shown while routes are being calculated.
+     *
+     * @param showBar Set to <code>true</code> to show the progress bar and
+     *                <code>false</code> to hide it.
+     */
     public void setProgressBarVisibility(boolean showBar) {
         View view = getView();
         if (view != null) {

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import me.chrislane.accudrop.listener.PressureListener;
 
 public class PressureViewModel extends AndroidViewModel {
+
     private static final String TAG = PressureViewModel.class.getSimpleName();
     private final PressureListener pressureListener;
     private final MutableLiveData<Float> lastPressure = new MutableLiveData<>();
@@ -20,44 +21,84 @@ public class PressureViewModel extends AndroidViewModel {
         super(application);
 
         pressureListener = new PressureListener(this);
-
     }
 
+    /**
+     * Get the pressure listener.
+     *
+     * @return The pressure listener.
+     */
     public PressureListener getPressureListener() {
         return pressureListener;
     }
 
+    /**
+     * Find the ground pressure.
+     *
+     * @return A <code>LiveData</code> object containing the ground pressure.
+     */
     public LiveData<Float> getGroundPressure() {
         return groundPressure;
     }
 
+    /**
+     * Set the ground pressure.
+     *
+     * @param groundPressure The ground pressure value to set.
+     */
     public void setGroundPressure(float groundPressure) {
         this.groundPressure.setValue(groundPressure);
     }
 
+    /**
+     * Find the last pressure.
+     *
+     * @return A <code>LiveData</code> object containing the last pressure.
+     */
     public LiveData<Float> getLastPressure() {
         return lastPressure;
     }
 
+    /**
+     * Set the last pressure.
+     *
+     * @param lastPressure The pressure value to set.
+     */
     public void setLastPressure(float lastPressure) {
         this.lastPressure.setValue(lastPressure);
         updateAltitude();
     }
 
+    /**
+     * Find the last altitude.
+     *
+     * @return A <code>LiveData</code> object containing the last altitude.
+     */
     public LiveData<Float> getLastAltitude() {
         return lastAltitude;
     }
 
+    /**
+     * Set the last altitude.
+     *
+     * @param lastAltitude The altitude value to set.
+     */
     private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
     }
 
+    /**
+     * Set the ground pressure to the current pressure reading.
+     */
     public void setGroundPressure() {
         if (lastPressure.getValue() != null) {
             setGroundPressure(lastPressure.getValue());
         }
     }
 
+    /**
+     * Update the altitude from ground pressure and current pressure.
+     */
     private void updateAltitude() {
         Float ground = groundPressure.getValue();
         Float last = lastPressure.getValue();

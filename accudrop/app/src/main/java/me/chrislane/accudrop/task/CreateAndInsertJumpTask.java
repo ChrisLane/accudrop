@@ -4,13 +4,15 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
 import java.util.Date;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
+/**
+ * Create and insert a new jump into the database.
+ */
 public class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
 
     private static final String TAG = CreateAndInsertJumpTask.class.getSimpleName();
@@ -20,7 +22,6 @@ public class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
 
     public CreateAndInsertJumpTask(MainActivity main, Listener listener,
                                    InsertJumpTask.Listener insertListener) {
-        WeakReference<MainActivity> mainRef = new WeakReference<>(main);
         jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
         this.listener = listener;
         this.insertListener = insertListener;

@@ -28,10 +28,20 @@ public class ReplayFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_replay, container, false);
     }
 
+    /**
+     * Get the replay map fragment.
+     *
+     * @return The replay map fragment.
+     */
     public ReplayMapFragment getReplayMap() {
         return replayMap;
     }
 
+    /**
+     * Get the replay side view fragment.
+     *
+     * @return The replay side view fragment.
+     */
     public ReplaySideViewFragment getReplaySideView() {
         return replaySideView;
     }

@@ -107,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         outState.putString("currentFragmentTag", currentFragmentTag);
     }
 
+    /**
+     * Handle the user pressing the back button.
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -124,6 +127,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Handle options items selection.
+     *
+     * @param item The options item to handle.
+     * @return Whether the item was handled or not.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -162,12 +171,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new RouteTask(routeListener, new WindTask.WindTuple(0, 0)).execute(target);
     }
 
+    /**
+     * Create a new a jump and add a route's positions to it.
+     *
+     * @param route The route containing jump positions.
+     */
     private void addJump(List<Point3D> route) {
         CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
         InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, route);
         new CreateAndInsertJumpTask(this, createListener, insertListener).execute();
     }
 
+    /**
+     * Add positions in a route to a jump.
+     *
+     * @param jumpId The jump ID to add positions for.
+     * @param route  The route containing positions.
+     */
     private void addPositions(int jumpId, List<Point3D> route) {
         for (Point3D point : route) {
             Position pos = new Position();
@@ -188,12 +208,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Handle navigation bar selections.
+     *
+     * @param item The selected item.
+     * @return Whether the menu item was handled.
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment;
-        Class<?> fragmentClass = PlanFragment.class;
+        Class<?> fragmentClass;
 
         switch (id) {
             case R.id.nav_jump:
@@ -206,9 +232,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentClass = ReplayFragment.class;
                 break;
             case R.id.nav_share:
-                break;
+                return false;
             default:
-                break;
+                return false;
         }
 
         currentFragmentTag = fragmentClass.getSimpleName();
@@ -229,9 +255,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Set the current fragment to be displayed based on app state.
-     * If the app does not have a previously saved fragment tag, the default fragment will be created and displayed,
-     * otherwise, the saved fragment will be displayed.
+     * <p>Set the current fragment to be displayed based on app state.</p>
+     * <p>If the app does not have a previously saved fragment tag, the default fragment will be
+     * created and displayed, otherwise, the saved fragment will be displayed.</p>
      */
     private void setCurrentFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -248,14 +274,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
+    /**
+     * Initialise the app preferences.
+     */
     private void initPreferences() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
+    /**
+     * Get the permission manager.
+     *
+     * @return Permission manager.
+     */
     public PermissionManager getPermissionManager() {
         return permissionManager;
     }
 
+    /**
+     * <p>Handle a permissions request response.</p>
+     * <p>This will simply pass data to a permissions manager that checks whether the app should
+     * request permissions again.</p>
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

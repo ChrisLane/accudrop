@@ -14,6 +14,9 @@ public class ReplayMapPresenter {
         this.jumpViewModel = jumpViewModel;
     }
 
+    /**
+     * Get the positions from the last jump.
+     */
     public void getLastJumpPoints() {
         FetchJumpTask.FetchJumpListener listener = result -> {
             replayMapFragment.setPoints(result);

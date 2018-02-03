@@ -33,6 +33,9 @@ public class ReadingListener {
         subscribeToAltitude();
     }
 
+    /**
+     * Subscribe to the latest jump ID and store it in this object.
+     */
     private void subscribeToJumpId() {
         final Observer<Integer> jumpIdObserver = jumpId -> {
             if (jumpId != null) {
@@ -58,9 +61,11 @@ public class ReadingListener {
         };
 
         pressureViewModel.getLastAltitude().observeForever(altitudeObserver);
-
     }
 
+    /**
+     * Subscribe to location changes and add positions to the database.
+     */
     private void subscribeToLocation() {
         final Observer<Location> locationObserver = location -> {
             // Add entry to db
@@ -75,6 +80,13 @@ public class ReadingListener {
         gnssViewModel.getLastLocation().observeForever(locationObserver);
     }
 
+    /**
+     * Add a new position to the database.
+     *
+     * @param jumpId   The jump id for the position.
+     * @param location The location of the position.
+     * @param altitude The altitude of the position.
+     */
     private void addPositionToDb(Integer jumpId, Location location, Float altitude) {
         Position pos = new Position();
         pos.latitude = location.getLatitude();
@@ -93,10 +105,16 @@ public class ReadingListener {
         AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
     }
 
+    /**
+     * Enable position logging.
+     */
     public void enableLogging() {
         logging = true;
     }
 
+    /**
+     * Disable position logging.
+     */
     public void disableLogging() {
         logging = false;
     }

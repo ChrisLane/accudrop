@@ -22,6 +22,7 @@ import me.chrislane.accudrop.presenter.PlanPresenter;
  * <p>Code is adapted from a <a href="https://github.com/ChrisLane/weather/">previous project.</a></p>
  */
 public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
+
     private static final String TAG = WindTask.class.getSimpleName();
     private final PlanPresenter planPresenter;
     private final String apiKey;

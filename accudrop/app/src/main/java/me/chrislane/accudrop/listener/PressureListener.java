@@ -27,16 +27,25 @@ public class PressureListener implements SensorEventListener {
         }
     }
 
+    /**
+     * Start listening to pressure sensor events.
+     */
     public void startListening() {
         Log.d(TAG, "Listening on pressure.");
         sensorManager.registerListener(this, barometer, ONE_SECOND_DELAY);
     }
 
+    /**
+     * Stop listening to pressure sensor events.
+     */
     public void stopListening() {
         Log.d(TAG, "Stopped listening on pressure.");
         sensorManager.unregisterListener(this);
     }
 
+    /**
+     * Set pressure values in the <code>PressureViewModel</code>.
+     */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         pressureViewModel.setLastPressure(sensorEvent.values[0]);

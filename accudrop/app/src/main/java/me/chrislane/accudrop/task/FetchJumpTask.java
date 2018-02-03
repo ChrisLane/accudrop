@@ -12,6 +12,9 @@ import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
+/**
+ * Get the latest jump.
+ */
 public class FetchJumpTask extends AsyncTask<Integer, Void, List<Point3D>> {
 
     private static final String TAG = FetchJumpTask.class.getSimpleName();

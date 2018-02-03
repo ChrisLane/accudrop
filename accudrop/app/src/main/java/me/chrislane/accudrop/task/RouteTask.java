@@ -9,7 +9,11 @@ import java.util.List;
 import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.RouteCalculator;
 
+/**
+ * Calculate a route for a given target argument.
+ */
 public class RouteTask extends AsyncTask<LatLng, Void, List<Point3D>> {
+
     private final RouteTaskListener listener;
     private final WindTask.WindTuple windTuple;
 

@@ -73,6 +73,11 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         jumpPresenter.calibrate();
     }
 
+    /**
+     * Create a button listener to start a jump.
+     *
+     * @return The button listener.
+     */
     private CompoundButton.OnCheckedChangeListener onClickJump() {
         return (compoundButton, isChecked) -> {
             if (isChecked) {

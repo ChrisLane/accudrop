@@ -10,6 +10,7 @@ import java.util.List;
 import me.chrislane.accudrop.task.WindTask;
 
 public class RouteCalculator {
+
     private static final String TAG = RouteCalculator.class.getSimpleName();
     private final List<Point3D> route = new ArrayList<>();
     private final double airspeed = 15.4; // Metres per second
@@ -30,6 +31,11 @@ public class RouteCalculator {
         this.target = target;
     }
 
+    /**
+     * Get the current landing target.
+     *
+     * @return The current landing target.
+     */
     public LatLng getTarget() {
         return target;
     }
@@ -46,7 +52,7 @@ public class RouteCalculator {
     /**
      * Calculate the route.
      *
-     * @return The route.
+     * @return The route calculated.
      */
     public List<Point3D> calcRoute() {
         route.clear();

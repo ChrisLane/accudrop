@@ -16,6 +16,7 @@ import me.chrislane.accudrop.task.MinMaxAltiTask;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
 public class ReplaySideViewPresenter {
+
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
     private final ReplaySideViewFragment fragment;
     private JumpViewModel jumpViewModel;
@@ -50,6 +51,9 @@ public class ReplaySideViewPresenter {
         return ((allowedMax - allowedMin) * (input - min) / (max - min)) + allowedMin;
     }
 
+    /**
+     * Get and set the latest jump minimum/maximum altitude and position data.
+     */
     private void findJumpData() {
         tasksRunning++;
         MinMaxAltiTask.Listener altitudeListener = (min, max) -> {
@@ -66,7 +70,12 @@ public class ReplaySideViewPresenter {
         new FetchJumpTask(jumpListener, jumpViewModel).execute();
     }
 
-    public void updateRotation(List<Point> mapPoints) {
+    /**
+     * Update the side view drawable.
+     *
+     * @param mapPoints Screen coordinates of the route from the Google Map.
+     */
+    public void updateDrawable(List<Point> mapPoints) {
         if (tasksRunning == 0) {
             this.mapPoints = mapPoints;
             Log.d(TAG, "Map points: " + mapPoints);
@@ -75,6 +84,14 @@ public class ReplaySideViewPresenter {
         }
     }
 
+    /**
+     * Convert map coordinates into side view coordinates.
+     *
+     * @param width  The canvas width.
+     * @param height The canvas height.
+     * @param margin The margin to leave in the canvas.
+     * @return The screen coordinates converted for the side view.
+     */
     public List<PointF> produceViewPositions(int width, int height, int margin) {
         List<PointF> screenPos = new ArrayList<>();
         int min = 0;
@@ -111,15 +128,29 @@ public class ReplaySideViewPresenter {
         return screenPos;
     }
 
+    /**
+     * Set the current jump being viewed.
+     *
+     * @param jump The current jump.
+     */
     private void setJump(List<Point3D> jump) {
         this.jump = jump;
     }
 
+    /**
+     * Set minimum and maximum altitude values.
+     *
+     * @param min The minimum altitude.
+     * @param max The maximum altitude.
+     */
     private void setMinMaxAltitude(int min, int max) {
         minAltitude = min;
         maxAltitude = max;
     }
 
+    /**
+     * Reduce the count of tasks running.
+     */
     private void taskFinished() {
         Log.d(TAG, "Task finished");
         tasksRunning--;

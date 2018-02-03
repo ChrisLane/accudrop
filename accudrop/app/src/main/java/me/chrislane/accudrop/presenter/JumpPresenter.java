@@ -34,6 +34,10 @@ public class JumpPresenter {
         subscribeToPressure();
     }
 
+    /**
+     * <p>Start a jump.</p>
+     * <p>Inserts a new jump and starts the foreground location tracking service.</p>
+     */
     public void startJump() {
         Log.i(TAG, "Starting jump.");
         isJumping = true;
@@ -49,6 +53,9 @@ public class JumpPresenter {
         }
     }
 
+    /**
+     * Start the foreground location tracking service.
+     */
     private void startLocationService() {
         MainActivity main = (MainActivity) jumpFragment.getActivity();
         if (main != null) {
@@ -68,6 +75,9 @@ public class JumpPresenter {
         }
     }
 
+    /**
+     * Stop the jump and foreground location tracking service.
+     */
     public void stopJump() {
         Log.i(TAG, "Stopping jump.");
         isJumping = false;
@@ -82,7 +92,7 @@ public class JumpPresenter {
     }
 
     /**
-     * Subscribe to altitude changes.
+     * Subscribe to altitude changes and update the fragment view.
      */
     private void subscribeToPressure() {
         final Observer<Float> altitudeObserver = altitude -> {
@@ -95,10 +105,16 @@ public class JumpPresenter {
         pressureViewModel.getLastAltitude().observe(jumpFragment, altitudeObserver);
     }
 
+    /**
+     * Zero the ground pressure.
+     */
     public void calibrate() {
         pressureViewModel.setGroundPressure();
     }
 
+    /**
+     * Resume listening on pressure and altitude events.
+     */
     public void resume() {
         if (!isJumping) {
             MainActivity main = (MainActivity) jumpFragment.getActivity();
@@ -115,6 +131,9 @@ public class JumpPresenter {
         }
     }
 
+    /**
+     * Stop listening on pressure and altitude changes.
+     */
     public void pause() {
         if (!isJumping) {
             pressureViewModel.getPressureListener().stopListening();
@@ -122,6 +141,11 @@ public class JumpPresenter {
         }
     }
 
+    /**
+     * Get whether there is an active jump or not.
+     *
+     * @return Whether there an active jump or not.
+     */
     public boolean isJumping() {
         return isJumping;
     }

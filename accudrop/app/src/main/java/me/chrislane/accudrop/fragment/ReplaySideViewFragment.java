@@ -22,6 +22,7 @@ import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.presenter.ReplaySideViewPresenter;
 
 public class ReplaySideViewFragment extends Fragment {
+
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
     private ReplaySideViewPresenter presenter;
 
@@ -32,10 +33,18 @@ public class ReplaySideViewFragment extends Fragment {
         presenter = new ReplaySideViewPresenter(this);
     }
 
+    /**
+     * Update the side view with new screen coordinates.
+     *
+     * @param mapPoints Screen coordinates.
+     */
     public void updateRotation(List<Point> mapPoints) {
-        presenter.updateRotation(mapPoints);
+        presenter.updateDrawable(mapPoints);
     }
 
+    /**
+     * Redraw the side view lines.
+     */
     public void updateDrawable() {
         Activity activity = getActivity();
         if (activity != null) {
@@ -45,6 +54,9 @@ public class ReplaySideViewFragment extends Fragment {
         }
     }
 
+    /**
+     * This drawable creates lines between points generates by the <code>ReplaySideViewPresenter</code>.
+     */
     private class SideViewDrawable extends Drawable {
 
         @Override
