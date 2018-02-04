@@ -27,8 +27,7 @@
             android:id="@+id/replay_draw_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
-            android:background="#FFFFFFFF" />
+            android:background="@color/skyBlue"/>
     </FrameLayout>
 
 </LinearLayout>

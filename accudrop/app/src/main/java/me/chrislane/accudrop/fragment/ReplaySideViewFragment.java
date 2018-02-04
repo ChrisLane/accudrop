@@ -53,6 +53,10 @@ public class ReplaySideViewFragment extends Fragment {
         public void draw(@NonNull Canvas canvas) {
             List<PointF> points = presenter.produceViewPositions(canvas.getWidth(), canvas.getHeight(), 20);
 
+            Paint ground = new Paint();
+            ground.setColor(Color.GREEN);
+            canvas.drawRect(0, (float) (canvas.getHeight() * 0.95), canvas.getWidth(), canvas.getHeight(), ground);
+
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setStyle(Paint.Style.STROKE);
