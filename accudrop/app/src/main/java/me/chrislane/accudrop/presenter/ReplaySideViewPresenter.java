@@ -29,7 +29,6 @@ public class ReplaySideViewPresenter {
     private List<Point3D> jump;
     private int minAltitude, maxAltitude;
     private int tasksRunning;
-    private List<Point3D> route;
 
     public ReplaySideViewPresenter(ReplaySideViewFragment fragment) {
         this.fragment = fragment;
@@ -81,8 +80,11 @@ public class ReplaySideViewPresenter {
         GoogleMap map = parentFragment.getReplayMap().getMap();
         List<Point> screenPoints = new ArrayList<>();
 
-        for (Point3D point : route) {
-            screenPoints.add(map.getProjection().toScreenLocation(point.getLatLng()));
+        List<Point3D> route = routeViewModel.getRoute().getValue();
+        if (route != null) {
+            for (Point3D point : route) {
+                screenPoints.add(map.getProjection().toScreenLocation(point.getLatLng()));
+            }
         }
 
         return screenPoints;
