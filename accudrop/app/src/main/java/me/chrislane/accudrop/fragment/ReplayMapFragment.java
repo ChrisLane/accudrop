@@ -1,8 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,37 +14,25 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.presenter.ReplayMapPresenter;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
 public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = ReplayMapFragment.class.getSimpleName();
-    private JumpViewModel jumpViewModel;
     private CameraPosition.Builder camPosBuilder;
     private GoogleMap map;
     private ReplayMapPresenter replayMapPresenter;
     private float bearing;
-    private List<Point3D> route;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add this as a location listener
-        if (savedInstanceState == null) {
-            MainActivity main = (MainActivity) getActivity();
-            if (main != null) {
-                jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
-            }
-        }
 
-        replayMapPresenter = new ReplayMapPresenter(this, jumpViewModel);
+        replayMapPresenter = new ReplayMapPresenter(this);
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -86,8 +72,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.setOnCameraMoveListener(this::onCameraMove);
 
-        // Get target location and set as camera position
-        replayMapPresenter.getLastJumpPoints();
+        replayMapPresenter.addObservers();
     }
 
     /**
@@ -110,11 +95,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     public void updateSideView() {
         ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
         if (replayFragment != null) {
-            List<Point> screenPoints = new ArrayList<>();
-            for (Point3D point : route) {
-                screenPoints.add(map.getProjection().toScreenLocation(point.getLatLng()));
-            }
-            replayFragment.getReplaySideView().updateRotation(screenPoints);
+            replayFragment.getReplaySideView().updateDrawable();
         }
     }
 
@@ -123,9 +104,8 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
      *
      * @param route Positions visited during the jump.
      */
-    public void setPoints(List<Point3D> route) {
+    public void updateMapRoute(List<Point3D> route) {
         map.clear();
-        this.route = route;
 
         if (route != null && route.size() > 0) {
             Log.d(TAG, "Setting route");
@@ -146,5 +126,14 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             Log.e(TAG, "No route available for this jump.");
         }
+    }
+
+    /**
+     * Get the Google Map.
+     *
+     * @return The Google Map.
+     */
+    public GoogleMap getMap() {
+        return map;
     }
 }

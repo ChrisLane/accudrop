@@ -1,27 +1,42 @@
 package me.chrislane.accudrop.presenter;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.v4.app.Fragment;
+
+import java.util.List;
+
+import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.fragment.ReplayMapFragment;
-import me.chrislane.accudrop.task.FetchJumpTask;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class ReplayMapPresenter {
 
-    private final JumpViewModel jumpViewModel;
     private final ReplayMapFragment replayMapFragment;
+    private final Fragment parentFragment;
+    private RouteViewModel routeViewModel;
 
-    public ReplayMapPresenter(ReplayMapFragment replayMapFragment, JumpViewModel jumpViewModel) {
+    public ReplayMapPresenter(ReplayMapFragment replayMapFragment) {
         this.replayMapFragment = replayMapFragment;
-        this.jumpViewModel = jumpViewModel;
+
+        parentFragment = replayMapFragment.getParentFragment();
+        if (parentFragment != null) {
+            routeViewModel = ViewModelProviders.of(parentFragment).get(RouteViewModel.class);
+        }
     }
 
     /**
-     * Get the positions from the last jump.
+     * Add all observers.
      */
-    public void getLastJumpPoints() {
-        FetchJumpTask.FetchJumpListener listener = result -> {
-            replayMapFragment.setPoints(result);
-            replayMapFragment.updateSideView();
-        };
-        new FetchJumpTask(listener, jumpViewModel).execute();
+    public void addObservers() {
+        subscribeToRoute();
+    }
+
+    /**
+     * Set the new route being displayed.
+     */
+    private void subscribeToRoute() {
+        final Observer<List<Point3D>> routeObserver = replayMapFragment::updateMapRoute;
+        routeViewModel.getRoute().observe(parentFragment, routeObserver);
     }
 }

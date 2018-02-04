@@ -1,39 +1,46 @@
 package me.chrislane.accudrop.presenter;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.Point3D;
+import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.fragment.ReplaySideViewFragment;
 import me.chrislane.accudrop.task.FetchJumpTask;
 import me.chrislane.accudrop.task.MinMaxAltiTask;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class ReplaySideViewPresenter {
 
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
     private final ReplaySideViewFragment fragment;
+    private final ReplayFragment parentFragment;
+    private RouteViewModel routeViewModel;
     private JumpViewModel jumpViewModel;
     private List<Point3D> jump;
     private int minAltitude, maxAltitude;
     private int tasksRunning;
-    private List<Point> mapPoints;
+    private List<Point3D> route;
 
     public ReplaySideViewPresenter(ReplaySideViewFragment fragment) {
         this.fragment = fragment;
 
-        MainActivity main = (MainActivity) fragment.getActivity();
-        if (main != null) {
-            jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
-        }
+        parentFragment = (ReplayFragment) fragment.getParentFragment();
+        if (parentFragment != null) {
+            jumpViewModel = ViewModelProviders.of(parentFragment).get(JumpViewModel.class);
+            routeViewModel = ViewModelProviders.of(parentFragment).get(RouteViewModel.class);
 
-        findJumpData();
+            subscribeToRoute();
+        }
     }
 
     /**
@@ -70,18 +77,15 @@ public class ReplaySideViewPresenter {
         new FetchJumpTask(jumpListener, jumpViewModel).execute();
     }
 
-    /**
-     * Update the side view drawable.
-     *
-     * @param mapPoints Screen coordinates of the route from the Google Map.
-     */
-    public void updateDrawable(List<Point> mapPoints) {
-        if (tasksRunning == 0) {
-            this.mapPoints = mapPoints;
-            Log.d(TAG, "Map points: " + mapPoints);
+    private List<Point> getMapPoints() {
+        GoogleMap map = parentFragment.getReplayMap().getMap();
+        List<Point> screenPoints = new ArrayList<>();
 
-            fragment.updateDrawable();
+        for (Point3D point : route) {
+            screenPoints.add(map.getProjection().toScreenLocation(point.getLatLng()));
         }
+
+        return screenPoints;
     }
 
     /**
@@ -93,7 +97,9 @@ public class ReplaySideViewPresenter {
      * @return The screen coordinates converted for the side view.
      */
     public List<PointF> produceViewPositions(int width, int height, int margin) {
+        List<Point> mapPoints = getMapPoints();
         List<PointF> screenPos = new ArrayList<>();
+
         int min = 0;
         int max = width > height ? height : width;
         int diff = Math.abs(width - height);
@@ -154,5 +160,25 @@ public class ReplaySideViewPresenter {
     private void taskFinished() {
         Log.d(TAG, "Task finished");
         tasksRunning--;
+        if (tasksRunning == 0) {
+            fragment.updateDrawable();
+        }
+    }
+
+    /**
+     * Update data for a new route.
+     */
+    private void subscribeToRoute() {
+        final Observer<List<Point3D>> routeObserver = route -> findJumpData();
+        routeViewModel.getRoute().observe(parentFragment, routeObserver);
+    }
+
+    /**
+     * Get the active route.
+     *
+     * @return The active route.
+     */
+    public List<Point3D> getRoute() {
+        return routeViewModel.getRoute().getValue();
     }
 }

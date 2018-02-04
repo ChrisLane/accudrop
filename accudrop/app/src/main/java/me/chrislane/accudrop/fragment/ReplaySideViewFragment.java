@@ -7,7 +7,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,15 +30,6 @@ public class ReplaySideViewFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         presenter = new ReplaySideViewPresenter(this);
-    }
-
-    /**
-     * Update the side view with new screen coordinates.
-     *
-     * @param mapPoints Screen coordinates.
-     */
-    public void updateRotation(List<Point> mapPoints) {
-        presenter.updateDrawable(mapPoints);
     }
 
     /**
