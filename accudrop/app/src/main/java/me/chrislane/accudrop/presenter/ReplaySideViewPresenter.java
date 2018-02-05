@@ -123,7 +123,7 @@ public class ReplaySideViewPresenter {
         }
 
         // Generate screen points
-        for (int i = 0; i < mapPoints.size(); i++) {
+        for (int i = 0; i < mapPoints.size() && i < jump.size(); i++) {
             double x =
                     getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
             double y =
