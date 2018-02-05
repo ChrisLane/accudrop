@@ -171,7 +171,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void calcRoute(LatLng target) {
         // Run a route calculation task with the updated wind
         RouteTask.RouteTaskListener routeListener = this::addJump;
-        new RouteTask(routeListener, new WindTask.WindTuple(0, 0)).execute(target);
+        int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
+        int randDir = ThreadLocalRandom.current().nextInt(0, 360);
+        new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
     }
 
     /**
