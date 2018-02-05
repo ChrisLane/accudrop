@@ -36,6 +36,7 @@ import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
+import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
 import me.chrislane.accudrop.task.InsertJumpTask;
@@ -269,6 +270,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_replay:
                 fragmentClass = ReplayFragment.class;
+                break;
+            case R.id.nav_radar:
+                fragmentClass = RadarFragment.class;
                 break;
             case R.id.nav_share:
                 return false;

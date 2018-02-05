@@ -14,6 +14,10 @@
             android:id="@+id/nav_replay"
             android:icon="@drawable/ic_menu_replay"
             android:title="Replay" />
+        <item
+            android:id="@+id/nav_radar"
+            android:icon="@drawable/ic_menu_radar"
+            android:title="Radar" />
     </group>
 
     <item android:title="Communicate">
