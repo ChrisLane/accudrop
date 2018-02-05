@@ -29,7 +29,6 @@ import java.util.List;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
-import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.presenter.PlanPresenter;
@@ -147,7 +146,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
      * updates the map to display these changes.
      */
     private void subscribeToRoute() {
-        final Observer<List<Point3D>> routeObserver = route -> {
+        final Observer<List<Location>> routeObserver = route -> {
             if (route != null) {
                 map.clear();
 
@@ -156,20 +155,20 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
 
                 Util.Unit unit = Util.getUnit(unitString);
                 for (int i = 0; i < route.size() - 1; i++) {
-                    Point3D point1 = route.get(i);
-                    Point3D point2 = route.get(i + 1);
+                    Location point1 = route.get(i);
+                    Location point2 = route.get(i + 1);
                     map.addPolyline(new PolylineOptions()
-                            .add(point1.getLatLng(), point2.getLatLng())
+                            .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
                             .width(5)
                             .color(Color.RED));
                     map.addMarker(new MarkerOptions()
-                            .position(point1.getLatLng())
+                            .position(GnssViewModel.getLatLng(point1))
                             .title(Util.getAltitudeText(point1.getAltitude(), unit))
                     );
                 }
 
                 map.addMarker(new MarkerOptions()
-                        .position(route.get(route.size() - 1).getLatLng())
+                        .position(GnssViewModel.getLatLng(route.get(route.size() - 1)))
                         .title("Landing"));
             }
         };

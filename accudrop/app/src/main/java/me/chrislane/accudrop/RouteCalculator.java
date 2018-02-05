@@ -1,5 +1,6 @@
 package me.chrislane.accudrop;
 
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -8,11 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.chrislane.accudrop.task.WindTask;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class RouteCalculator {
 
     private static final String TAG = RouteCalculator.class.getSimpleName();
-    private final List<Point3D> route = new ArrayList<>();
+    private final List<Location> route = new ArrayList<>();
     private final double airspeed = 15.4; // Metres per second
     private final double descentRate = 6.16; // Metres per second
     private final double windDirection;
@@ -21,9 +23,9 @@ public class RouteCalculator {
     private final double p2Altitude = 182.88; // 600ft
     private final double p1Altitude = 304.8; // 1000ft
     private LatLng target;
-    private Point3D p3;
-    private Point3D p2;
-    private Point3D p1;
+    private Location p3;
+    private Location p2;
+    private Location p1;
 
     public RouteCalculator(WindTask.WindTuple wind, LatLng target) {
         this.windDirection = wind.windDirection;
@@ -54,7 +56,7 @@ public class RouteCalculator {
      *
      * @return The route calculated.
      */
-    public List<Point3D> calcRoute() {
+    public List<Location> calcRoute() {
         route.clear();
 
         calcP3();
@@ -64,7 +66,12 @@ public class RouteCalculator {
         route.add(p1);
         route.add(p2);
         route.add(p3);
-        route.add(new Point3D(target, 0));
+
+        Location ground = new Location("");
+        ground.setLatitude(target.latitude);
+        ground.setLongitude(target.longitude);
+        ground.setAltitude(0);
+        route.add(ground);
 
         Log.d(TAG, "Route calculated: " + route);
 
@@ -78,9 +85,13 @@ public class RouteCalculator {
         double altitudeChange = p1Altitude - p2Altitude;
         double distance = distanceFromHeight(airspeed + windSpeed, altitudeChange);
 
-        LatLng loc = getPosAfterMove(p2.getLatLng(), distance, windDirection);
-        p1 = new Point3D(loc, p1Altitude);
-
+        LatLng p2LatLng = GnssViewModel.getLatLng(p2);
+        LatLng loc = getPosAfterMove(p2LatLng, distance, windDirection);
+        Location location = new Location("");
+        location.setLatitude(loc.latitude);
+        location.setLongitude(loc.longitude);
+        location.setAltitude(p1Altitude);
+        p1 = location;
     }
 
     /**
@@ -90,8 +101,13 @@ public class RouteCalculator {
         double altitudeChange = p2Altitude - p3Altitude;
         double distance = distanceFromHeight(8.9408, altitudeChange);
 
-        LatLng loc = getPosAfterMove(p3.getLatLng(), distance, get270Bearing(windDirection));
-        p2 = new Point3D(loc, p2Altitude);
+        LatLng p3LatLng = GnssViewModel.getLatLng(p3);
+        LatLng loc = getPosAfterMove(p3LatLng, distance, get270Bearing(windDirection));
+        Location location = new Location("");
+        location.setLatitude(loc.latitude);
+        location.setLongitude(loc.longitude);
+        location.setAltitude(p2Altitude);
+        p2 = location;
     }
 
     /**
@@ -102,7 +118,11 @@ public class RouteCalculator {
 
         // Subtract distance along upwind direction from coordinates
         LatLng loc = getPosAfterMove(target, distance, getOppositeBearing(windDirection));
-        p3 = new Point3D(loc, p3Altitude);
+        Location location = new Location("");
+        location.setLatitude(loc.latitude);
+        location.setLongitude(loc.longitude);
+        location.setAltitude(p3Altitude);
+        p3 = location;
     }
 
     /**
@@ -129,7 +149,7 @@ public class RouteCalculator {
      * @param bearing         The bearing to travel in from the initial position.
      * @return The coordinates after the move.
      */
-    private LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
+    public static LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
         double R = 6378.1; // Radius of Earth
         double b = Math.toRadians(bearing); // Bearing is converted to radians.
         double d = Util.metresToKilometres(distance); // Distance in km

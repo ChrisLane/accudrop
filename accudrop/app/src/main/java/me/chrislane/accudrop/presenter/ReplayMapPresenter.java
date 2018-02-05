@@ -2,11 +2,11 @@ package me.chrislane.accudrop.presenter;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.location.Location;
 import android.support.v4.app.Fragment;
 
 import java.util.List;
 
-import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.fragment.ReplayMapFragment;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
@@ -36,7 +36,7 @@ public class ReplayMapPresenter {
      * Set the new route being displayed.
      */
     private void subscribeToRoute() {
-        final Observer<List<Point3D>> routeObserver = replayMapFragment::updateMapRoute;
+        final Observer<List<Location>> routeObserver = replayMapFragment::updateMapRoute;
         routeViewModel.getRoute().observe(parentFragment, routeObserver);
     }
 }

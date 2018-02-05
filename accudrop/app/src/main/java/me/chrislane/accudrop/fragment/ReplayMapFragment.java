@@ -1,6 +1,7 @@
 package me.chrislane.accudrop.fragment;
 
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,9 +17,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 
-import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.presenter.ReplayMapPresenter;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -104,22 +105,22 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
      *
      * @param route Positions visited during the jump.
      */
-    public void updateMapRoute(List<Point3D> route) {
+    public void updateMapRoute(List<Location> route) {
         map.clear();
 
         if (route != null && route.size() > 0) {
             Log.d(TAG, "Setting route");
-            LatLng lastPos = route.get(route.size() - 1).getLatLng();
+            LatLng lastPos = GnssViewModel.getLatLng(route.get(route.size() - 1));
             Log.d(TAG, lastPos.toString());
             CameraPosition camPos = camPosBuilder.target(lastPos).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
             for (int i = 0; i < route.size() - 1; i++) {
-                Point3D point1 = route.get(i);
-                Point3D point2 = route.get(i + 1);
+                Location point1 = route.get(i);
+                Location point2 = route.get(i + 1);
 
                 map.addPolyline(new PolylineOptions()
-                        .add(point1.getLatLng(), point2.getLatLng())
+                        .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
                         .width(5)
                         .color(Color.RED));
             }

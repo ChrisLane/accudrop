@@ -1,21 +1,19 @@
 package me.chrislane.accudrop.task;
 
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.chrislane.accudrop.Point3D;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
 /**
  * Get the latest jump.
  */
-public class FetchJumpTask extends AsyncTask<Integer, Void, List<Point3D>> {
+public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
 
     private static final String TAG = FetchJumpTask.class.getSimpleName();
     private final JumpViewModel jumpViewModel;
@@ -27,7 +25,7 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Point3D>> {
     }
 
     @Override
-    protected List<Point3D> doInBackground(Integer... integers) {
+    protected List<Location> doInBackground(Integer... integers) {
         Integer jumpNumber;
         if (integers.length > 0) {
             jumpNumber = integers[0];
@@ -37,31 +35,34 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Point3D>> {
             Log.d(TAG, "Fetching last jump (" + jumpNumber + ")");
         }
 
-        List<Point3D> points = new ArrayList<>();
+        List<Location> locations = new ArrayList<>();
         if (jumpNumber != null) {
             List<Position> positions = jumpViewModel.getPositionsForJump(jumpNumber);
             for (Position position : positions) {
-                LatLng latLng = new LatLng(position.latitude, position.longitude);
-                Point3D point = new Point3D(latLng, position.altitude);
-                points.add(point);
-                Log.d(TAG, point.toString());
+                Location location = new Location("");
+                location.setLatitude(position.latitude);
+                location.setLongitude(position.longitude);
+                location.setAltitude(position.altitude);
+                locations.add(location);
+
+                Log.d(TAG, location.toString());
             }
         } else {
             Log.e(TAG, "No last jump id found.");
         }
 
-        return points;
+        return locations;
     }
 
     @Override
-    protected void onPostExecute(List<Point3D> points) {
-        super.onPostExecute(points);
+    protected void onPostExecute(List<Location> locations) {
+        super.onPostExecute(locations);
 
         Log.d(TAG, "Finished getting jump data.");
-        listener.onFinished(points);
+        listener.onFinished(locations);
     }
 
     public interface FetchJumpListener {
-        void onFinished(List<Point3D> result);
+        void onFinished(List<Location> result);
     }
 }

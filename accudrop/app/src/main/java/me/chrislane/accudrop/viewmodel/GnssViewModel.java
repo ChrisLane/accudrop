@@ -30,7 +30,7 @@ public class GnssViewModel extends AndroidViewModel {
      * @return A LatLng object with latitude and longitude of the given location.
      */
     @Nullable
-    public LatLng getLatLng(Location location) {
+    public static LatLng getLatLng(Location location) {
         if (location != null) {
             return new LatLng(location.getLatitude(), location.getLongitude());
         }

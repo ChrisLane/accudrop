@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,9 +26,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.fragment.JumpFragment;
@@ -176,10 +179,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      *
      * @param route The route containing jump positions.
      */
-    private void addJump(List<Point3D> route) {
+    private void addJump(List<Location> route) {
+        List<Location> finalRoute = addIntermediaryPoints(route);
+
         CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
-        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, route);
+        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
         new CreateAndInsertJumpTask(this, createListener, insertListener).execute();
+    }
+
+    private List<Location> addIntermediaryPoints(List<Location> route) {
+        List<Location> result = new ArrayList<>();
+
+        for (int i = 0; i < route.size() - 1; i++) {
+            Location loc1 = route.get(i);
+            Location loc2 = route.get(i + 1);
+            double totalDistance = loc1.distanceTo(loc2);
+            double altitude = loc1.getAltitude();
+            int split = (int) (totalDistance / 5);
+            double altitudeDec = (altitude - loc2.getAltitude()) / split;
+
+            result.add(loc1);
+            LatLng prevPos = GnssViewModel.getLatLng(loc1);
+            Location prevLoc = loc1;
+            for (int j = 0; j <= split; j++) {
+                double bearing = prevLoc.bearingTo(loc2);
+
+                int randBear = ThreadLocalRandom.current().nextInt(-15, 15);
+                prevLoc = new Location("");
+                prevPos = RouteCalculator.getPosAfterMove(prevPos, 5, bearing + randBear);
+                prevLoc.setLatitude(prevPos.latitude);
+                prevLoc.setLongitude(prevPos.longitude);
+                altitude -= altitudeDec;
+                prevLoc.setAltitude(altitude);
+
+                result.add(prevLoc);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -188,12 +225,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param jumpId The jump ID to add positions for.
      * @param route  The route containing positions.
      */
-    private void addPositions(int jumpId, List<Point3D> route) {
-        for (Point3D point : route) {
+    private void addPositions(int jumpId, List<Location> route) {
+        for (Location location : route) {
             Position pos = new Position();
-            pos.latitude = point.getLatLng().latitude;
-            pos.longitude = point.getLatLng().longitude;
-            pos.altitude = (int) point.getAltitude();
+            pos.latitude = location.getLatitude();
+            pos.longitude = location.getLongitude();
+            pos.altitude = (int) location.getAltitude();
             pos.time = new Date();
             pos.jumpId = jumpId;
 
