@@ -25,7 +25,7 @@ public interface JumpDao {
      * @return A <code>LiveData</code> object containing the jump record.
      */
     @Query("SELECT * FROM jump " +
-            "WHERE id = :id ")
+            "WHERE id = :id")
     LiveData<Jump> findJumpWithId(int id);
 
     /**
@@ -53,6 +53,10 @@ public interface JumpDao {
      */
     @Query("SELECT MAX(id) FROM jump")
     Integer getLastJumpId();
+
+    @Query("SELECT EXISTS(SELECT * FROM jump " +
+            "WHERE id = :id)")
+    Boolean jumpExists(int id);
 
     /**
      * Insert a jump.

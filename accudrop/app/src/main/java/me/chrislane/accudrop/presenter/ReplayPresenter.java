@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 
 import me.chrislane.accudrop.fragment.ReplayFragment;
+import me.chrislane.accudrop.task.CheckJumpExistsTask;
 import me.chrislane.accudrop.task.FetchJumpIdTask;
 import me.chrislane.accudrop.task.FetchJumpTask;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
@@ -26,7 +27,11 @@ public class ReplayPresenter {
 
         subscribeToJumpId();
 
-        FetchJumpIdTask.Listener listener = jumpId -> replayViewModel.setJumpId(jumpId);
+        FetchJumpIdTask.Listener listener = jumpId -> {
+            if (jumpId != null) {
+                replayViewModel.setJumpId(jumpId);
+            }
+        };
         new FetchJumpIdTask(listener, jumpViewModel).execute();
     }
 
@@ -46,5 +51,29 @@ public class ReplayPresenter {
     private void subscribeToJumpId() {
         final Observer<Integer> jumpIdObserver = this::setRoute;
         replayViewModel.getJumpId().observe(replayFragment, jumpIdObserver);
+    }
+
+    public void prevJump() {
+        Integer jumpId = replayViewModel.getJumpId().getValue();
+        if (jumpId != null) {
+            CheckJumpExistsTask.Listener listener = jumpExists -> {
+                if (jumpExists) {
+                    replayViewModel.setJumpId(jumpId - 1);
+                }
+            };
+            new CheckJumpExistsTask(listener, jumpViewModel).execute(jumpId - 1);
+        }
+    }
+
+    public void nextJump() {
+        Integer jumpId = replayViewModel.getJumpId().getValue();
+        if (jumpId != null) {
+            CheckJumpExistsTask.Listener listener = jumpExists -> {
+                if (jumpExists) {
+                    replayViewModel.setJumpId(jumpId + 1);
+                }
+            };
+            new CheckJumpExistsTask(listener, jumpViewModel).execute(jumpId + 1);
+        }
     }
 }

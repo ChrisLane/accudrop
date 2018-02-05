@@ -22,7 +22,7 @@ public class ReplayViewModel extends ViewModel {
      *
      * @param jumpId The jump ID for the replay.
      */
-    public void setJumpId(Integer jumpId) {
+    public void setJumpId(int jumpId) {
         this.jumpId.setValue(jumpId);
     }
 }

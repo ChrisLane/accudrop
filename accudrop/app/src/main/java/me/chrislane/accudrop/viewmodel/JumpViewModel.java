@@ -126,6 +126,11 @@ public class JumpViewModel extends AndroidViewModel {
         return db.locationModel().getMinAltitudeByJumpNumber(jumpId);
     }
 
+    @Nullable
+    public Boolean jumpExists(int jumpId) {
+        return db.jumpModel().jumpExists(jumpId);
+    }
+
     /**
      * Add a jump position to the database.
      *
