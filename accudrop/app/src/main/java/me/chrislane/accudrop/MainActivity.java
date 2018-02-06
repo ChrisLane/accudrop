@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -20,30 +18,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
-import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
-import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
-import me.chrislane.accudrop.task.InsertJumpTask;
-import me.chrislane.accudrop.task.RouteTask;
-import me.chrislane.accudrop.task.WindTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
@@ -56,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextToSpeech tts;
     private String currentFragmentTag = null;
     private PermissionManager permissionManager;
-    private JumpViewModel jumpViewModel;
-    private int jumpId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
         ViewModelProviders.of(this).get(GnssViewModel.class);
-        jumpViewModel = ViewModelProviders.of(this).get(JumpViewModel.class);
+        ViewModelProviders.of(this).get(JumpViewModel.class);
         ViewModelProviders.of(this).get(RouteViewModel.class);
         ViewModelProviders.of(this).get(WindViewModel.class);
 
@@ -159,102 +145,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 return true;
             case R.id.generate_jump:
-                calcRoute(new LatLng(51.52, 0.08));
+                new JumpGenerator(this).calcRoute(new LatLng(51.52, 0.08));
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Calculate a route and add it as a jump.
-     *
-     * @param target The target landing coordinates.
-     */
-    private void calcRoute(LatLng target) {
-        // Run a route calculation task with the updated wind
-        RouteTask.RouteTaskListener routeListener = this::addJump;
-        int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-        int randDir = ThreadLocalRandom.current().nextInt(0, 360);
-        new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
-    }
-
-    /**
-     * Create a new a jump and add a route's positions to it.
-     *
-     * @param route The route containing jump positions.
-     */
-    private void addJump(List<Location> route) {
-        List<Location> finalRoute = addIntermediaryPoints(route);
-
-        CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
-        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
-        new CreateAndInsertJumpTask(this, createListener, insertListener).execute();
-    }
-
-    private List<Location> addIntermediaryPoints(List<Location> route) {
-        List<Location> result = new ArrayList<>();
-
-        for (int i = 0; i < route.size() - 1; i++) {
-            Location loc1 = route.get(i);
-            Location loc2 = route.get(i + 1);
-            double totalDistance = loc1.distanceTo(loc2);
-            double altitude = loc1.getAltitude();
-            int split = (int) (totalDistance / 5);
-            double altitudeDec = (altitude - loc2.getAltitude()) / split;
-
-            result.add(loc1);
-            LatLng prevPos = GnssViewModel.getLatLng(loc1);
-            Location prevLoc = loc1;
-            for (int j = 0; j < split - 1; j++) {
-                double bearing = prevLoc.bearingTo(loc2);
-
-                int randBear = ThreadLocalRandom.current().nextInt(-15, 15);
-                prevLoc = new Location("");
-                prevPos = RouteCalculator.getPosAfterMove(prevPos, 5, bearing + randBear);
-                prevLoc.setLatitude(prevPos.latitude);
-                prevLoc.setLongitude(prevPos.longitude);
-                altitude -= altitudeDec;
-                prevLoc.setAltitude(altitude);
-
-                result.add(prevLoc);
-            }
-        }
-        result.add(route.get(route.size() - 1));
-
-        return result;
-    }
-
-    /**
-     * Add positions in a route to a jump.
-     *
-     * @param jumpId The jump ID to add positions for.
-     * @param route  The route containing positions.
-     */
-    private void addPositions(int jumpId, List<Location> route) {
-        SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String uuid = settings.getString("userUUID", "");
-
-        for (Location location : route) {
-            Position pos = new Position();
-            pos.latitude = location.getLatitude();
-            pos.longitude = location.getLongitude();
-            pos.altitude = (int) location.getAltitude();
-            pos.time = new Date();
-            pos.jumpId = jumpId;
-            pos.useruuid = uuid;
-
-            String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
-                            "\tUser UUID: %s\n" +
-                            "\tJump ID: %d\n" +
-                            "\t(Lat, Long): (%f,%f)\n" +
-                            "\tAltitude: %d\n" +
-                            "\tTime: %s",
-                    pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
-            Log.d(TAG, msg);
-
-            AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
-        }
     }
 
     /**
