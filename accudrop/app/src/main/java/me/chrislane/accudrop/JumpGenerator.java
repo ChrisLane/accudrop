@@ -93,6 +93,12 @@ public class JumpGenerator {
         new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
     }
 
+    /**
+     * Add intermediary points to a route with random tweaks to the bearing.
+     *
+     * @param route The route to add to.
+     * @return The route containing additional points.
+     */
     private List<Location> addIntermediaryPoints(List<Location> route) {
         List<Location> result = new ArrayList<>();
 
