@@ -22,7 +22,7 @@ import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class ReplaySideViewPresenter {
 
-    private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
+    private static final String TAG = ReplaySideViewPresenter.class.getSimpleName();
     private final ReplaySideViewFragment fragment;
     private final ReplayFragment parentFragment;
     private RouteViewModel routeViewModel;
