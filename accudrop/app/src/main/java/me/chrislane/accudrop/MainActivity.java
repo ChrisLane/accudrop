@@ -2,6 +2,7 @@ package me.chrislane.accudrop;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.db.Position;
@@ -204,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             result.add(loc1);
             LatLng prevPos = GnssViewModel.getLatLng(loc1);
             Location prevLoc = loc1;
-            for (int j = 0; j <= split; j++) {
+            for (int j = 0; j < split - 1; j++) {
                 double bearing = prevLoc.bearingTo(loc2);
 
                 int randBear = ThreadLocalRandom.current().nextInt(-15, 15);
@@ -218,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 result.add(prevLoc);
             }
         }
+        result.add(route.get(route.size() - 1));
 
         return result;
     }
@@ -229,6 +232,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param route  The route containing positions.
      */
     private void addPositions(int jumpId, List<Location> route) {
+        SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String uuid = settings.getString("userUUID", "");
+
         for (Location location : route) {
             Position pos = new Position();
             pos.latitude = location.getLatitude();
@@ -236,12 +242,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             pos.altitude = (int) location.getAltitude();
             pos.time = new Date();
             pos.jumpId = jumpId;
+            pos.useruuid = uuid;
 
             String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
-                    "\tJump ID: %d" +
-                    "\t(Lat, Long): (%f,%f)\n" +
-                    "\tAltitude: %d\n" +
-                    "\tTime: %s", pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
+                            "\tUser UUID: %s\n" +
+                            "\tJump ID: %d\n" +
+                            "\t(Lat, Long): (%f,%f)\n" +
+                            "\tAltitude: %d\n" +
+                            "\tTime: %s",
+                    pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
             Log.d(TAG, msg);
 
             AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
@@ -322,6 +331,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void initPreferences() {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        if (!settings.contains("userUUID")) {
+            settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply();
+        }
     }
 
     /**

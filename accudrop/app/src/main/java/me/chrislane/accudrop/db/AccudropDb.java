@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(entities = {Jump.class, Position.class}, version = 1)
+@Database(entities = {Jump.class, Position.class}, version = 2)
 @TypeConverters(DateConverter.class)
 public abstract class AccudropDb extends RoomDatabase {
 
@@ -20,7 +20,9 @@ public abstract class AccudropDb extends RoomDatabase {
      */
     public static AccudropDb getDatabase(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop").build();
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         return INSTANCE;
     }

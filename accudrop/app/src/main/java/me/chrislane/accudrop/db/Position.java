@@ -23,6 +23,8 @@ public class Position {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
+    public String useruuid;
+
     public int altitude;
 
     public double latitude;

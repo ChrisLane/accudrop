@@ -1,6 +1,8 @@
 package me.chrislane.accudrop.listener;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -88,18 +90,25 @@ public class ReadingListener {
      * @param altitude The altitude of the position.
      */
     private void addPositionToDb(Integer jumpId, Location location, Float altitude) {
+        SharedPreferences settings = jumpViewModel.getApplication()
+                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String uuid = settings.getString("userUUID", "");
+
         Position pos = new Position();
         pos.latitude = location.getLatitude();
         pos.longitude = location.getLongitude();
         pos.altitude = altitude.intValue();
         pos.time = new Date();
         pos.jumpId = jumpId;
+        pos.useruuid = uuid;
 
         String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
-                "\tJump ID: %d" +
-                "\t(Lat, Long): (%f,%f)\n" +
-                "\tAltitude: %d\n" +
-                "\tTime: %s", pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
+                        "\tUser UUID: %s\n" +
+                        "\tJump ID: %d\n" +
+                        "\t(Lat, Long): (%f,%f)\n" +
+                        "\tAltitude: %d\n" +
+                        "\tTime: %s",
+                pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
         Log.d(TAG, msg);
 
         AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
