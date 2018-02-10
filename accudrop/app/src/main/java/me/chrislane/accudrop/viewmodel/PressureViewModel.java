@@ -70,7 +70,7 @@ public class PressureViewModel extends AndroidViewModel {
     }
 
     /**
-     * Find the last altitude.
+     * Find the last altitude in metres.
      *
      * @return A <code>LiveData</code> object containing the last altitude.
      */
@@ -79,9 +79,9 @@ public class PressureViewModel extends AndroidViewModel {
     }
 
     /**
-     * Set the last altitude.
+     * Set the last altitude, measured in metres.
      *
-     * @param lastAltitude The altitude value to set.
+     * @param lastAltitude The altitude in metres to set.
      */
     private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
