@@ -44,8 +44,6 @@ public class LocationService extends Service {
         gnssViewModel.getGnssListener().startListening();
         pressureViewModel.getPressureListener().startListening();
 
-        readingListener.enableLogging();
-
         Notification notification =
                 new Notification.Builder(this)
                         .setContentTitle("TITLE")
