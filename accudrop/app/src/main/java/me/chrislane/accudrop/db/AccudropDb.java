@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-@Database(entities = {Jump.class, Position.class}, version = 2)
+@Database(entities = {Jump.class, Position.class}, version = 3)
 @TypeConverters(DateConverter.class)
 public abstract class AccudropDb extends RoomDatabase {
 

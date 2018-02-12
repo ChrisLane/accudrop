@@ -25,6 +25,7 @@ public class ReadingListener {
     private Integer jumpId;
     private Float prevAlt;
     private Long prevTime;
+    private Float vSpeed;
 
     public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            JumpViewModel jumpViewModel) {
@@ -79,12 +80,9 @@ public class ReadingListener {
         } else {
             // Add entry to the db.
             Location location = gnssViewModel.getLastLocation().getValue();
-            Float speed = getFallRate(altitude);
+            vSpeed = getFallRate(altitude);
             if (location != null && jumpId != null) {
-                if (speed != null) {
-                    location.setSpeed(speed);
-                }
-                addPositionToDb(jumpId, location, altitude);
+                addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
             // Should we stop logging?
@@ -119,12 +117,12 @@ public class ReadingListener {
     }
 
     /**
-     * <p>Check if the user has reached at least a certain speed.</p>
-     * <p>This check depends on the speed of the user having been previously checked.</p>
+     * <p>Check if the user has reached at least a certain vSpeed.</p>
+     * <p>This check depends on the vSpeed of the user having been previously checked.</p>
      *
      * @param altitude The current altitude.
-     * @param minSpeed The minimum speed.
-     * @return If the user has reached at least the minimum speed.
+     * @param minSpeed The minimum vSpeed.
+     * @return If the user has reached at least the minimum vSpeed.
      */
     private boolean hasReachedSpeed(Float altitude, int minSpeed) {
         Float speed = getFallRate(altitude);
@@ -148,7 +146,7 @@ public class ReadingListener {
         if (location != null && logging) {
             Float altitude = pressureViewModel.getLastAltitude().getValue();
             if (altitude != null && jumpId != null) {
-                addPositionToDb(jumpId, location, altitude);
+                addPositionToDb(jumpId, location, altitude, vSpeed);
             }
         }
     }
@@ -160,7 +158,7 @@ public class ReadingListener {
      * @param location The location of the position.
      * @param altitude The altitude of the position.
      */
-    private void addPositionToDb(Integer jumpId, Location location, Float altitude) {
+    private void addPositionToDb(Integer jumpId, Location location, Float altitude, float vSpeed) {
         SharedPreferences settings = jumpViewModel.getApplication()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String uuid = settings.getString("userUUID", "");
@@ -168,6 +166,8 @@ public class ReadingListener {
         Position pos = new Position();
         pos.latitude = location.getLatitude();
         pos.longitude = location.getLongitude();
+        pos.hspeed = location.getSpeed();
+        pos.vspeed = vSpeed;
         pos.altitude = altitude.intValue();
         pos.time = new Date();
         pos.jumpId = jumpId;
@@ -178,8 +178,11 @@ public class ReadingListener {
                         "\tJump ID: %d\n" +
                         "\t(Lat, Long): (%f,%f)\n" +
                         "\tAltitude: %d\n" +
-                        "\tTime: %s",
-                pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
+                        "\tTime: %s" +
+                        "\tHorizontal Speed: %f" +
+                        "\tVertical Speed: %f",
+                pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
+                pos.hspeed, pos.vspeed);
         Log.d(TAG, msg);
 
         AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
@@ -190,6 +193,7 @@ public class ReadingListener {
      */
     public void enableLogging() {
         logging = true;
+        Log.d(TAG, "Logging enabled.");
     }
 
     /**
@@ -197,5 +201,6 @@ public class ReadingListener {
      */
     public void disableLogging() {
         logging = false;
+        Log.d(TAG, "Logging disabled.");
     }
 }
