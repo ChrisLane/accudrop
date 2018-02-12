@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -53,6 +54,7 @@ public class GnssViewModel extends AndroidViewModel {
      */
     public void setLastLocation(Location location) {
         lastLocation.setValue(location);
+        Log.d(TAG, "Location set: " + location);
     }
 
     /**

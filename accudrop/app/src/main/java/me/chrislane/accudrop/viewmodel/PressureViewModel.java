@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import me.chrislane.accudrop.listener.PressureListener;
 
@@ -85,6 +86,7 @@ public class PressureViewModel extends AndroidViewModel {
      */
     private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
+        Log.d(TAG, "Altitude set: " + lastAltitude);
     }
 
     /**
