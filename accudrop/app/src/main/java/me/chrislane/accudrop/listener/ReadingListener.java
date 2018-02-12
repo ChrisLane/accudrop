@@ -174,13 +174,13 @@ public class ReadingListener {
         pos.jumpId = jumpId;
         pos.useruuid = uuid;
 
-        String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
-                        "\tUser UUID: %s\n" +
-                        "\tJump ID: %d\n" +
-                        "\t(Lat, Long): (%f,%f)\n" +
-                        "\tAltitude: %d\n" +
-                        "\tTime: %s" +
-                        "\tHorizontal Speed: %f" +
+        String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
+                        "\tUser UUID: %s%n" +
+                        "\tJump ID: %d%n" +
+                        "\t(Lat, Long): (%f,%f)%n" +
+                        "\tAltitude: %d%n" +
+                        "\tTime: %s%n" +
+                        "\tHorizontal Speed: %f%n" +
                         "\tVertical Speed: %f",
                 pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
                 pos.hspeed, pos.vspeed);

@@ -45,7 +45,7 @@ public class MinMaxAltiTask extends AsyncTask<Void, Void, MinMaxAltiTask.Result>
         void onFinished(int min, int max);
     }
 
-    class Result {
+    static class Result {
         final int min;
         final int max;
 

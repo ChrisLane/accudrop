@@ -53,7 +53,7 @@ public class MinMaxLatLngTask extends AsyncTask<Void, Void, MinMaxLatLngTask.Res
         void onFinished(double min, double max);
     }
 
-    class Result {
+    static class Result {
         final double min;
         final double max;
 

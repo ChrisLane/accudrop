@@ -134,7 +134,7 @@ public class ReplaySideViewPresenter {
                     getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
             double y =
                     getScaledValue(jump.get(i).getAltitude(), minAltitude, maxAltitude, min, max);
-            x += diff / 2;
+            x += diff / 2f;
             screenPos.add(new PointF((float) x, (float) (height - y)));
         }
 

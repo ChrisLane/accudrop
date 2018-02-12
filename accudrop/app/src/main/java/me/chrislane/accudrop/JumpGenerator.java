@@ -67,11 +67,11 @@ public class JumpGenerator {
             pos.jumpId = jumpId;
             pos.useruuid = uuid;
 
-            String msg = String.format(Locale.ENGLISH, "Inserting position:\n" +
-                            "\tUser UUID: %s\n" +
-                            "\tJump ID: %d\n" +
-                            "\t(Lat, Long): (%f,%f)\n" +
-                            "\tAltitude: %d\n" +
+            String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
+                            "\tUser UUID: %s%n" +
+                            "\tJump ID: %d%n" +
+                            "\t(Lat, Long): (%f,%f)%n" +
+                            "\tAltitude: %d%n" +
                             "\tTime: %s",
                     pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
             Log.d(TAG, msg);

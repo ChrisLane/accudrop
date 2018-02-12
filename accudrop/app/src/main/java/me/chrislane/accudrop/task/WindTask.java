@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import me.chrislane.accudrop.presenter.PlanPresenter;
 
@@ -46,7 +47,7 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
 
             InputStream stream = connection.getInputStream();
 
-            reader = new BufferedReader(new InputStreamReader(stream));
+            reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
 
             StringBuilder buffer = new StringBuilder();
             String line;
