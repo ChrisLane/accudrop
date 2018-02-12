@@ -103,6 +103,12 @@ public class ReplaySideViewPresenter {
         List<Point> mapPoints = getMapPoints();
         List<PointF> screenPos = new ArrayList<>();
 
+        // Return an empty list if the route is empty.
+        if (mapPoints.size() == 0) {
+            Log.d(TAG, "No points in the route.");
+            return new ArrayList<>();
+        }
+
         int min = 0;
         int max = width > height ? height : width;
         int diff = Math.abs(width - height);
