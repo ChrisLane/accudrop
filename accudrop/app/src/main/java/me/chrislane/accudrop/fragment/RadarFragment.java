@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import me.chrislane.accudrop.R;
+import me.chrislane.accudrop.presenter.RadarPresenter;
 
 public class RadarFragment extends Fragment {
+
+    private RadarPresenter presenter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        presenter = new RadarPresenter();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -27,7 +38,7 @@ public class RadarFragment extends Fragment {
         return view;
     }
 
-    public class Radar extends View {
+    public static class Radar extends View {
         Paint paint = new Paint();
         RectF oval = new RectF();
 
@@ -38,8 +49,8 @@ public class RadarFragment extends Fragment {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            float halfHeight = canvas.getHeight() / 2;
-            float quarterWidth = canvas.getWidth() / 4;
+            float halfHeight = canvas.getHeight() / 2f;
+            float quarterWidth = canvas.getWidth() / 4f;
 
             paint.setColor(Color.BLACK);
             paint.setStyle(Paint.Style.STROKE);
@@ -48,7 +59,7 @@ public class RadarFragment extends Fragment {
                     halfHeight + quarterWidth);
             canvas.drawOval(oval, paint);
 
-            oval.inset(canvas.getWidth() * 0.5f, (canvas.getWidth() / 2) * 0.5f);
+            oval.inset(canvas.getWidth() * 0.5f, (canvas.getWidth() / 2f) * 0.5f);
             canvas.drawOval(oval, paint);
         }
     }

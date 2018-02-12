@@ -34,6 +34,35 @@ public class RouteCalculator {
     }
 
     /**
+     * <p>Get coordinates after a move of a certain distance in a bearing from an initial location.</p>
+     * <p>Adapted from a <a href="https://stackoverflow.com/a/7835325">StackOverflow answer</a></p>
+     *
+     * @param initialPosition The initial position before a move.
+     * @param distance        The distance to be travelled from the initial position.
+     * @param bearing         The bearing to travel in from the initial position.
+     * @return The coordinates after the move.
+     */
+    public static LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
+        double R = 6378.1; // Radius of Earth
+        double b = Math.toRadians(bearing); // Bearing is converted to radians.
+        double d = Util.metresToKilometres(distance); // Distance in km
+
+        double lat1 = Math.toRadians(initialPosition.latitude); // Initial latitude converted to radians
+        double lon1 = Math.toRadians(initialPosition.longitude); // Initial longitude converted to radians
+
+        double lat2 = Math.asin(Math.sin(lat1) * Math.cos(d / R) +
+                Math.cos(lat1) * Math.sin(d / R) * Math.cos(b));
+
+        double lon2 = lon1 + Math.atan2(Math.sin(b) * Math.sin(d / R) * Math.cos(lat1),
+                Math.cos(d / R) - Math.sin(lat1) * Math.sin(lat2));
+
+        lat2 = Math.toDegrees(lat2);
+        lon2 = Math.toDegrees(lon2);
+
+        return new LatLng(lat2, lon2);
+    }
+
+    /**
      * Get the current landing target.
      *
      * @return The current landing target.
@@ -138,35 +167,6 @@ public class RouteCalculator {
 
         // Calculate distance travelled at ground speed after time
         return groundSpeed * seconds;
-    }
-
-    /**
-     * <p>Get coordinates after a move of a certain distance in a bearing from an initial location.</p>
-     * <p>Adapted from a <a href="https://stackoverflow.com/a/7835325">StackOverflow answer</a></p>
-     *
-     * @param initialPosition The initial position before a move.
-     * @param distance        The distance to be travelled from the initial position.
-     * @param bearing         The bearing to travel in from the initial position.
-     * @return The coordinates after the move.
-     */
-    public static LatLng getPosAfterMove(LatLng initialPosition, double distance, double bearing) {
-        double R = 6378.1; // Radius of Earth
-        double b = Math.toRadians(bearing); // Bearing is converted to radians.
-        double d = Util.metresToKilometres(distance); // Distance in km
-
-        double lat1 = Math.toRadians(initialPosition.latitude); // Initial latitude converted to radians
-        double lon1 = Math.toRadians(initialPosition.longitude); // Initial longitude converted to radians
-
-        double lat2 = Math.asin(Math.sin(lat1) * Math.cos(d / R) +
-                Math.cos(lat1) * Math.sin(d / R) * Math.cos(b));
-
-        double lon2 = lon1 + Math.atan2(Math.sin(b) * Math.sin(d / R) * Math.cos(lat1),
-                Math.cos(d / R) - Math.sin(lat1) * Math.sin(lat2));
-
-        lat2 = Math.toDegrees(lat2);
-        lon2 = Math.toDegrees(lon2);
-
-        return new LatLng(lat2, lon2);
     }
 
     /**
