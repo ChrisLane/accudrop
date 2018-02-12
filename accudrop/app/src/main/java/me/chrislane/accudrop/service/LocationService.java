@@ -54,7 +54,7 @@ public class LocationService extends Service {
 
         int FOREGROUND_ID = 1237;
         startForeground(FOREGROUND_ID, notification);
-        Log.d(TAG, "Location service started.");
+        Log.i(TAG, "Location service started.");
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -71,7 +71,7 @@ public class LocationService extends Service {
         pressureViewModel.getPressureListener().stopListening();
 
         stopForeground(true);
-        Log.d(TAG, "Location service stopped.");
+        Log.i(TAG, "Location service stopped.");
     }
 
     @Override

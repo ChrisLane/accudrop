@@ -85,13 +85,13 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "Map ready");
+        Log.i(TAG, "Map ready");
         map = googleMap;
 
         setupMap();
         subscribeToRoute();
 
-        LatLng target = gnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
+        LatLng target = GnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
         if (target != null) {
             planPresenter = new PlanPresenter(this, target);
         } else {
@@ -117,7 +117,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
 
         Location loc = gnssViewModel.getLastLocation().getValue();
         if (loc != null) {
-            CameraPosition camPos = camPosBuilder.target(gnssViewModel.getLatLng(loc)).build();
+            CameraPosition camPos = camPosBuilder.target(GnssViewModel.getLatLng(loc)).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
         }
         map.getUiSettings().setMapToolbarEnabled(false);

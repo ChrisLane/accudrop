@@ -31,7 +31,7 @@ public class PressureListener implements SensorEventListener {
      * Start listening to pressure sensor events.
      */
     public void startListening() {
-        Log.d(TAG, "Listening on pressure.");
+        Log.i(TAG, "Listening on pressure.");
         sensorManager.registerListener(this, barometer, ONE_SECOND_DELAY);
     }
 
@@ -39,7 +39,7 @@ public class PressureListener implements SensorEventListener {
      * Stop listening to pressure sensor events.
      */
     public void stopListening() {
-        Log.d(TAG, "Stopped listening on pressure.");
+        Log.i(TAG, "Stopped listening on pressure.");
         sensorManager.unregisterListener(this);
     }
 

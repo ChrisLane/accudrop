@@ -86,7 +86,7 @@ public class PressureViewModel extends AndroidViewModel {
      */
     private void setLastAltitude(float lastAltitude) {
         this.lastAltitude.setValue(lastAltitude);
-        Log.d(TAG, "Altitude set: " + lastAltitude);
+        Log.v(TAG, "Altitude set: " + lastAltitude);
     }
 
     /**

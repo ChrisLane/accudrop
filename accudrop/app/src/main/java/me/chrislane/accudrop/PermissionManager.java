@@ -30,7 +30,7 @@ public class PermissionManager {
     public boolean checkLocationPermission() {
         Boolean hasPermission = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
-        Log.d(TAG, "App has location permission: " + hasPermission.toString());
+        Log.i(TAG, "App has location permission: " + hasPermission.toString());
         return hasPermission;
     }
 

@@ -54,7 +54,7 @@ public class GnssViewModel extends AndroidViewModel {
      */
     public void setLastLocation(Location location) {
         lastLocation.setValue(location);
-        Log.d(TAG, "Location set: " + location);
+        Log.v(TAG, "Location set: " + location);
     }
 
     /**

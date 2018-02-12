@@ -113,7 +113,7 @@ public class ReadingListener {
         prevTime = now;
         prevAlt = altitude;
 
-        Log.d(TAG, "Fall Rate: " + speed + "m/s");
+        Log.v(TAG, "Fall Rate: " + speed + "m/s");
         return speed;
     }
 
@@ -194,7 +194,7 @@ public class ReadingListener {
      */
     public void enableLogging() {
         logging = true;
-        Log.d(TAG, "Logging enabled.");
+        Log.i(TAG, "Logging enabled.");
     }
 
     /**
@@ -202,6 +202,6 @@ public class ReadingListener {
      */
     public void disableLogging() {
         logging = false;
-        Log.d(TAG, "Logging disabled.");
+        Log.i(TAG, "Logging disabled.");
     }
 }

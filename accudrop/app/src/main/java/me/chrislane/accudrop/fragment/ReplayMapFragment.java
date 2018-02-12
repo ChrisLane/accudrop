@@ -57,7 +57,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "Map ready");
+        Log.i(TAG, "Map ready");
         map = googleMap;
 
         setupMap();
@@ -125,7 +125,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
                         .color(Color.RED));
             }
         } else {
-            Log.e(TAG, "No route available for this jump.");
+            Log.w(TAG, "No route available for this jump.");
         }
     }
 

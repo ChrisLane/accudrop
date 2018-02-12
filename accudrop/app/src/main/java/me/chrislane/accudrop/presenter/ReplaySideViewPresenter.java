@@ -138,7 +138,7 @@ public class ReplaySideViewPresenter {
             screenPos.add(new PointF((float) x, (float) (height - y)));
         }
 
-        Log.d(TAG, "Generated screen positions: " + screenPos);
+        Log.v(TAG, "Generated screen positions: " + screenPos);
 
         return screenPos;
     }
