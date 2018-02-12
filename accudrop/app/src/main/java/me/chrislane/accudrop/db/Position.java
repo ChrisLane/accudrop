@@ -27,7 +27,7 @@ public class Position {
 
     public int altitude;
 
-    public float vspeed;
+    public double vspeed;
 
     public float hspeed;
 

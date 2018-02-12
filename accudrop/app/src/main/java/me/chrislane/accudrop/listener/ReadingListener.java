@@ -25,7 +25,7 @@ public class ReadingListener {
     private Integer jumpId;
     private Float prevAlt;
     private Long prevTime;
-    private Float vSpeed;
+    private Double vSpeed;
 
     public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            JumpViewModel jumpViewModel) {
@@ -99,13 +99,13 @@ public class ReadingListener {
      * @param altitude The current altitude of the user.
      * @return The fall rate of the user.
      */
-    private Float getFallRate(float altitude) {
+    private synchronized Double getFallRate(float altitude) {
         long now = new Date().getTime();
-        Float speed = null;
+        Double speed = null;
 
         // Check if this is our first run
         if (prevAlt != null && prevTime != null) {
-            long period = now - prevTime;
+            double period = (now - prevTime) * 0.001; // Period in seconds
             float distance = prevAlt - altitude; // Distance in metres
             speed = distance / period; // Speed in m/s
         }
@@ -113,6 +113,7 @@ public class ReadingListener {
         prevTime = now;
         prevAlt = altitude;
 
+        Log.d(TAG, "Fall Rate: " + speed + "m/s");
         return speed;
     }
 
@@ -124,8 +125,8 @@ public class ReadingListener {
      * @param minSpeed The minimum vSpeed.
      * @return If the user has reached at least the minimum vSpeed.
      */
-    private boolean hasReachedSpeed(Float altitude, int minSpeed) {
-        Float speed = getFallRate(altitude);
+    private boolean hasReachedSpeed(Float altitude, double minSpeed) {
+        Double speed = getFallRate(altitude);
         return speed != null && speed >= minSpeed;
     }
 
@@ -158,7 +159,7 @@ public class ReadingListener {
      * @param location The location of the position.
      * @param altitude The altitude of the position.
      */
-    private void addPositionToDb(Integer jumpId, Location location, Float altitude, float vSpeed) {
+    private void addPositionToDb(Integer jumpId, Location location, Float altitude, double vSpeed) {
         SharedPreferences settings = jumpViewModel.getApplication()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String uuid = settings.getString("userUUID", "");
