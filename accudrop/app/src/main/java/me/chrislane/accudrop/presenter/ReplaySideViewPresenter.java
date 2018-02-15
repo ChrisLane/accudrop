@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.fragment.ReplaySideViewFragment;
 import me.chrislane.accudrop.task.FetchJumpTask;
@@ -41,21 +42,6 @@ public class ReplaySideViewPresenter {
 
             subscribeToRoute();
         }
-    }
-
-    /**
-     * Returns a value scaled to be between 0 and 100 for an input value and an input's minimum
-     * and maximum possible value.
-     *
-     * @param input      The value to be scaled.
-     * @param min        An input's minimum possible value.
-     * @param max        An input's maximum possible value.
-     * @param allowedMin The output's minimum possible value.
-     * @param allowedMax The output's maximum possible value.
-     * @return The input value scaled between allowedMin and allowedMax.
-     */
-    private double getScaledValue(double input, double min, double max, double allowedMin, double allowedMax) {
-        return ((allowedMax - allowedMin) * (input - min) / (max - min)) + allowedMin;
     }
 
     /**
@@ -131,9 +117,9 @@ public class ReplaySideViewPresenter {
         // Generate screen points
         for (int i = 0; i < mapPoints.size() && i < jump.size(); i++) {
             double x =
-                    getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
+                    Util.getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
             double y =
-                    getScaledValue(jump.get(i).getAltitude(), minAltitude, maxAltitude, min, max);
+                    Util.getScaledValue(jump.get(i).getAltitude(), minAltitude, maxAltitude, min, max);
             x += diff / 2f;
             screenPos.add(new PointF((float) x, (float) (height - y)));
         }

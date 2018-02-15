@@ -65,6 +65,21 @@ public class Util {
     }
 
     /**
+     * Returns a value scaled to be between 0 and 100 for an input value and an input's minimum
+     * and maximum possible value.
+     *
+     * @param input      The value to be scaled.
+     * @param min        An input's minimum possible value.
+     * @param max        An input's maximum possible value.
+     * @param allowedMin The output's minimum possible value.
+     * @param allowedMax The output's maximum possible value.
+     * @return The input value scaled between allowedMin and allowedMax.
+     */
+    public static double getScaledValue(double input, double min, double max, double allowedMin, double allowedMax) {
+        return ((allowedMax - allowedMin) * (input - min) / (max - min)) + allowedMin;
+    }
+
+    /**
      * Types of unit of measurement.
      */
     public enum Unit {
