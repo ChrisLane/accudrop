@@ -126,6 +126,12 @@ public class JumpViewModel extends AndroidViewModel {
         return db.locationModel().getMinAltitudeByJumpNumber(jumpId);
     }
 
+    /**
+     * Get whether a jump with a given ID exists in the database.
+     *
+     * @param jumpId The jump ID to check for.
+     * @return Whether a jump with the given ID exists in the database.
+     */
     @Nullable
     public Boolean jumpExists(int jumpId) {
         return db.jumpModel().jumpExists(jumpId);
