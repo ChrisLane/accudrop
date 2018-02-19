@@ -45,7 +45,7 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
                 location.setAltitude(position.altitude);
                 locations.add(location);
 
-                Log.d(TAG, location.toString());
+                Log.v(TAG, location.toString());
             }
         } else {
             Log.e(TAG, "No last jump id found.");
