@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import java.util.List;
+import java.util.UUID;
 
 @Dao
 public interface PositionDao {
@@ -37,6 +38,12 @@ public interface PositionDao {
     @Query("SELECT * FROM position " +
             "WHERE jump_id = :jumpNumber ")
     List<Position> getLocationsByJumpNumber(int jumpNumber);
+
+
+    @Query("SELECT useruuid FROM position " +
+            "WHERE jump_id = :jumpNumber " +
+            "GROUP BY useruuid")
+    List<String> getUsersForJump(int jumpNumber);
 
     /**
      * Get the maximum latitude for a jump number.
@@ -111,4 +118,8 @@ public interface PositionDao {
      */
     @Query("DELETE FROM Position")
     void deleteAll();
+
+    @Query("SELECT * FROM position " +
+            "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
+    List<Position> getLocationsByUserByJumpNumber(UUID uuid, int jumpNumber);
 }
