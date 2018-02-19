@@ -3,10 +3,14 @@ package me.chrislane.accudrop.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Jump;
@@ -124,6 +128,64 @@ public class JumpViewModel extends AndroidViewModel {
     @Nullable
     public Integer getMinAltitudeForJump(int jumpId) {
         return db.locationModel().getMinAltitudeByJumpNumber(jumpId);
+    }
+
+    /**
+     * Get all users with data for a jump.
+     *
+     * @param jumpId The jump ID.
+     * @return A list of users.
+     */
+    public List<UUID> getUsersForJump(int jumpId) {
+        List<String> dbResult = db.locationModel().getUsersForJump(jumpId);
+        List<UUID> uuids = new ArrayList<>();
+        for (String uuidString : dbResult) {
+            uuids.add(UUID.fromString(uuidString));
+        }
+
+        return uuids;
+    }
+
+    /**
+     * Get the positions of a user during a jump.
+     *
+     * @param uuid   The user ID.
+     * @param jumpId The jump ID.
+     * @return A list of positions for a user during a jump.
+     */
+    public List<Position> getPositionsForUserForJump(UUID uuid, int jumpId) {
+        return db.locationModel().getLocationsByUserByJumpNumber(uuid, jumpId);
+    }
+
+    /**
+     * Get a list of users and their positions for a jump.
+     *
+     * @param jumpId The jump ID.
+     * @return A list of users and their positions for a jump.
+     */
+    @Nullable
+    public List<Pair<UUID, List<Location>>> getUsersAndPositionsForJump(int jumpId) {
+        List<Pair<UUID, List<Location>>> result = new ArrayList<>();
+
+        // Get users in a jump
+        List<UUID> users = getUsersForJump(jumpId);
+
+        // Get positions for each user and add to return value
+        for (UUID user : users) {
+            List<Position> positions = getPositionsForUserForJump(user, jumpId);
+            List<Location> locations = new ArrayList<>();
+            for (Position position : positions) {
+                Location location = new Location("");
+                location.setLatitude(position.latitude);
+                location.setLongitude(position.longitude);
+                location.setAltitude(position.altitude);
+                location.setTime(position.time.getTime());
+                locations.add(location);
+            }
+            result.add(new Pair<>(user, locations));
+        }
+
+        return result;
     }
 
     /**
