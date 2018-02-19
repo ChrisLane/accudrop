@@ -145,7 +145,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 return true;
             case R.id.generate_jump:
-                new JumpGenerator(this).calcRoute(new LatLng(51.52, 0.08));
+                new JumpGenerator(this).calcLandingPattern(new LatLng(51.52, 0.08));
+                return true;
+            case R.id.generate_radar_jump:
+                new JumpGenerator(this).calcRadarJumpers(new LatLng(51.52, 0.08));
                 return true;
         }
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.db.Position;
@@ -40,7 +41,7 @@ public class JumpGenerator {
      *
      * @param target The target landing coordinates.
      */
-    public void calcRoute(LatLng target) {
+    public void calcLandingPattern(LatLng target) {
         // Run a route calculation task with the updated wind
         RouteTask.RouteTaskListener routeListener = this::addJump;
         int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
@@ -48,16 +49,42 @@ public class JumpGenerator {
         new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
     }
 
+    public void calcRadarJumpers(LatLng target) {
+        // Run a route calculation task with the updated wind
+        // Subject
+        RouteTask.RouteTaskListener routeListener = this::addJump;
+        int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
+        int randDir = ThreadLocalRandom.current().nextInt(0, 360);
+        new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
+    }
+
+    public void calcGuestJumpers(int jumpId, LatLng target) {
+        int randSpeed;
+        int randDir;
+        for (int i = 0; i < 10; i++) {
+            randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
+            randDir = ThreadLocalRandom.current().nextInt(0, 360);
+            RouteTask.RouteTaskListener guestRouteListener = route -> addFakeToJump(jumpId, route);
+            new RouteTask(guestRouteListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
+        }
+    }
+
+    private void addPositions(int jumpId, List<Location> route) {
+        SharedPreferences settings = main.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String stringUuid = settings.getString("userUUID", "");
+        UUID uuid = UUID.fromString(stringUuid);
+
+        addPositions(jumpId, uuid, route);
+    }
+
     /**
      * Add positions in a route to a jump.
      *
      * @param jumpId The jump ID to add positions for.
+     * @param uuid   The user's uuid.
      * @param route  The route containing positions.
      */
-    private void addPositions(int jumpId, List<Location> route) {
-        SharedPreferences settings = main.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String uuid = settings.getString("userUUID", "");
-
+    private void addPositions(int jumpId, UUID uuid, List<Location> route) {
         for (Location location : route) {
             Position pos = new Position();
             pos.latitude = location.getLatitude();
@@ -65,7 +92,7 @@ public class JumpGenerator {
             pos.altitude = (int) location.getAltitude();
             pos.time = new Date();
             pos.jumpId = jumpId;
-            pos.useruuid = uuid;
+            pos.useruuid = uuid.toString();
 
             String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
                             "\tUser UUID: %s%n" +
@@ -88,9 +115,23 @@ public class JumpGenerator {
     private void addJump(List<Location> route) {
         List<Location> finalRoute = addIntermediaryPoints(route);
 
-        CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
+        CreateAndInsertJumpTask.Listener createListener = result -> {
+            jumpId = result;
+            calcGuestJumpers(result, new LatLng(51.52, 0.08));
+        };
         InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
         new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
+    }
+
+    /**
+     * Create a new a jump and add a route's positions to it.
+     *
+     * @param route The route containing jump positions.
+     */
+    private void addFakeToJump(int jumpId, List<Location> route) {
+        List<Location> finalRoute = addIntermediaryPoints(route);
+
+        addPositions(jumpId, UUID.randomUUID(), finalRoute);
     }
 
     /**

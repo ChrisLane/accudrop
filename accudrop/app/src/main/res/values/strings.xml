@@ -18,4 +18,5 @@
     <string name="pref_unit">Unit of Measurement</string>
     <string name="pref_unit_default">metric</string>
     <string name="generate_jump">Generate Jump</string>
+    <string name="generate_radar_jump">Generate Radar Jump</string>
 </resources>

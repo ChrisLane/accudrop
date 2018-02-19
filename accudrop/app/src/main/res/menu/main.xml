@@ -16,4 +16,9 @@
         android:orderInCategory="100"
         android:title="@string/generate_jump"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/generate_radar_jump"
+        android:orderInCategory="100"
+        android:title="@string/generate_radar_jump"
+        app:showAsAction="never" />
 </menu>
