@@ -1,4 +1,4 @@
-package me.chrislane.accudrop.db;
+package me.chrislane.accudrop.db.converter;
 
 import android.arch.persistence.room.TypeConverter;
 
