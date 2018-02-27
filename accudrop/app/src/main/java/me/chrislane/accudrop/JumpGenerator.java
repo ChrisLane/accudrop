@@ -50,9 +50,7 @@ public class JumpGenerator {
     }
 
     public void calcRadarJumpers(LatLng target) {
-        // Run a route calculation task with the updated wind
-        // Subject
-        RouteTask.RouteTaskListener routeListener = this::addJump;
+        RouteTask.RouteTaskListener routeListener = this::addRadarJump;
         int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
         int randDir = ThreadLocalRandom.current().nextInt(0, 360);
         new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
@@ -113,6 +111,19 @@ public class JumpGenerator {
      * @param route The route containing jump positions.
      */
     private void addJump(List<Location> route) {
+        List<Location> finalRoute = addIntermediaryPoints(route);
+
+        CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
+        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
+        new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
+    }
+
+    /**
+     * Create a new a jump and add a route's positions to it.
+     *
+     * @param route The route containing jump positions.
+     */
+    private void addRadarJump(List<Location> route) {
         List<Location> finalRoute = addIntermediaryPoints(route);
 
         CreateAndInsertJumpTask.Listener createListener = result -> {
