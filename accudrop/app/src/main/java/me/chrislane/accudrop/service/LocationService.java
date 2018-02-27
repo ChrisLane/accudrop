@@ -50,6 +50,7 @@ public class LocationService extends Service {
 
         Notification notification =
                 new Notification.Builder(this)
+                        .setPriority(Notification.PRIORITY_MAX)
                         .setContentTitle("TITLE")
                         .setContentText("MESSAGE")
                         .setTicker("TICKER")
