@@ -81,7 +81,7 @@ public class ReadingListener {
             // Add entry to the db.
             Location location = gnssViewModel.getLastLocation().getValue();
             vSpeed = getFallRate(altitude);
-            if (location != null && jumpId != null) {
+            if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
@@ -146,7 +146,7 @@ public class ReadingListener {
         // Add entry to db
         if (location != null && logging) {
             Float altitude = pressureViewModel.getLastAltitude().getValue();
-            if (altitude != null && jumpId != null) {
+            if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
         }
@@ -165,9 +165,9 @@ public class ReadingListener {
         String uuid = settings.getString("userUUID", "");
 
         Position pos = new Position();
-        pos.latitude = location.getLatitude();
-        pos.longitude = location.getLongitude();
-        pos.hspeed = location.getSpeed();
+        pos.latitude = location != null ? location.getLatitude() : null;
+        pos.longitude = location != null ? location.getLongitude() : null;
+        pos.hspeed = location != null ? location.getSpeed() : null;
         pos.vspeed = vSpeed;
         pos.altitude = altitude.intValue();
         pos.time = new Date();
