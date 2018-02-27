@@ -39,13 +39,16 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
         if (jumpNumber != null) {
             List<Position> positions = jumpViewModel.getPositionsForJump(jumpNumber);
             for (Position position : positions) {
-                Location location = new Location("");
-                location.setLatitude(position.latitude);
-                location.setLongitude(position.longitude);
-                location.setAltitude(position.altitude);
-                locations.add(location);
+                if (position.latitude != null && position.longitude != null &&
+                        position.altitude != null) {
+                    Location location = new Location("");
+                    location.setLatitude(position.latitude);
+                    location.setLongitude(position.longitude);
+                    location.setAltitude(position.altitude);
+                    locations.add(location);
 
-                Log.v(TAG, location.toString());
+                    Log.v(TAG, location.toString());
+                }
             }
         } else {
             Log.e(TAG, "No last jump id found.");

@@ -9,7 +9,7 @@ import android.content.Context;
 import me.chrislane.accudrop.db.converter.DateConverter;
 import me.chrislane.accudrop.db.converter.UuidConverter;
 
-@Database(entities = {Jump.class, Position.class}, version = 3)
+@Database(entities = {Jump.class, Position.class}, version = 5)
 @TypeConverters({DateConverter.class, UuidConverter.class})
 public abstract class AccudropDb extends RoomDatabase {
 

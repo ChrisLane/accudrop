@@ -175,12 +175,15 @@ public class JumpViewModel extends AndroidViewModel {
             List<Position> positions = getPositionsForUserForJump(user, jumpId);
             List<Location> locations = new ArrayList<>();
             for (Position position : positions) {
-                Location location = new Location("");
-                location.setLatitude(position.latitude);
-                location.setLongitude(position.longitude);
-                location.setAltitude(position.altitude);
-                location.setTime(position.time.getTime());
-                locations.add(location);
+                if (position.latitude != null && position.longitude != null &&
+                        position.altitude != null) {
+                    Location location = new Location("");
+                    location.setLatitude(position.latitude);
+                    location.setLongitude(position.longitude);
+                    location.setAltitude(position.altitude);
+                    location.setTime(position.time.getTime());
+                    locations.add(location);
+                }
             }
             result.add(new Pair<>(user, locations));
         }
