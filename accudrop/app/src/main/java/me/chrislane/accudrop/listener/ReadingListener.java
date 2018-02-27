@@ -184,7 +184,7 @@ public class ReadingListener {
                         "\tVertical Speed: %f",
                 pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
                 pos.hspeed, pos.vspeed);
-        Log.d(TAG, msg);
+        Log.v(TAG, msg);
 
         AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
     }
