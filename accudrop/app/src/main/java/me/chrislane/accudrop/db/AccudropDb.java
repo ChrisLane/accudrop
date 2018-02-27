@@ -37,6 +37,10 @@ public abstract class AccudropDb extends RoomDatabase {
         INSTANCE = null;
     }
 
+    public static void clearDatabase(Context context) {
+        context.deleteDatabase(DB_NAME);
+    }
+
     /**
      * Get a data access object for the <code>jump</code> table.
      *

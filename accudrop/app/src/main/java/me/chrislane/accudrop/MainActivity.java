@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Locale;
 import java.util.UUID;
 
+import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
@@ -149,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.generate_radar_jump:
                 new JumpGenerator(this).calcRadarJumpers(new LatLng(51.52, 0.08));
+                return true;
+            case R.id.clear_database:
+                AccudropDb.clearDatabase(this);
+                Toast.makeText(this, "Restart app to clear DB.", Toast.LENGTH_SHORT)
+                        .show();
                 return true;
         }
 

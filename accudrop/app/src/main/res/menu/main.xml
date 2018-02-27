@@ -21,4 +21,9 @@
         android:orderInCategory="100"
         android:title="@string/generate_radar_jump"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/clear_database"
+        android:orderInCategory="100"
+        android:title="@string/clear_database"
+        app:showAsAction="never" />
 </menu>
