@@ -34,11 +34,15 @@ public class LocationService extends Service {
         readingListener = new ReadingListener(gnssViewModel, pressureViewModel, jumpViewModel);
 
         // Set ground pressure value
-        float groundPressure = intent.getFloatExtra("groundPressure", NO_VALUE);
-        if (groundPressure == NO_VALUE) {
-            pressureViewModel.setGroundPressure();
+        if (intent != null) {
+            float groundPressure = intent.getFloatExtra("groundPressure", NO_VALUE);
+            if (groundPressure == NO_VALUE) {
+                pressureViewModel.setGroundPressure();
+            } else {
+                pressureViewModel.setGroundPressure(groundPressure);
+            }
         } else {
-            pressureViewModel.setGroundPressure(groundPressure);
+            pressureViewModel.setGroundPressure();
         }
 
         gnssViewModel.getGnssListener().startListening();
