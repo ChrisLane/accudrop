@@ -14,6 +14,7 @@ import me.chrislane.accudrop.db.converter.UuidConverter;
 public abstract class AccudropDb extends RoomDatabase {
 
     private static AccudropDb INSTANCE;
+    private static String DB_NAME = "accudrop";
 
     /**
      * Get an instance of the database.
@@ -22,8 +23,9 @@ public abstract class AccudropDb extends RoomDatabase {
      * @return An instance of an <code>AccudropDb</code> database.
      */
     public static AccudropDb getDatabase(Context context) {
+
         if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, "accudrop")
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AccudropDb.class, DB_NAME)
                     .fallbackToDestructiveMigration()
                     .build();
         }
