@@ -8,7 +8,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
+
+import java.util.Locale;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.presenter.ReplayPresenter;
@@ -18,6 +20,8 @@ public class ReplayFragment extends Fragment {
     private ReplayMapFragment replayMap;
     private ReplaySideViewFragment replaySideView;
     private ReplayPresenter presenter;
+    private Button prevButton;
+    private Button nextbtn;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,10 +42,10 @@ public class ReplayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_replay, container, false);
 
-        ImageButton backbtn = view.findViewById(R.id.replay_back_button);
-        backbtn.setOnClickListener(v -> presenter.prevJump());
+        prevButton = view.findViewById(R.id.replay_back_button);
+        prevButton.setOnClickListener(v -> presenter.prevJump());
 
-        ImageButton nextbtn = view.findViewById(R.id.replay_forward_button);
+        nextbtn = view.findViewById(R.id.replay_forward_button);
         nextbtn.setOnClickListener(v -> presenter.nextJump());
 
         return view;
@@ -63,5 +67,25 @@ public class ReplayFragment extends Fragment {
      */
     public ReplaySideViewFragment getReplaySideView() {
         return replaySideView;
+    }
+
+    public void updateButtons(int jumpId, int firstJumpId, int lastJumpId) {
+        // Check limits for previous button
+        if (jumpId <= firstJumpId) {
+            prevButton.setText("❌");
+            prevButton.setEnabled(false);
+        } else {
+            prevButton.setText(String.format(Locale.ENGLISH, "❮ %d", jumpId - 1));
+            prevButton.setEnabled(true);
+        }
+
+        // Check limits for next button
+        if (jumpId >= lastJumpId) {
+            nextbtn.setText("❌");
+            nextbtn.setEnabled(false);
+        } else {
+            nextbtn.setEnabled(true);
+            nextbtn.setText(String.format(Locale.ENGLISH, "%d ❯", jumpId + 1));
+        }
     }
 }

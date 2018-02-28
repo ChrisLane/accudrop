@@ -54,6 +54,14 @@ public interface JumpDao {
     @Query("SELECT MAX(id) FROM jump")
     Integer getLastJumpId();
 
+    /**
+     * Get the first jump ID.
+     *
+     * @return The first jump ID.
+     */
+    @Query("SELECT MIN(id) FROM jump")
+    Integer getFirstJumpId();
+
     @Query("SELECT EXISTS(SELECT * FROM jump " +
             "WHERE id = :id)")
     Boolean jumpExists(int id);
@@ -71,4 +79,5 @@ public interface JumpDao {
      */
     @Query("DELETE FROM jump")
     void deleteAll();
+
 }

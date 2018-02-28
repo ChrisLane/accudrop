@@ -46,6 +46,16 @@ public class JumpViewModel extends AndroidViewModel {
     }
 
     /**
+     * Get the first jump ID.
+     *
+     * @return The first jump ID.
+     */
+    @Nullable
+    public Integer getFirstJumpId() {
+        return db.jumpModel().getFirstJumpId();
+    }
+
+    /**
      * Add a jump to the database.
      *
      * @param jump The jump to add to the database.

@@ -4,19 +4,20 @@ import android.os.AsyncTask;
 
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
-public class FetchJumpIdTask extends AsyncTask<Void, Void, Integer> {
+
+public class FetchFirstJumpIdTask extends AsyncTask<Void, Void, Integer> {
 
     private final JumpViewModel jumpViewModel;
-    private final Listener listener;
+    private final FetchFirstJumpIdTask.Listener listener;
 
-    public FetchJumpIdTask(FetchJumpIdTask.Listener listener, JumpViewModel jumpViewModel) {
+    public FetchFirstJumpIdTask(FetchFirstJumpIdTask.Listener listener, JumpViewModel jumpViewModel) {
         this.listener = listener;
         this.jumpViewModel = jumpViewModel;
     }
 
     @Override
     protected Integer doInBackground(Void... voids) {
-        return jumpViewModel.getLastJumpId();
+        return jumpViewModel.getFirstJumpId();
     }
 
     @Override
