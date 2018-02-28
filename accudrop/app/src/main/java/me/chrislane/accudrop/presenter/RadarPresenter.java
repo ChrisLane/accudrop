@@ -48,7 +48,7 @@ public class RadarPresenter {
         FetchUsersAndPositionsTask.Listener listener = userEntries -> {
             for (int i = 0; i < userEntries.size(); i++) {
                 Pair<UUID, List<Location>> userEntry = userEntries.get(i);
-                if (userEntry.first.equals(subject)) {
+                if (userEntry.first != null && userEntry.first.equals(subject)) {
                     subjectLocs = userEntry.second;
                     userEntries.remove(i);
                 }
@@ -71,7 +71,7 @@ public class RadarPresenter {
         List<Location> result = new ArrayList<>();
         for (Pair<UUID, List<Location>> userEntry : guestLocs) {
             // TODO: Get the same entry for relative time for all guests
-            if (userEntry.second.size() > 0) {
+            if (userEntry.second != null && userEntry.second.size() > 0) {
                 result.add(userEntry.second.get(25));
             }
         }
