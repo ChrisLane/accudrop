@@ -99,7 +99,7 @@ public class JumpGenerator {
                             "\tAltitude: %d%n" +
                             "\tTime: %s",
                     pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
-            Log.d(TAG, msg);
+            Log.v(TAG, msg);
 
             AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
         }
