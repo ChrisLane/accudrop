@@ -119,7 +119,15 @@ public interface PositionDao {
     @Query("DELETE FROM Position")
     void deleteAll();
 
+    /**
+     * Gets a list of positions ordered by ascending timestamp for a user for a jump.
+     *
+     * @param uuid       The user's UUID.
+     * @param jumpNumber The jump number.
+     * @return A list of positions ordered by timestamp.
+     */
     @Query("SELECT * FROM position " +
-            "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
-    List<Position> getLocationsByUserByJumpNumber(UUID uuid, int jumpNumber);
+            "WHERE useruuid = :uuid AND jump_id = :jumpNumber " +
+            "ORDER BY time ASC")
+    List<Position> getOrderedLocationsByUserByJumpNumber(UUID uuid, int jumpNumber);
 }

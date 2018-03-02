@@ -83,12 +83,17 @@ public class JumpGenerator {
      * @param route  The route containing positions.
      */
     private void addPositions(int jumpId, UUID uuid, List<Location> route) {
+        // Set time to be equal for all jumpers
+        Date date = new Date();
+        date.setTime(0L);
+
         for (Location location : route) {
             Position pos = new Position();
             pos.latitude = location.getLatitude();
             pos.longitude = location.getLongitude();
             pos.altitude = (int) location.getAltitude();
-            pos.time = new Date();
+            pos.time = (Date) date.clone();
+            //pos.time = new Date();
             pos.jumpId = jumpId;
             pos.useruuid = uuid.toString();
 
@@ -102,6 +107,9 @@ public class JumpGenerator {
             Log.v(TAG, msg);
 
             AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
+
+            // Increment time by a second for next position
+            date.setTime(date.getTime() + 1000L);
         }
     }
 

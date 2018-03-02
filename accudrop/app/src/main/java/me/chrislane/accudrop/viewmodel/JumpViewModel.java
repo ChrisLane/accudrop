@@ -18,6 +18,7 @@ import me.chrislane.accudrop.db.Position;
 
 public class JumpViewModel extends AndroidViewModel {
 
+    private static final String TAG = JumpViewModel.class.getSimpleName();
     private final AccudropDb db;
 
     public JumpViewModel(@NonNull Application application) {
@@ -164,7 +165,7 @@ public class JumpViewModel extends AndroidViewModel {
      * @return A list of positions for a user during a jump.
      */
     public List<Position> getPositionsForUserForJump(UUID uuid, int jumpId) {
-        return db.locationModel().getLocationsByUserByJumpNumber(uuid, jumpId);
+        return db.locationModel().getOrderedLocationsByUserByJumpNumber(uuid, jumpId);
     }
 
     /**
