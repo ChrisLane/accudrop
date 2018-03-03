@@ -102,7 +102,7 @@ public class RouteCalculator {
         ground.setAltitude(0);
         route.add(ground);
 
-        Log.d(TAG, "Route calculated: " + route);
+        Log.v(TAG, "Route calculated: " + route);
 
         return route;
     }
