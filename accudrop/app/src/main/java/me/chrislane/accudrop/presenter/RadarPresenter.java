@@ -70,14 +70,17 @@ public class RadarPresenter {
 
     public void generateLastJumpPositions() {
         FetchUsersAndPositionsTask.Listener listener = userEntries -> {
-            List<Pair<UUID, List<Location>>> guestEntries = extractSubject(userEntries);
             if (userEntries == null) {
                 return;
             }
 
-            long startTime = subjectLocs.get(0).getTime();
-            List<Location> locations = getGuestLocations(guestEntries, startTime);
-            getGuestRelatives(locations, startTime);
+            List<Pair<UUID, List<Location>>> guestEntries = extractSubject(userEntries);
+
+            if (subjectLocs != null) {
+                long startTime = subjectLocs.get(0).getTime();
+                List<Location> locations = getGuestLocations(guestEntries, startTime);
+                getGuestRelatives(locations, startTime);
+            }
         };
         new FetchUsersAndPositionsTask(listener, jumpViewModel).execute();
     }
