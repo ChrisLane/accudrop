@@ -2,6 +2,7 @@ package me.chrislane.accudrop.task;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,9 +16,9 @@ import me.chrislane.accudrop.RouteCalculator;
 public class RouteTask extends AsyncTask<LatLng, Void, List<Location>> {
 
     private final RouteTaskListener listener;
-    private final WindTask.WindTuple windTuple;
+    private final Pair<Double, Double> windTuple;
 
-    public RouteTask(RouteTaskListener listener, WindTask.WindTuple windTuple) {
+    public RouteTask(RouteTaskListener listener, Pair<Double, Double> windTuple) {
         this.listener = listener;
         this.windTuple = windTuple;
     }

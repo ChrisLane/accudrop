@@ -2,13 +2,13 @@ package me.chrislane.accudrop;
 
 import android.location.Location;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.chrislane.accudrop.task.WindTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class RouteCalculator {
@@ -27,9 +27,9 @@ public class RouteCalculator {
     private Location p2;
     private Location p1;
 
-    public RouteCalculator(WindTask.WindTuple wind, LatLng target) {
-        this.windDirection = wind.windDirection;
-        this.windSpeed = wind.windSpeed;
+    public RouteCalculator(Pair<Double, Double> wind, LatLng target) {
+        this.windSpeed = wind.first;
+        this.windDirection = wind.second;
         this.target = target;
     }
 

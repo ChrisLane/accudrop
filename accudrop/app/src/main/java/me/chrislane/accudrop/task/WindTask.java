@@ -2,6 +2,7 @@ package me.chrislane.accudrop.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -119,12 +120,11 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
 
             double windSpeed = wind.getDouble("speed");
             double windDirection = wind.getDouble("deg");
-            WindTuple windTuple = new WindTuple(windSpeed, windDirection);
 
-            Log.d(TAG, windTuple.toString());
+            Log.d(TAG, "Wind: Speed = " + windSpeed + " Direction = " + windDirection);
 
             // Run code that the caller wants to do on the result
-            listener.onFinished(windTuple);
+            listener.onFinished(new Pair<>(windSpeed, windDirection));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -134,24 +134,6 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
     }
 
     public interface WeatherTaskListener {
-        void onFinished(WindTuple windTuple);
-    }
-
-    public static class WindTuple {
-        public final double windSpeed;
-        public final double windDirection;
-
-        public WindTuple(double windSpeed, double windDirection) {
-            this.windSpeed = windSpeed;
-            this.windDirection = windDirection;
-        }
-
-        @Override
-        public String toString() {
-            return "WindTuple{" +
-                    "windSpeed=" + windSpeed +
-                    ", windDirection=" + windDirection +
-                    '}';
-        }
+        void onFinished(Pair<Double, Double> windTuple);
     }
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -20,7 +21,6 @@ import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
 import me.chrislane.accudrop.task.InsertJumpTask;
 import me.chrislane.accudrop.task.RouteTask;
-import me.chrislane.accudrop.task.WindTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
@@ -44,26 +44,26 @@ public class JumpGenerator {
     public void calcLandingPattern(LatLng target) {
         // Run a route calculation task with the updated wind
         RouteTask.RouteTaskListener routeListener = this::addJump;
-        int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-        int randDir = ThreadLocalRandom.current().nextInt(0, 360);
-        new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
+        double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
+        double randDir = ThreadLocalRandom.current().nextInt(0, 360);
+        new RouteTask(routeListener, new Pair<>(randSpeed, randDir)).execute(target);
     }
 
     public void calcRadarJumpers(LatLng target) {
         RouteTask.RouteTaskListener routeListener = this::addRadarJump;
-        int randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-        int randDir = ThreadLocalRandom.current().nextInt(0, 360);
-        new RouteTask(routeListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
+        double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
+        double randDir = ThreadLocalRandom.current().nextInt(0, 360);
+        new RouteTask(routeListener, new Pair<>(randSpeed, randDir)).execute(target);
     }
 
     public void calcGuestJumpers(int jumpId, LatLng target) {
-        int randSpeed;
-        int randDir;
+        double randSpeed;
+        double randDir;
         for (int i = 0; i < 10; i++) {
             randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
             randDir = ThreadLocalRandom.current().nextInt(0, 360);
             RouteTask.RouteTaskListener guestRouteListener = route -> addFakeToJump(jumpId, route);
-            new RouteTask(guestRouteListener, new WindTask.WindTuple(randSpeed, randDir)).execute(target);
+            new RouteTask(guestRouteListener, new Pair<>(randSpeed, randDir)).execute(target);
         }
     }
 

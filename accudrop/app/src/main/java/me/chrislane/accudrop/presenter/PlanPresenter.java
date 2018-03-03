@@ -57,8 +57,8 @@ public class PlanPresenter {
     public void calcRoute(LatLng target) {
         WindTask.WeatherTaskListener windListener = windTuple -> {
             // Update the windViewModel
-            windViewModel.setWindSpeed(windTuple.windSpeed);
-            windViewModel.setWindDirection(windTuple.windDirection);
+            windViewModel.setWindSpeed(windTuple.first);
+            windViewModel.setWindDirection(windTuple.second);
 
             // Run a route calculation task with the updated wind
             RouteTask.RouteTaskListener routeListener = route -> routeViewModel.setRoute(route);
