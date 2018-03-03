@@ -24,6 +24,7 @@ public class ReplaySideViewFragment extends Fragment {
 
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
     private ReplaySideViewPresenter presenter;
+    private List<PointF> screenPoints;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,13 +36,18 @@ public class ReplaySideViewFragment extends Fragment {
     /**
      * Redraw the side view lines.
      */
-    public void updateDrawable() {
+    public void updateDrawable(boolean generatePoints) {
         Activity activity = getActivity();
         if (activity != null) {
-            SideViewDrawable drawable = new SideViewDrawable();
+            SideViewDrawable drawable = new SideViewDrawable(generatePoints);
             ImageView drawBox = activity.findViewById(R.id.replay_draw_area);
             drawBox.setImageDrawable(drawable);
         }
+    }
+
+    public void setScreenPoints(List<PointF> screenPoints) {
+        this.screenPoints = screenPoints;
+        updateDrawable(false);
     }
 
     /**
@@ -49,26 +55,36 @@ public class ReplaySideViewFragment extends Fragment {
      */
     private class SideViewDrawable extends Drawable {
 
+        private final boolean generatePoints;
+
+        public SideViewDrawable(boolean generatePoints) {
+            this.generatePoints = generatePoints;
+        }
+
         @Override
         public void draw(@NonNull Canvas canvas) {
-            List<PointF> points = presenter.produceViewPositions(canvas.getWidth(), canvas.getHeight(), 20);
-
-            Paint ground = new Paint();
-            ground.setColor(Color.GREEN);
-            canvas.drawRect(0, (float) (canvas.getHeight() * 0.95), canvas.getWidth(), canvas.getHeight(), ground);
-
+            // Paint the ground
             Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(10);
+            paint.setColor(Color.GREEN);
+            canvas.drawRect(0, (float) (canvas.getHeight() * 0.95), canvas.getWidth(), canvas.getHeight(), paint);
 
-            Path path = new Path();
-            if (!points.isEmpty()) {
-                path.moveTo(points.get(0).x, points.get(0).y);
-                for (PointF point : points) {
-                    path.lineTo(point.x, point.y);
+            if (generatePoints) {
+                presenter.produceViewPositions(canvas.getWidth(), canvas.getHeight(), 20);
+            }
+
+            if (screenPoints != null) {
+                paint.setColor(Color.RED);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(10);
+
+                Path path = new Path();
+                if (!screenPoints.isEmpty()) {
+                    path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
+                    for (PointF point : screenPoints) {
+                        path.lineTo(point.x, point.y);
+                    }
+                    canvas.drawPath(path, paint);
                 }
-                canvas.drawPath(path, paint);
             }
         }
 

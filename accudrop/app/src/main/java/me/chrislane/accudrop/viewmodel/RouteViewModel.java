@@ -10,6 +10,8 @@ import java.util.List;
 public class RouteViewModel extends ViewModel {
 
     private final MutableLiveData<List<Location>> route = new MutableLiveData<>();
+    private final MutableLiveData<Integer> minAltitude = new MutableLiveData<>();
+    private final MutableLiveData<Integer> maxAltitude =  new MutableLiveData<>();
 
     /**
      * Get the recommended route.
@@ -40,5 +42,21 @@ public class RouteViewModel extends ViewModel {
         if (route != null) {
             route.set(index, point);
         }
+    }
+
+    public LiveData<Integer> getMinAltitude() {
+        return minAltitude;
+    }
+
+    public LiveData<Integer> getMaxAltitude() {
+        return maxAltitude;
+    }
+
+    public void setMinAltitude(int minAltitude) {
+        this.minAltitude.setValue(minAltitude);
+    }
+
+    public void setMaxAltitude(int maxAltitude) {
+        this.maxAltitude.setValue(maxAltitude);
     }
 }

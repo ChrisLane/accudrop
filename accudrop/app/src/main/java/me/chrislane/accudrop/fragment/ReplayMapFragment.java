@@ -96,7 +96,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
     public void updateSideView() {
         ReplayFragment replayFragment = (ReplayFragment) getParentFragment();
         if (replayFragment != null) {
-            replayFragment.getReplaySideView().updateDrawable();
+            replayFragment.getReplaySideView().updateDrawable(true);
         }
     }
 
