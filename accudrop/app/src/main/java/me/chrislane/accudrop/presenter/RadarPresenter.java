@@ -49,25 +49,34 @@ public class RadarPresenter {
         generateLastJumpPositions();
     }
 
+    public List<Pair<UUID, List<Location>>> extractSubject(List<Pair<UUID, List<Location>>> userEntries) {
+        for (int i = 0; i < userEntries.size(); i++) {
+            Pair<UUID, List<Location>> userEntry = userEntries.get(i);
+            if (userEntry.first != null &&
+                    userEntry.first.equals(radarViewModel.getSubject().getValue())) {
+                subjectLocs = userEntry.second;
+                userEntries.remove(i);
+            }
+        }
+
+        // None of the users were the subject.
+        if (subjectLocs == null) {
+            Log.e(TAG, "Subject does not exist in jump data.");
+            return null;
+        }
+
+        return userEntries;
+    }
+
     public void generateLastJumpPositions() {
         FetchUsersAndPositionsTask.Listener listener = userEntries -> {
-            for (int i = 0; i < userEntries.size(); i++) {
-                Pair<UUID, List<Location>> userEntry = userEntries.get(i);
-                if (userEntry.first != null &&
-                        userEntry.first.equals(radarViewModel.getSubject().getValue())) {
-                    subjectLocs = userEntry.second;
-                    userEntries.remove(i);
-                }
-            }
-
-            // None of the users were the subject.
-            if (subjectLocs == null) {
-                Log.e(TAG, "Subject does not exist in jump data.");
+            List<Pair<UUID, List<Location>>> guestEntries = extractSubject(userEntries);
+            if (userEntries == null) {
                 return;
             }
 
             long startTime = subjectLocs.get(0).getTime();
-            List<Location> locations = getGuestLocations(userEntries, startTime);
+            List<Location> locations = getGuestLocations(guestEntries, startTime);
             getGuestRelatives(locations, startTime);
         };
         new FetchUsersAndPositionsTask(listener, jumpViewModel).execute();
