@@ -29,6 +29,15 @@ public class JumpViewModel extends AndroidViewModel {
     }
 
     /**
+     * Find the first jump ID.
+     *
+     * @return A <code>LiveData</code> object containing the first jump ID.
+     */
+    public LiveData<Integer> findFirstJumpId() {
+        return db.jumpModel().findFirstJumpId();
+    }
+
+    /**
      * Find the last jump ID.
      *
      * @return A <code>LiveData</code> object containing the last jump ID.

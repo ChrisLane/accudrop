@@ -39,6 +39,14 @@ public interface JumpDao {
     LiveData<Jump> findLastJump();
 
     /**
+     * Find the first jump ID.
+     *
+     * @return A <code>LiveData</code> object containing the first jump ID.
+     */
+    @Query("SELECT MIN(id) FROM jump")
+    LiveData<Integer> findFirstJumpId();
+
+    /**
      * Find the last jump ID.
      *
      * @return A <code>LiveData</code> object containing the last jump ID.
