@@ -24,7 +24,7 @@ public class ReplaySideViewFragment extends Fragment {
 
     private static final String TAG = ReplaySideViewFragment.class.getSimpleName();
     private ReplaySideViewPresenter presenter;
-    private List<PointF> screenPoints;
+    private List<List<PointF>> screenPointsList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,8 +45,8 @@ public class ReplaySideViewFragment extends Fragment {
         }
     }
 
-    public void setScreenPoints(List<PointF> screenPoints) {
-        this.screenPoints = screenPoints;
+    public void setScreenPointsList(List<List<PointF>> screenPoints) {
+        this.screenPointsList = screenPoints;
         updateDrawable(false);
     }
 
@@ -72,18 +72,20 @@ public class ReplaySideViewFragment extends Fragment {
                 presenter.produceViewPositions(canvas.getWidth(), canvas.getHeight(), 20);
             }
 
-            if (screenPoints != null) {
+            if (screenPointsList != null) {
                 paint.setColor(Color.RED);
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth(10);
 
                 Path path = new Path();
-                if (!screenPoints.isEmpty()) {
-                    path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
-                    for (PointF point : screenPoints) {
-                        path.lineTo(point.x, point.y);
+                for (List<PointF> screenPoints : screenPointsList) {
+                    if (!screenPoints.isEmpty()) {
+                        path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
+                        for (PointF point : screenPoints) {
+                            path.lineTo(point.x, point.y);
+                        }
+                        canvas.drawPath(path, paint);
                     }
-                    canvas.drawPath(path, paint);
                 }
             }
         }

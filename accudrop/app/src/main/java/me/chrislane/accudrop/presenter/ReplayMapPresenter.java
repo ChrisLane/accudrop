@@ -4,24 +4,26 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.location.Location;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 
 import java.util.List;
+import java.util.UUID;
 
 import me.chrislane.accudrop.fragment.ReplayMapFragment;
-import me.chrislane.accudrop.viewmodel.RouteViewModel;
+import me.chrislane.accudrop.viewmodel.ReplayViewModel;
 
 public class ReplayMapPresenter {
 
     private final ReplayMapFragment replayMapFragment;
     private final Fragment parentFragment;
-    private RouteViewModel routeViewModel;
+    private ReplayViewModel replayViewModel;
 
     public ReplayMapPresenter(ReplayMapFragment replayMapFragment) {
         this.replayMapFragment = replayMapFragment;
 
         parentFragment = replayMapFragment.getParentFragment();
         if (parentFragment != null) {
-            routeViewModel = ViewModelProviders.of(parentFragment).get(RouteViewModel.class);
+            replayViewModel = ViewModelProviders.of(parentFragment).get(ReplayViewModel.class);
         }
     }
 
@@ -36,7 +38,7 @@ public class ReplayMapPresenter {
      * Set the new route being displayed.
      */
     private void subscribeToRoute() {
-        final Observer<List<Location>> routeObserver = replayMapFragment::updateMapRoute;
-        routeViewModel.getRoute().observe(parentFragment, routeObserver);
+        final Observer<List<Pair<UUID, List<Location>>>> routeObserver = replayMapFragment::updateMapRoutes;
+        replayViewModel.getUsersAndLocs().observe(parentFragment, routeObserver);
     }
 }

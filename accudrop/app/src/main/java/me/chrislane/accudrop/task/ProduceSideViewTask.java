@@ -4,28 +4,32 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.v4.util.Pair;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import me.chrislane.accudrop.Util;
-import me.chrislane.accudrop.viewmodel.RouteViewModel;
+import me.chrislane.accudrop.viewmodel.ReplayViewModel;
 
-public class ProduceSideViewTask extends AsyncTask<List<Point>, Void, List<PointF>> {
+public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>>> {
 
     private static final String TAG = ProduceSideViewTask.class.getSimpleName();
     private final int width;
     private final int height;
     private final int margin;
-    private final RouteViewModel model;
+    private final ReplayViewModel model;
     private final Listener listener;
+    private final List<List<Point>> mapPointList;
 
     public ProduceSideViewTask(int width, int height, int margin,
-                               RouteViewModel model, Listener listener) {
+                               List<List<Point>> mapPointList, ReplayViewModel model, Listener listener) {
         this.width = width;
         this.height = height;
         this.margin = margin;
+        this.mapPointList = mapPointList;
         this.model = model;
         this.listener = listener;
     }
@@ -33,70 +37,84 @@ public class ProduceSideViewTask extends AsyncTask<List<Point>, Void, List<Point
     /**
      * Convert map coordinates into side view coordinates.
      *
-     * @param mapPoints
      * @return The screen coordinates converted for the side view.
      */
-    public List<PointF> produceViewPositions(List<Point> mapPoints) {
-        List<PointF> screenPos = new ArrayList<>();
+    public List<List<PointF>> produceViewPositions() {
+        List<List<PointF>> screenPosList = new ArrayList<>();
 
-        // Return an empty list if the route is empty.
-        if (mapPoints.size() == 0) {
-            Log.d(TAG, "No points in the route.");
-            return new ArrayList<>();
+        List<Pair<UUID, List<Location>>> usersAndLocs = model.getUsersAndLocs().getValue();
+        if (usersAndLocs == null) {
+            Log.e(TAG, "Users and locations list is null.");
+            return screenPosList;
         }
 
-        int min = 0;
-        int max = width > height ? height : width;
-        int diff = Math.abs(width - height);
-        max -= margin;
-        min += margin;
+        Integer minAltitude = 0;
+        Integer maxAltitude = 300; // TODO: Read landing pattern height preferences
 
-        // Set the minimum and maximum x coordinate
-        int minX = mapPoints.get(0).x;
-        int maxX = minX;
-        for (Point point : mapPoints) {
-            int x = point.x;
+        for (int i = 0; i < mapPointList.size() && i < usersAndLocs.size(); i++) {
+            List<Point> mapPoints = mapPointList.get(i);
+            List<Location> locations = usersAndLocs.get(i).second;
+            List<PointF> screenPos = new ArrayList<>();
 
-            if (x < minX) {
-                minX = x;
-            } else if (x > maxX) {
-                maxX = x;
-            }
-        }
-
-        List<Location> route = model.getRoute().getValue();
-        Integer minAltitude = model.getMinAltitude().getValue();
-        Integer maxAltitude = model.getMaxAltitude().getValue();
-        if (route != null && minAltitude != null && maxAltitude != null) {
-            // Generate screen points
-            for (int i = 0; i < mapPoints.size() && i < route.size(); i++) {
-
-                double x =
-                        Util.getScaledValue(mapPoints.get(i).x, minX, maxX, min, max);
-                double y =
-                        Util.getScaledValue(route.get(i).getAltitude(), minAltitude, maxAltitude, min, max);
-                x += diff / 2f;
-                screenPos.add(new PointF((float) x, (float) (height - y)));
+            // Return an empty list if the route is empty.
+            if (mapPoints.size() == 0) {
+                Log.d(TAG, "No points in the route.");
+                return new ArrayList<>();
             }
 
-            Log.v(TAG, "Generated screen positions: " + screenPos);
+            int min = 0;
+            int max = width > height ? height : width;
+            int diff = Math.abs(width - height);
+            max -= margin;
+            min += margin;
+
+            // Set the minimum and maximum x coordinate
+            int minX = mapPoints.get(0).x;
+            int maxX = minX;
+            for (Point point : mapPoints) {
+                int x = point.x;
+
+                if (x < minX) {
+                    minX = x;
+                } else if (x > maxX) {
+                    maxX = x;
+                }
+            }
+
+            if (locations != null && minAltitude != null && maxAltitude != null) {
+                // TODO: Route should only contain positions between min and max altitude
+                // Generate screen points
+                for (int j = 0; j < mapPoints.size() && j < locations.size(); j++) {
+                    double x =
+                            Util.getScaledValue(mapPoints.get(j).x, minX, maxX, min, max);
+                    double y =
+                            Util.getScaledValue(locations.get(j).getAltitude(), minAltitude, maxAltitude, min, max);
+                    x += diff / 2f;
+                    screenPos.add(new PointF((float) x, (float) (height - y)));
+                }
+
+                Log.v(TAG, "Generated screen positions: " + screenPos);
+            }
+
+            screenPosList.add(screenPos);
+
         }
 
-        return screenPos;
+        return screenPosList;
     }
 
     @Override
-    protected List<PointF> doInBackground(List<Point>... pointLists) {
-        return produceViewPositions(pointLists[0]);
+    protected List<List<PointF>> doInBackground(Void... voids) {
+        return produceViewPositions();
     }
 
     @Override
-    protected void onPostExecute(List<PointF> screenPoints) {
+    protected void onPostExecute(List<List<PointF>> screenPoints) {
         super.onPostExecute(screenPoints);
         listener.onFinished(screenPoints);
     }
 
     public interface Listener {
-        void onFinished(List<PointF> screenPoints);
+        void onFinished(List<List<PointF>> screenPoints);
     }
 }

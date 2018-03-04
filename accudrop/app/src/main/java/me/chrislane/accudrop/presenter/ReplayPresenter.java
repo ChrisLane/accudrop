@@ -2,16 +2,16 @@ package me.chrislane.accudrop.presenter;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.task.CheckJumpExistsTask;
 import me.chrislane.accudrop.task.FetchFirstJumpIdTask;
-import me.chrislane.accudrop.task.FetchJumpTask;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
+import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.ReplayViewModel;
-import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class ReplayPresenter {
 
@@ -19,7 +19,6 @@ public class ReplayPresenter {
     private final ReplayFragment replayFragment;
     private ReplayViewModel replayViewModel;
     private JumpViewModel jumpViewModel;
-    private RouteViewModel routeViewModel;
     int tasksRunning = 0;
 
     public ReplayPresenter(ReplayFragment replayFragment) {
@@ -27,7 +26,6 @@ public class ReplayPresenter {
 
         replayViewModel = ViewModelProviders.of(replayFragment).get(ReplayViewModel.class);
         jumpViewModel = ViewModelProviders.of(replayFragment).get(JumpViewModel.class);
-        routeViewModel = ViewModelProviders.of(replayFragment).get(RouteViewModel.class);
 
         subscribeToJumpId();
 
@@ -36,7 +34,8 @@ public class ReplayPresenter {
                 replayViewModel.setJumpId(jumpId);
             }
         };
-        new FetchLastJumpIdTask(listener, jumpViewModel).execute();
+        new FetchLastJumpIdTask(listener, jumpViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -44,9 +43,10 @@ public class ReplayPresenter {
      *
      * @param jumpID The jump ID to get the route from.
      */
-    public void setRoute(int jumpID) {
-        FetchJumpTask.FetchJumpListener listener = result -> routeViewModel.setRoute(result);
-        new FetchJumpTask(listener, jumpViewModel).execute(jumpID);
+    public void setRoutes(int jumpID) {
+        FetchUsersAndPositionsTask.Listener listener = result -> replayViewModel.setUsersAndLocs(result);
+        new FetchUsersAndPositionsTask(listener, jumpViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpID);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ReplayPresenter {
     private void subscribeToJumpId() {
         final Observer<Integer> jumpIdObserver = jumpID -> {
             if (jumpID != null) {
-                setRoute(jumpID);
+                setRoutes(jumpID);
                 updateButtons(jumpID);
             }
         };
@@ -70,7 +70,8 @@ public class ReplayPresenter {
                     replayViewModel.setJumpId(jumpId - 1);
                 }
             };
-            new CheckJumpExistsTask(listener, jumpViewModel).execute(jumpId - 1);
+            new CheckJumpExistsTask(listener, jumpViewModel)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpId - 1);
         }
     }
 
@@ -82,7 +83,8 @@ public class ReplayPresenter {
                     replayViewModel.setJumpId(jumpId + 1);
                 }
             };
-            new CheckJumpExistsTask(listener, jumpViewModel).execute(jumpId + 1);
+            new CheckJumpExistsTask(listener, jumpViewModel)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpId + 1);
         }
     }
 
@@ -102,7 +104,8 @@ public class ReplayPresenter {
                 }
             }
         };
-        new FetchFirstJumpIdTask(firstListener, jumpViewModel).execute();
+        new FetchFirstJumpIdTask(firstListener, jumpViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         FetchLastJumpIdTask.Listener lastListener = lastJumpId -> {
             Log.d(TAG, "Last Jump ID: " + lastJumpId);
@@ -115,7 +118,8 @@ public class ReplayPresenter {
                 }
             }
         };
-        new FetchLastJumpIdTask(lastListener, jumpViewModel).execute();
+        new FetchLastJumpIdTask(lastListener, jumpViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public synchronized void decTasksRunning() {

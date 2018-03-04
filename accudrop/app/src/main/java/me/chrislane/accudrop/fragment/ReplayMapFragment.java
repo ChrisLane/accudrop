@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
+import java.util.UUID;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.presenter.ReplayMapPresenter;
@@ -102,31 +104,41 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * Place a jump route on the map.
-     *
-     * @param route Positions visited during the jump.
      */
-    public void updateMapRoute(List<Location> route) {
+    public void updateMapRoutes(List<Pair<UUID, List<Location>>> usersAndLocs) {
         map.clear();
 
-        if (route != null && route.size() > 0) {
-            Log.d(TAG, "Setting route");
-            LatLng lastPos = GnssViewModel.getLatLng(route.get(route.size() - 1));
-            Log.d(TAG, lastPos.toString());
-            CameraPosition camPos = camPosBuilder.target(lastPos).build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
-
-            for (int i = 0; i < route.size() - 1; i++) {
-                Location point1 = route.get(i);
-                Location point2 = route.get(i + 1);
-
-                map.addPolyline(new PolylineOptions()
-                        .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
-                        .width(5)
-                        .color(Color.RED));
+        // Set camera location
+        // TODO: Make this use the 'subject' user rather than just the first
+        if (!usersAndLocs.isEmpty()) {
+            List<Location> subjectRoute = usersAndLocs.get(0).second;
+            if (subjectRoute != null) {
+                LatLng lastPos = GnssViewModel.getLatLng(subjectRoute.get(subjectRoute.size() - 1));
+                Log.d(TAG, lastPos.toString());
+                CameraPosition camPos = camPosBuilder.target(lastPos).build();
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos));
             }
-        } else {
-            Log.w(TAG, "No route available for this jump.");
         }
+
+        for (Pair<UUID, List<Location>> userAndLocs : usersAndLocs) {
+            List<Location> route = userAndLocs.second;
+
+            if (route != null && !route.isEmpty()) {
+                PolylineOptions options = new PolylineOptions();
+                options.width(5).color(Color.RED);
+                for (int i = 0; i < route.size() - 1; i++) {
+                    Location point1 = route.get(i);
+                    Location point2 = route.get(i + 1);
+
+                    options.add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2));
+                }
+                map.addPolyline(options);
+            } else {
+                Log.w(TAG, "No route available for this jump.");
+            }
+        }
+
+        updateSideView();
     }
 
     /**

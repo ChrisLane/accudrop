@@ -3,10 +3,16 @@ package me.chrislane.accudrop.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.location.Location;
+import android.support.v4.util.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 public class ReplayViewModel extends ViewModel {
 
     private MutableLiveData<Integer> jumpId = new MutableLiveData<>();
+    private MutableLiveData<List<Pair<UUID, List<Location>>>> usersAndLocs = new MutableLiveData<>();
 
     /**
      * Get the jump ID for the replay.
@@ -24,5 +30,13 @@ public class ReplayViewModel extends ViewModel {
      */
     public void setJumpId(int jumpId) {
         this.jumpId.setValue(jumpId);
+    }
+
+    public LiveData<List<Pair<UUID, List<Location>>>> getUsersAndLocs() {
+        return usersAndLocs;
+    }
+
+    public void setUsersAndLocs(List<Pair<UUID, List<Location>>> usersAndLocs) {
+        this.usersAndLocs.setValue(usersAndLocs);
     }
 }
