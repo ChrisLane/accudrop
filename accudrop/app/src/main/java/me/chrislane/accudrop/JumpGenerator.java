@@ -1,6 +1,5 @@
 package me.chrislane.accudrop;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,23 +14,18 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.task.GenerateJumpTask;
-import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class JumpGenerator {
 
     private static final String TAG = JumpGenerator.class.getSimpleName();
     private final MainActivity main;
     private final DatabaseViewModel databaseViewModel;
-    private Observer<Integer> jumpIdObserver;
 
     public JumpGenerator(MainActivity main) {
         this.main = main;
         databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
-    }
-
-    public void removeJumpIdObserver() {
-        databaseViewModel.findLastJumpId().removeObserver(jumpIdObserver);
     }
 
     public void generateJump(LatLng target, int noOfGuests) {
