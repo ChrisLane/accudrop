@@ -17,12 +17,12 @@ import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.db.Position;
 
-public class JumpViewModel extends AndroidViewModel {
+public class DatabaseViewModel extends AndroidViewModel {
 
-    private static final String TAG = JumpViewModel.class.getSimpleName();
+    private static final String TAG = DatabaseViewModel.class.getSimpleName();
     private final AccudropDb db;
 
-    public JumpViewModel(@NonNull Application application) {
+    public DatabaseViewModel(@NonNull Application application) {
         super(application);
 
         db = AccudropDb.getDatabase(application);

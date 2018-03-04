@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class FetchUsersAndPositionsTask extends AsyncTask<Integer, Void, List<Pair<UUID, List<Location>>>> {
 
     private static final String TAG = FetchUsersAndPositionsTask.class.getSimpleName();
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final FetchUsersAndPositionsTask.Listener listener;
 
-    public FetchUsersAndPositionsTask(FetchUsersAndPositionsTask.Listener listener, JumpViewModel jumpViewModel) {
+    public FetchUsersAndPositionsTask(FetchUsersAndPositionsTask.Listener listener, DatabaseViewModel databaseViewModel) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     @Override
@@ -30,12 +30,12 @@ public class FetchUsersAndPositionsTask extends AsyncTask<Integer, Void, List<Pa
             jumpNumber = integers[0];
             Log.d(TAG, "Fetching jump " + jumpNumber);
         } else {
-            jumpNumber = jumpViewModel.getLastJumpId();
+            jumpNumber = databaseViewModel.getLastJumpId();
             Log.d(TAG, "Fetching last jump (" + jumpNumber + ")");
         }
 
         if (jumpNumber != null) {
-            result = jumpViewModel.getUsersAndPositionsForJump(jumpNumber);
+            result = databaseViewModel.getUsersAndPositionsForJump(jumpNumber);
         } else {
             Log.e(TAG, "No last jump id found.");
         }

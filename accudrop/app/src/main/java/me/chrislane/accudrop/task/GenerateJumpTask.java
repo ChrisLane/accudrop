@@ -12,18 +12,18 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.JumpGenerator;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
     private static final String TAG = GenerateJumpTask.class.getSimpleName();
     private final LatLng target;
     private final UUID subjectUUID;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
 
-    public GenerateJumpTask(UUID subjectUUID, LatLng target, JumpViewModel jumpViewModel) {
+    public GenerateJumpTask(UUID subjectUUID, LatLng target, DatabaseViewModel databaseViewModel) {
         this.subjectUUID = subjectUUID;
         this.target = target;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
 
     }
 
@@ -32,9 +32,9 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
         int guestCount = guestCounts[0];
 
         // Add a new jump to the database
-        jumpViewModel.addJump();
+        databaseViewModel.addJump();
 
-        Integer jumpId = jumpViewModel.getLastJumpId();
+        Integer jumpId = databaseViewModel.getLastJumpId();
         if (jumpId == null) {
             Log.e(TAG, "Could not get last jump ID.");
             return null;
@@ -46,7 +46,7 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
             // Add intermediary points to route
             List<Location> subjectRoute = JumpGenerator.addIntermediaryPoints(route);
             // Add subject route to database
-            new AddGeneratedPositionsTask(jumpId, subjectUUID, subjectRoute, jumpViewModel)
+            new AddGeneratedPositionsTask(jumpId, subjectUUID, subjectRoute, databaseViewModel)
                     .executeOnExecutor(THREAD_POOL_EXECUTOR);
         };
         // Generate random wind stats
@@ -62,7 +62,7 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
                 // Add intermediary points to route
                 List<Location> guestRoute = JumpGenerator.addIntermediaryPoints(route);
                 // Add subject route to database
-                new AddGeneratedPositionsTask(jumpId, UUID.randomUUID(), guestRoute, jumpViewModel)
+                new AddGeneratedPositionsTask(jumpId, UUID.randomUUID(), guestRoute, databaseViewModel)
                         .executeOnExecutor(THREAD_POOL_EXECUTOR);
             };
             // Generate random wind stats

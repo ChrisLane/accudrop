@@ -12,7 +12,7 @@ import java.util.Locale;
 
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class ReadingListener {
@@ -20,7 +20,7 @@ public class ReadingListener {
     private static final String TAG = ReadingListener.class.getSimpleName();
     private final GnssViewModel gnssViewModel;
     private final PressureViewModel pressureViewModel;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private boolean logging = false;
     private Integer jumpId;
     private Float prevAlt;
@@ -28,10 +28,10 @@ public class ReadingListener {
     private Double vSpeed;
 
     public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
-                           JumpViewModel jumpViewModel) {
+                           DatabaseViewModel databaseViewModel) {
         this.pressureViewModel = pressureViewModel;
         this.gnssViewModel = gnssViewModel;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
 
         subscribeToJumpId();
         subscribeToLocation();
@@ -48,7 +48,7 @@ public class ReadingListener {
             }
         };
 
-        jumpViewModel.findLastJumpId().observeForever(jumpIdObserver);
+        databaseViewModel.findLastJumpId().observeForever(jumpIdObserver);
     }
 
     /**
@@ -161,7 +161,7 @@ public class ReadingListener {
      * @param altitude The altitude of the position.
      */
     private void addPositionToDb(Integer jumpId, Location location, Float altitude, double vSpeed) {
-        SharedPreferences settings = jumpViewModel.getApplication()
+        SharedPreferences settings = databaseViewModel.getApplication()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String uuid = settings.getString("userUUID", "");
 
@@ -187,7 +187,7 @@ public class ReadingListener {
                 pos.hspeed, pos.vspeed);
         Log.v(TAG, msg);
 
-        AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
+        AsyncTask.execute(() -> databaseViewModel.addPosition(pos));
     }
 
     /**

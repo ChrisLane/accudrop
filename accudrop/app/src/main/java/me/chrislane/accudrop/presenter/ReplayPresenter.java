@@ -8,7 +8,7 @@ import android.util.Log;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
 import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.ReplayViewModel;
 
 public class ReplayPresenter {
@@ -16,13 +16,13 @@ public class ReplayPresenter {
     private static final String TAG = ReplayPresenter.class.getSimpleName();
     private final ReplayFragment replayFragment;
     private ReplayViewModel replayViewModel;
-    private JumpViewModel jumpViewModel;
+    private DatabaseViewModel databaseViewModel;
 
     public ReplayPresenter(ReplayFragment replayFragment) {
         this.replayFragment = replayFragment;
 
         replayViewModel = ViewModelProviders.of(replayFragment).get(ReplayViewModel.class);
-        jumpViewModel = ViewModelProviders.of(replayFragment).get(JumpViewModel.class);
+        databaseViewModel = ViewModelProviders.of(replayFragment).get(DatabaseViewModel.class);
 
         subscribeToJumpId();
         subscribeToJumpRange();
@@ -33,7 +33,7 @@ public class ReplayPresenter {
                 replayViewModel.setJumpId(jumpId);
             }
         };
-        new FetchLastJumpIdTask(listener, jumpViewModel)
+        new FetchLastJumpIdTask(listener, databaseViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -44,7 +44,7 @@ public class ReplayPresenter {
      */
     private void setRoutes(int jumpID) {
         FetchUsersAndPositionsTask.Listener listener = result -> replayViewModel.setUsersAndLocs(result);
-        new FetchUsersAndPositionsTask(listener, jumpViewModel)
+        new FetchUsersAndPositionsTask(listener, databaseViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpID);
     }
 
@@ -66,14 +66,14 @@ public class ReplayPresenter {
                 replayViewModel.setFirstJumpId(firstJumpId);
             }
         };
-        jumpViewModel.findFirstJumpId().observe(replayFragment, firstJumpIdObserver);
+        databaseViewModel.findFirstJumpId().observe(replayFragment, firstJumpIdObserver);
 
         final Observer<Integer> lastJumpIdObserver = lastJumpId -> {
             if (lastJumpId != null) {
                 replayViewModel.setLastJumpId(lastJumpId);
             }
         };
-        jumpViewModel.findLastJumpId().observe(replayFragment, lastJumpIdObserver);
+        databaseViewModel.findLastJumpId().observe(replayFragment, lastJumpIdObserver);
     }
 
     private void subscribeToButtonData() {

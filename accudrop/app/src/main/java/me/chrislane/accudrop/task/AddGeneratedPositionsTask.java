@@ -8,22 +8,22 @@ import java.util.List;
 import java.util.UUID;
 
 import me.chrislane.accudrop.db.Position;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = AddGeneratedPositionsTask.class.getSimpleName();
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final int jumpId;
     private final UUID uuid;
     private final List<Location> route;
 
     public AddGeneratedPositionsTask(int jumpId, UUID uuid, List<Location> route,
-                                     JumpViewModel jumpViewModel) {
+                                     DatabaseViewModel databaseViewModel) {
         this.jumpId = jumpId;
         this.uuid = uuid;
         this.route = route;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     /**
@@ -53,7 +53,7 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
                     pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
             Log.v(TAG, msg);*/
 
-            jumpViewModel.addPosition(pos);
+            databaseViewModel.addPosition(pos);
 
             // Increment time by a second for next position
             date.setTime(date.getTime() + 1000L);

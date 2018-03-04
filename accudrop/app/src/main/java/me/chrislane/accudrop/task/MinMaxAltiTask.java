@@ -3,7 +3,7 @@ package me.chrislane.accudrop.task;
 import android.os.AsyncTask;
 import android.util.Pair;
 
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 /**
  * Get the minimum and maximum altitude for the latest jump.
@@ -11,19 +11,19 @@ import me.chrislane.accudrop.viewmodel.JumpViewModel;
 public class MinMaxAltiTask extends AsyncTask<Void, Void, Pair<Integer, Integer>> {
 
     private final MinMaxAltiTask.Listener listener;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
 
-    public MinMaxAltiTask(MinMaxAltiTask.Listener listener, JumpViewModel jumpViewModel) {
+    public MinMaxAltiTask(MinMaxAltiTask.Listener listener, DatabaseViewModel databaseViewModel) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     @Override
     protected Pair<Integer, Integer> doInBackground(Void... aVoid) {
-        Integer jumpId = jumpViewModel.getLastJumpId();
+        Integer jumpId = databaseViewModel.getLastJumpId();
         if (jumpId != null) {
-            Integer min = jumpViewModel.getMinAltitudeForJump(jumpId);
-            Integer max = jumpViewModel.getMaxAltitudeForJump(jumpId);
+            Integer min = databaseViewModel.getMinAltitudeForJump(jumpId);
+            Integer max = databaseViewModel.getMaxAltitudeForJump(jumpId);
 
             if (min != null && max != null) {
                 return new Pair<>(min, max);

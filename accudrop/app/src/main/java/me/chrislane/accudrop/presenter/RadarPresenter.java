@@ -14,7 +14,7 @@ import java.util.UUID;
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.RadarViewModel;
 
 public class RadarPresenter {
@@ -22,7 +22,7 @@ public class RadarPresenter {
     private static final String TAG = RadarPresenter.class.getSimpleName();
     private final RadarFragment fragment;
     private final RadarViewModel radarViewModel;
-    private JumpViewModel jumpViewModel = null;
+    private DatabaseViewModel databaseViewModel = null;
     private int maxHDistance = 500; // In metres
     private int maxVDistance = 50; // In metres
     private List<Location> subjectLocs;
@@ -35,11 +35,11 @@ public class RadarPresenter {
         radarViewModel = ViewModelProviders.of(fragment).get(RadarViewModel.class);
         MainActivity main = (MainActivity) fragment.getActivity();
         if (main != null) {
-            jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
+            databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
         }
 
         // Set the current user as the subject
-        SharedPreferences settings = jumpViewModel.getApplication()
+        SharedPreferences settings = databaseViewModel.getApplication()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String stringUuid = settings.getString("userUUID", "");
         UUID uuid = UUID.fromString(stringUuid);
@@ -82,7 +82,7 @@ public class RadarPresenter {
                 getGuestRelatives(locations, startTime);
             }
         };
-        new FetchUsersAndPositionsTask(listener, jumpViewModel).execute();
+        new FetchUsersAndPositionsTask(listener, databaseViewModel).execute();
     }
 
     private List<Location> getGuestLocations(List<Pair<UUID, List<Location>>> guestLocs, long time) {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.chrislane.accudrop.db.Position;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 /**
  * Get the latest jump.
@@ -16,12 +16,12 @@ import me.chrislane.accudrop.viewmodel.JumpViewModel;
 public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
 
     private static final String TAG = FetchJumpTask.class.getSimpleName();
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final FetchJumpListener listener;
 
-    public FetchJumpTask(FetchJumpListener listener, JumpViewModel jumpViewModel) {
+    public FetchJumpTask(FetchJumpListener listener, DatabaseViewModel databaseViewModel) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     @Override
@@ -31,13 +31,13 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
             jumpNumber = integers[0];
             Log.d(TAG, "Fetching jump " + jumpNumber);
         } else {
-            jumpNumber = jumpViewModel.getLastJumpId();
+            jumpNumber = databaseViewModel.getLastJumpId();
             Log.d(TAG, "Fetching last jump (" + jumpNumber + ")");
         }
 
         List<Location> locations = new ArrayList<>();
         if (jumpNumber != null) {
-            List<Position> positions = jumpViewModel.getPositionsForJump(jumpNumber);
+            List<Position> positions = databaseViewModel.getPositionsForJump(jumpNumber);
             for (Position position : positions) {
                 if (position.latitude != null && position.longitude != null &&
                         position.altitude != null) {

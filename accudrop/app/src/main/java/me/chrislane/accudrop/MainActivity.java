@@ -34,7 +34,7 @@ import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 import me.chrislane.accudrop.viewmodel.WindViewModel;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Create or get ViewModels
         ViewModelProviders.of(this).get(PressureViewModel.class);
         ViewModelProviders.of(this).get(GnssViewModel.class);
-        ViewModelProviders.of(this).get(JumpViewModel.class);
+        ViewModelProviders.of(this).get(DatabaseViewModel.class);
         ViewModelProviders.of(this).get(RouteViewModel.class);
         ViewModelProviders.of(this).get(WindViewModel.class);
 

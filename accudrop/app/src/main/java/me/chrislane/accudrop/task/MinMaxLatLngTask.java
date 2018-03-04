@@ -3,7 +3,7 @@ package me.chrislane.accudrop.task;
 import android.os.AsyncTask;
 import android.util.Pair;
 
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 /**
  * Get the minimum and maximum latitude or longitude for the latest jump.
@@ -11,26 +11,26 @@ import me.chrislane.accudrop.viewmodel.JumpViewModel;
 public class MinMaxLatLngTask extends AsyncTask<Void, Void, Pair<Double, Double>> {
 
     private final Listener listener;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final boolean getLatitude;
 
-    public MinMaxLatLngTask(Listener listener, JumpViewModel jumpViewModel, boolean getLatitude) {
+    public MinMaxLatLngTask(Listener listener, DatabaseViewModel databaseViewModel, boolean getLatitude) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
         this.getLatitude = getLatitude;
     }
 
     @Override
     protected Pair<Double, Double> doInBackground(Void... aVoid) {
-        Integer jumpId = jumpViewModel.getLastJumpId();
+        Integer jumpId = databaseViewModel.getLastJumpId();
         if (jumpId != null) {
             Double min, max;
             if (getLatitude) {
-                min = jumpViewModel.getMinLatitudeForJump(jumpId);
-                max = jumpViewModel.getMaxLatitudeForJump(jumpId);
+                min = databaseViewModel.getMinLatitudeForJump(jumpId);
+                max = databaseViewModel.getMaxLatitudeForJump(jumpId);
             } else {
-                min = jumpViewModel.getMinLongitudeForJump(jumpId);
-                max = jumpViewModel.getMaxLongitudeForJump(jumpId);
+                min = databaseViewModel.getMinLongitudeForJump(jumpId);
+                max = databaseViewModel.getMaxLongitudeForJump(jumpId);
             }
 
             if (min != null && max != null) {

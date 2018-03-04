@@ -3,25 +3,25 @@ package me.chrislane.accudrop.task;
 import android.os.AsyncTask;
 
 import me.chrislane.accudrop.db.Jump;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 /**
  * Insert a new jump into the database.
  */
 public class InsertJumpTask extends AsyncTask<Jump, Void, Void> {
 
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final Listener listener;
 
 
-    InsertJumpTask(JumpViewModel jumpViewModel, Listener listener) {
-        this.jumpViewModel = jumpViewModel;
+    InsertJumpTask(DatabaseViewModel databaseViewModel, Listener listener) {
+        this.databaseViewModel = databaseViewModel;
         this.listener = listener;
     }
 
     @Override
     protected Void doInBackground(Jump... jumps) {
-        jumpViewModel.addJump(jumps[0]);
+        databaseViewModel.addJump(jumps[0]);
         return null;
     }
 

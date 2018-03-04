@@ -8,7 +8,7 @@ import android.util.Log;
 
 import me.chrislane.accudrop.listener.ReadingListener;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class LocationService extends Service {
@@ -30,8 +30,8 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         gnssViewModel = new GnssViewModel(getApplication());
         pressureViewModel = new PressureViewModel(getApplication());
-        JumpViewModel jumpViewModel = new JumpViewModel(getApplication());
-        readingListener = new ReadingListener(gnssViewModel, pressureViewModel, jumpViewModel);
+        DatabaseViewModel databaseViewModel = new DatabaseViewModel(getApplication());
+        readingListener = new ReadingListener(gnssViewModel, pressureViewModel, databaseViewModel);
 
         // Set ground pressure value
         if (intent != null) {

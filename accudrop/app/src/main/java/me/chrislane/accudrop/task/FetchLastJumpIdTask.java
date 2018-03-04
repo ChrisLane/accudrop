@@ -2,21 +2,21 @@ package me.chrislane.accudrop.task;
 
 import android.os.AsyncTask;
 
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class FetchLastJumpIdTask extends AsyncTask<Void, Void, Integer> {
 
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private final Listener listener;
 
-    public FetchLastJumpIdTask(FetchLastJumpIdTask.Listener listener, JumpViewModel jumpViewModel) {
+    public FetchLastJumpIdTask(FetchLastJumpIdTask.Listener listener, DatabaseViewModel databaseViewModel) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     @Override
     protected Integer doInBackground(Void... voids) {
-        return jumpViewModel.getLastJumpId();
+        return databaseViewModel.getLastJumpId();
     }
 
     @Override

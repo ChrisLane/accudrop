@@ -2,21 +2,21 @@ package me.chrislane.accudrop.task;
 
 import android.os.AsyncTask;
 
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class CheckJumpExistsTask extends AsyncTask<Integer, Void, Boolean> {
 
     private final Listener listener;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
 
-    public CheckJumpExistsTask(Listener listener, JumpViewModel jumpViewModel) {
+    public CheckJumpExistsTask(Listener listener, DatabaseViewModel databaseViewModel) {
         this.listener = listener;
-        this.jumpViewModel = jumpViewModel;
+        this.databaseViewModel = databaseViewModel;
     }
 
     @Override
     protected Boolean doInBackground(Integer... integers) {
-        return jumpViewModel.jumpExists(integers[0]);
+        return databaseViewModel.jumpExists(integers[0]);
     }
 
     @Override

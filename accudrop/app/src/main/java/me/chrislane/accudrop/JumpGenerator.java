@@ -16,22 +16,22 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.task.GenerateJumpTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
-import me.chrislane.accudrop.viewmodel.JumpViewModel;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class JumpGenerator {
 
     private static final String TAG = JumpGenerator.class.getSimpleName();
     private final MainActivity main;
-    private final JumpViewModel jumpViewModel;
+    private final DatabaseViewModel databaseViewModel;
     private Observer<Integer> jumpIdObserver;
 
     public JumpGenerator(MainActivity main) {
         this.main = main;
-        jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
+        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
     }
 
     public void removeJumpIdObserver() {
-        jumpViewModel.findLastJumpId().removeObserver(jumpIdObserver);
+        databaseViewModel.findLastJumpId().removeObserver(jumpIdObserver);
     }
 
     public void generateJump(LatLng target, int noOfGuests) {
@@ -39,7 +39,7 @@ public class JumpGenerator {
         String stringUuid = settings.getString("userUUID", "");
         UUID uuid = UUID.fromString(stringUuid);
 
-        new GenerateJumpTask(uuid, target, jumpViewModel)
+        new GenerateJumpTask(uuid, target, databaseViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, noOfGuests);
     }
 
