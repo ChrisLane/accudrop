@@ -25,10 +25,10 @@ task clean(type: Delete) {
 }
 
 ext {
-    supportLibVersion = "27.0.2"
+    supportLibVersion = "27.1.0"
     playServicesVersion = "11.8.0"
     espressoVersion = "3.0.1"
     constraintLayoutVersion = "1.0.2"
-    archLifecycleVersion = "1.0.0"
+    archLifecycleVersion = "1.1.0"
     archRoomVersion = "1.0.0"
 }
