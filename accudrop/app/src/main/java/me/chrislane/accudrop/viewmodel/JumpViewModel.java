@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +63,16 @@ public class JumpViewModel extends AndroidViewModel {
      * @param jump The jump to add to the database.
      */
     public void addJump(Jump jump) {
+        db.jumpModel().insertJump(jump);
+    }
+
+    public void addJump() {
+        Integer lastJumpId = db.jumpModel().getLastJumpId();
+
+        Jump jump = new Jump();
+        jump.id = lastJumpId != null ? lastJumpId + 1 : 1;
+        jump.time = new Date();
+
         db.jumpModel().insertJump(jump);
     }
 

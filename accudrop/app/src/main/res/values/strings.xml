@@ -18,6 +18,6 @@
     <string name="pref_unit">Unit of Measurement</string>
     <string name="pref_unit_default">metric</string>
     <string name="generate_jump">Generate Jump</string>
-    <string name="generate_radar_jump">Generate Radar Jump</string>
+    <string name="generate_guest_jump">Generate Guest Jump</string>
     <string name="clear_database">Clear Database</string>
 </resources>

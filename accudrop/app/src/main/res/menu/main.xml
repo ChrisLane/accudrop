@@ -17,9 +17,9 @@
         android:title="@string/generate_jump"
         app:showAsAction="never" />
     <item
-        android:id="@+id/generate_radar_jump"
+        android:id="@+id/generate_guest_jump"
         android:orderInCategory="100"
-        android:title="@string/generate_radar_jump"
+        android:title="@string/generate_guest_jump"
         app:showAsAction="never" />
     <item
         android:id="@+id/clear_database"

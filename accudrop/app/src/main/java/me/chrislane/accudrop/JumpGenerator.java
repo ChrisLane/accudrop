@@ -1,26 +1,20 @@
 package me.chrislane.accudrop;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import me.chrislane.accudrop.db.Position;
-import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
-import me.chrislane.accudrop.task.InsertJumpTask;
-import me.chrislane.accudrop.task.RouteTask;
+import me.chrislane.accudrop.task.GenerateJumpTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.JumpViewModel;
 
@@ -29,128 +23,24 @@ public class JumpGenerator {
     private static final String TAG = JumpGenerator.class.getSimpleName();
     private final MainActivity main;
     private final JumpViewModel jumpViewModel;
-    int jumpId;
+    private Observer<Integer> jumpIdObserver;
 
     public JumpGenerator(MainActivity main) {
         this.main = main;
         jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
     }
 
-    /**
-     * Calculate a route and add it as a jump.
-     *
-     * @param target The target landing coordinates.
-     */
-    public void calcLandingPattern(LatLng target) {
-        // Run a route calculation task with the updated wind
-        RouteTask.RouteTaskListener routeListener = this::addJump;
-        double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-        double randDir = ThreadLocalRandom.current().nextInt(0, 360);
-        new RouteTask(routeListener, new Pair<>(randSpeed, randDir)).execute(target);
+    public void removeJumpIdObserver() {
+        jumpViewModel.findLastJumpId().removeObserver(jumpIdObserver);
     }
 
-    public void calcRadarJumpers(LatLng target) {
-        RouteTask.RouteTaskListener routeListener = this::addRadarJump;
-        double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-        double randDir = ThreadLocalRandom.current().nextInt(0, 360);
-        new RouteTask(routeListener, new Pair<>(randSpeed, randDir)).execute(target);
-    }
-
-    public void calcGuestJumpers(int jumpId, LatLng target) {
-        double randSpeed;
-        double randDir;
-        for (int i = 0; i < 10; i++) {
-            randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
-            randDir = ThreadLocalRandom.current().nextInt(0, 360);
-            RouteTask.RouteTaskListener guestRouteListener = route -> addFakeToJump(jumpId, route);
-            new RouteTask(guestRouteListener, new Pair<>(randSpeed, randDir)).execute(target);
-        }
-    }
-
-    private void addPositions(int jumpId, List<Location> route) {
+    public void generateJump(LatLng target, int noOfGuests) {
         SharedPreferences settings = main.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String stringUuid = settings.getString("userUUID", "");
         UUID uuid = UUID.fromString(stringUuid);
 
-        addPositions(jumpId, uuid, route);
-    }
-
-    /**
-     * Add positions in a route to a jump.
-     *
-     * @param jumpId The jump ID to add positions for.
-     * @param uuid   The user's uuid.
-     * @param route  The route containing positions.
-     */
-    private void addPositions(int jumpId, UUID uuid, List<Location> route) {
-        // Set time to be equal for all jumpers
-        Date date = new Date();
-        date.setTime(0L);
-
-        for (Location location : route) {
-            Position pos = new Position();
-            pos.latitude = location.getLatitude();
-            pos.longitude = location.getLongitude();
-            pos.altitude = (int) location.getAltitude();
-            pos.time = (Date) date.clone();
-            //pos.time = new Date();
-            pos.jumpId = jumpId;
-            pos.useruuid = uuid.toString();
-
-            String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
-                            "\tUser UUID: %s%n" +
-                            "\tJump ID: %d%n" +
-                            "\t(Lat, Long): (%f,%f)%n" +
-                            "\tAltitude: %d%n" +
-                            "\tTime: %s",
-                    pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
-            Log.v(TAG, msg);
-
-            AsyncTask.execute(() -> jumpViewModel.addPosition(pos));
-
-            // Increment time by a second for next position
-            date.setTime(date.getTime() + 1000L);
-        }
-    }
-
-    /**
-     * Create a new a jump and add a route's positions to it.
-     *
-     * @param route The route containing jump positions.
-     */
-    private void addJump(List<Location> route) {
-        List<Location> finalRoute = addIntermediaryPoints(route);
-
-        CreateAndInsertJumpTask.Listener createListener = result -> jumpId = result;
-        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
-        new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
-    }
-
-    /**
-     * Create a new a jump and add a route's positions to it.
-     *
-     * @param route The route containing jump positions.
-     */
-    private void addRadarJump(List<Location> route) {
-        List<Location> finalRoute = addIntermediaryPoints(route);
-
-        CreateAndInsertJumpTask.Listener createListener = result -> {
-            jumpId = result;
-            calcGuestJumpers(result, new LatLng(51.52, 0.08));
-        };
-        InsertJumpTask.Listener insertListener = () -> addPositions(jumpId, finalRoute);
-        new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
-    }
-
-    /**
-     * Create a new a jump and add a route's positions to it.
-     *
-     * @param route The route containing jump positions.
-     */
-    private void addFakeToJump(int jumpId, List<Location> route) {
-        List<Location> finalRoute = addIntermediaryPoints(route);
-
-        addPositions(jumpId, UUID.randomUUID(), finalRoute);
+        new GenerateJumpTask(uuid, target, jumpViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, noOfGuests);
     }
 
     /**
@@ -159,7 +49,7 @@ public class JumpGenerator {
      * @param route The route to add to.
      * @return The route containing additional points.
      */
-    private List<Location> addIntermediaryPoints(List<Location> route) {
+    public static List<Location> addIntermediaryPoints(List<Location> route) {
         List<Location> result = new ArrayList<>();
 
         for (int i = 0; i < route.size() - 1; i++) {
