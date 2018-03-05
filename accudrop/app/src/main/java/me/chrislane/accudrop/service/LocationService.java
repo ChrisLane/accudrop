@@ -1,20 +1,27 @@
 package me.chrislane.accudrop.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.listener.ReadingListener;
-import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class LocationService extends Service {
 
     private static final String TAG = LocationService.class.getSimpleName();
     private static final float NO_VALUE = 1337;
+    private static final String CHANNEL_ID = "AccuDrop";
+    private static final int FOREGROUND_ID = 1237;
     private PressureViewModel pressureViewModel;
     private GnssViewModel gnssViewModel;
     private ReadingListener readingListener;
@@ -48,16 +55,37 @@ public class LocationService extends Service {
         gnssViewModel.getGnssListener().startListening();
         pressureViewModel.getPressureListener().startListening();
 
-        Notification notification =
-                new Notification.Builder(this)
-                        .setPriority(Notification.PRIORITY_MAX)
-                        .setContentTitle("TITLE")
-                        .setContentText("MESSAGE")
-                        .setTicker("TICKER")
-                        .build();
 
+        Notification notification;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create and set required notification channel for Android O
+            CharSequence name = getString(R.string.notification_channel_name);
+            String description = getString(R.string.notification_channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
 
-        int FOREGROUND_ID = 1237;
+            // Add created channel to the system
+            NotificationManager notificationManager = (NotificationManager)
+                    getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            notification =
+                    new Notification.Builder(this, CHANNEL_ID)
+                            .setContentTitle("AccuDrop")
+                            .setContentText("Logging Jump")
+                            .build();
+        } else {
+            notification =
+                    new Notification.Builder(this)
+                            .setPriority(Notification.PRIORITY_MAX)
+                            .setContentTitle("AccuDrop")
+                            .setContentText("Logging Jump")
+                            .build();
+        }
+
         startForeground(FOREGROUND_ID, notification);
         Log.i(TAG, "Location service started.");
 
