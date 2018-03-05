@@ -102,7 +102,7 @@ public class RadarFragment extends Fragment {
     }
 
     private static PointF applyShrink(PointF point, float shrink) {
-        // TODO: Scale to ellipse, not just height change in ellipse.
+        // TODO #50: Scale to ellipse, not just height change in ellipse.
         return new PointF(point.x, point.y * shrink);
     }
 

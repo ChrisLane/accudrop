@@ -43,7 +43,7 @@ public class ReplaySideViewPresenter {
      * Set minimum and maximum altitude values.
      */
     private void setMinMaxAltitude() {
-        // TODO: Read landing pattern height preferences
+        // TODO #47: Read landing pattern height preferences
         routeViewModel.setMinAltitude(0);
         routeViewModel.setMaxAltitude(300); // 1000ft
     }

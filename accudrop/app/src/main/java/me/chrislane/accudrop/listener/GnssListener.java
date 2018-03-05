@@ -31,7 +31,7 @@ public class GnssListener implements android.location.LocationListener {
             Log.d(TAG, "Listening on location.");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         } else {
-            // TODO: Change to more appropriate notification. Be more useful.
+            // TODO #49: Change to more appropriate notification. Be more useful.
             Toast.makeText(gnssViewModel.getApplication(), "GPS is disabled.", Toast.LENGTH_SHORT).show();
         }
     }

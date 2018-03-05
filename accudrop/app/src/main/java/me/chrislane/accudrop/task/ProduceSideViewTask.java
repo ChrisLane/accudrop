@@ -49,7 +49,7 @@ public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>
         }
 
         Integer minAltitude = 0;
-        Integer maxAltitude = 300; // TODO: Read landing pattern height preferences
+        Integer maxAltitude = 300; // TODO #47: Read landing pattern height preferences
 
         for (int i = 0; i < mapPointList.size() && i < usersAndLocs.size(); i++) {
             List<Point> mapPoints = mapPointList.get(i);
@@ -82,7 +82,7 @@ public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>
             }
 
             if (locations != null && minAltitude != null && maxAltitude != null) {
-                // TODO: Route should only contain positions between min and max altitude
+                // TODO #47: Route should only contain positions between min and max altitude
                 // Generate screen points
                 for (int j = 0; j < mapPoints.size() && j < locations.size(); j++) {
                     double x =

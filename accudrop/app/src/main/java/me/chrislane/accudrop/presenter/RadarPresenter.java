@@ -23,7 +23,7 @@ public class RadarPresenter {
     private final RadarFragment fragment;
     private final RadarViewModel radarViewModel;
     private DatabaseViewModel databaseViewModel = null;
-    // TODO: Move data below to the view model
+    // TODO #48: Move data below to the view model
     private int maxHDistance = 500; // In metres
     private int maxVDistance = 50; // In metres
     private List<Location> subjectLocs;
