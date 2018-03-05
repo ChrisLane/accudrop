@@ -112,7 +112,7 @@ public class ReplayMapFragment extends Fragment implements OnMapReadyCallback {
         // TODO: Make this use the 'subject' user rather than just the first
         if (!usersAndLocs.isEmpty()) {
             List<Location> subjectRoute = usersAndLocs.get(0).second;
-            if (subjectRoute != null) {
+            if (subjectRoute != null && !subjectRoute.isEmpty()) {
                 LatLng lastPos = GnssViewModel.getLatLng(subjectRoute.get(subjectRoute.size() - 1));
                 Log.d(TAG, lastPos.toString());
                 CameraPosition camPos = camPosBuilder.target(lastPos).build();
