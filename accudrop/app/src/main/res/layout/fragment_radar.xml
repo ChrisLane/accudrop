@@ -5,4 +5,10 @@
     android:layout_height="match_parent"
     tools:context="me.chrislane.accudrop.fragment.RadarFragment">
 
+    <SeekBar
+        android:id="@+id/radar_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|fill_horizontal"
+        android:paddingBottom="20dp" />
 </FrameLayout>

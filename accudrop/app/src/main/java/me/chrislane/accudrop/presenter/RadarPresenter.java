@@ -23,11 +23,14 @@ public class RadarPresenter {
     private final RadarFragment fragment;
     private final RadarViewModel radarViewModel;
     private DatabaseViewModel databaseViewModel = null;
+    // TODO: Move data below to the view model
     private int maxHDistance = 500; // In metres
     private int maxVDistance = 50; // In metres
     private List<Location> subjectLocs;
     private List<Pair<Float, Float>> positions = new ArrayList<>();
     private List<Double> heightDiffs = new ArrayList<>();
+    private List<Location> guestLocations;
+    private List<Pair<UUID, List<Location>>> guestEntries;
 
     public RadarPresenter(RadarFragment fragment) {
         this.fragment = fragment;
@@ -74,12 +77,12 @@ public class RadarPresenter {
                 return;
             }
 
-            List<Pair<UUID, List<Location>>> guestEntries = extractSubject(userEntries);
+            guestEntries = extractSubject(userEntries);
 
             if (subjectLocs != null) {
                 long startTime = subjectLocs.get(0).getTime();
-                List<Location> locations = getGuestLocations(guestEntries, startTime);
-                getGuestRelatives(locations, startTime);
+                guestLocations = getGuestLocations(guestEntries, startTime);
+                updateGuestRelatives(guestLocations, startTime);
             }
         };
         new FetchUsersAndPositionsTask(listener, databaseViewModel).execute();
@@ -96,6 +99,11 @@ public class RadarPresenter {
             }
         }
         return result;
+    }
+
+    public void updateTime(long time) {
+        guestLocations = getGuestLocations(guestEntries, time);
+        updateGuestRelatives(guestLocations, time);
     }
 
     private Location getLocationByTime(List<Location> locations, long time) {
@@ -127,7 +135,11 @@ public class RadarPresenter {
                 ? locations.get(low) : locations.get(high);
     }
 
-    public void getGuestRelatives(List<Location> locations, long time) {
+    public List<Location> getSubjectLocations() {
+        return subjectLocs;
+    }
+
+    public void updateGuestRelatives(List<Location> locations, long time) {
         if (subjectLocs.isEmpty() || locations.isEmpty()) {
             return;
         }
