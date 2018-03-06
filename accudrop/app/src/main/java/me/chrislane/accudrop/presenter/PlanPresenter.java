@@ -62,7 +62,7 @@ public class PlanPresenter {
 
             // Run a route calculation task with the updated wind
             RouteTask.RouteTaskListener routeListener = route -> routeViewModel.setRoute(route);
-            new RouteTask(routeListener, windTuple).execute(target);
+            new RouteTask(routeListener, planFragment.getContext(), windTuple).execute(target);
         };
         new WindTask(windListener, this, apiKey).execute(target);
     }

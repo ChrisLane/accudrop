@@ -53,7 +53,7 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
         double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
         double randDir = ThreadLocalRandom.current().nextInt(0, 360);
         // Execute subject task
-        new RouteTask(routeListener, new Pair<>(randSpeed, randDir))
+        new RouteTask(routeListener, databaseViewModel.getApplication().getApplicationContext(), new Pair<>(randSpeed, randDir))
                 .executeOnExecutor(THREAD_POOL_EXECUTOR, target);
 
         for (int i = 0; i < guestCount; i++) {
@@ -69,7 +69,7 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
             double guestRandSpeed = ThreadLocalRandom.current().nextInt(0, 10);
             double guestRandDir = ThreadLocalRandom.current().nextInt(0, 360);
             // Execute subject task
-            new RouteTask(guestRouteListener, new Pair<>(guestRandSpeed, guestRandDir))
+            new RouteTask(guestRouteListener, databaseViewModel.getApplication().getApplicationContext(), new Pair<>(guestRandSpeed, guestRandDir))
                     .executeOnExecutor(THREAD_POOL_EXECUTOR, target);
         }
         return null;

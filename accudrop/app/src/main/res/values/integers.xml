@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="pref_default_downwind_altitude">300</integer>
+    <integer name="pref_default_crosswind_altitude">180</integer>
+    <integer name="pref_default_upwind_altitude">90</integer>
+    <integer name="pref_guidance_proximity_warning_distance">10</integer>
+</resources>

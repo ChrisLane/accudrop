@@ -151,7 +151,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
                 map.clear();
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                String unitString = sharedPref.getString("pref_unit", "");
+                String unitString = sharedPref.getString("general_unit", "");
 
                 Util.Unit unit = Util.getUnit(unitString);
                 for (int i = 0; i < route.size() - 1; i++) {
@@ -163,7 +163,8 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
                             .color(Color.RED));
                     map.addMarker(new MarkerOptions()
                             .position(GnssViewModel.getLatLng(point1))
-                            .title(Util.getAltitudeText(point1.getAltitude(), unit))
+                            .title(Util.getAltitudeText(
+                                    Util.getAltitudeInUnit(point1.getAltitude(), unit), unit))
                     );
                 }
 

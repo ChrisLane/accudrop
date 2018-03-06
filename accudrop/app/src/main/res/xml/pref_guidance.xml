@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="guidance_enabled"
+        android:title="@string/pref_title_guidance_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="@integer/pref_guidance_proximity_warning_distance"
+        android:inputType="number"
+        android:key="guidance_warning_distance"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_guidance_proximity_warning_distance" />
+
+</PreferenceScreen>

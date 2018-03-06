@@ -1,0 +1,25 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="me.chrislane.accudrop.preference.SettingsActivity$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_pref_general"
+        android:title="@string/pref_header_general" />
+
+    <header
+        android:fragment="me.chrislane.accudrop.preference.SettingsActivity$CanopyPreferenceFragment"
+        android:icon="@drawable/ic_pref_canopy"
+        android:title="@string/pref_header_canopy" />
+
+    <header
+        android:fragment="me.chrislane.accudrop.preference.SettingsActivity$LandingPatternPreferenceFragment"
+        android:icon="@drawable/ic_pref_landing_pattern"
+        android:title="@string/pref_header_landing_pattern" />
+
+    <header
+        android:fragment="me.chrislane.accudrop.preference.SettingsActivity$GuidancePreferenceFragment"
+        android:icon="@drawable/ic_pref_guidance"
+        android:title="@string/pref_header_guidance" />
+
+</preference-headers>

@@ -54,6 +54,14 @@ public class Util {
         }
     }
 
+    public static double getAltitudeInUnit(double altitude, Unit unit) {
+        if (unit == Unit.IMPERIAL) {
+            return metresToFeet(altitude);
+        }
+
+        return altitude;
+    }
+
     /**
      * Convert metres to kilometres.
      *

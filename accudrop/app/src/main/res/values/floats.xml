@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="pref_default_airspeed" format="float" type="integer">15.5</item>
+    <item name="pref_default_glide_ratio" format="float" type="integer">2.5</item>
+</resources>

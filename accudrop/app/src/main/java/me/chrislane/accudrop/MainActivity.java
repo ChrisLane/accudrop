@@ -2,6 +2,7 @@ package me.chrislane.accudrop;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -33,8 +34,9 @@ import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
-import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.preference.SettingsActivity;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 import me.chrislane.accudrop.viewmodel.WindViewModel;
@@ -135,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.text_to_speech_test:
                 // TODO: Remove example code after demonstration
@@ -234,7 +238,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Initialise the app preferences.
      */
     private void initPreferences() {
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_canopy, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_guidance, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_landing_pattern, false);
         SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         if (!settings.contains("userUUID")) {
             settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply();

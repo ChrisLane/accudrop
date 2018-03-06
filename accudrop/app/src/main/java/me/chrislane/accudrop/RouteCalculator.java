@@ -1,8 +1,13 @@
 package me.chrislane.accudrop;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.location.Location;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
+import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,22 +20,46 @@ public class RouteCalculator {
 
     private static final String TAG = RouteCalculator.class.getSimpleName();
     private final List<Location> route = new ArrayList<>();
-    private final double airspeed = 15.4; // Metres per second
-    private final double descentRate = 6.16; // Metres per second
+    private double airspeed; // Metres per second
+    private double descentRate; // Metres per second
     private final double windDirection;
     private final double windSpeed;
-    private final double p3Altitude = 91.44; // 300ft
-    private final double p2Altitude = 182.88; // 600ft
-    private final double p1Altitude = 304.8; // 1000ft
+    private double p3Altitude;
+    private double p2Altitude;
+    private double p1Altitude;
     private LatLng target;
     private Location p3;
     private Location p2;
     private Location p1;
 
-    public RouteCalculator(Pair<Double, Double> wind, LatLng target) {
+    public RouteCalculator(Context context, Pair<Double, Double> wind, LatLng target) {
         this.windSpeed = wind.first;
         this.windDirection = wind.second;
         this.target = target;
+
+        setFromPreferences(context);
+    }
+
+    public void setFromPreferences(Context context) {
+        // Unfortunately EditTextPreferences don't save in number format
+        Resources resources = context.getResources();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        p1Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_downwind_altitude",
+                String.valueOf(resources.getInteger(R.integer.pref_default_downwind_altitude))));
+        p2Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_crosswind_altitude",
+                String.valueOf(resources.getInteger(R.integer.pref_default_crosswind_altitude))));
+        p3Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_upwind_altitude",
+                String.valueOf(resources.getInteger(R.integer.pref_default_upwind_altitude))));
+
+        TypedValue typedValue = new TypedValue();
+        resources.getValue(R.integer.pref_default_airspeed, typedValue, false);
+        airspeed = Float.valueOf(sharedPreferences.getString("canopy_airspeed",
+                String.valueOf(typedValue.getFloat())));
+
+        resources.getValue(R.integer.pref_default_glide_ratio, typedValue, false);
+        double glideRatio = Float.valueOf(sharedPreferences.getString("canopy_glide_ratio",
+                String.valueOf(typedValue.getFloat())));
+        descentRate = getSinkSpeed(airspeed, glideRatio);
     }
 
     /**

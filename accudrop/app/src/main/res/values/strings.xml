@@ -1,25 +1,61 @@
 <resources>
     <string name="app_name">AccuDrop</string>
 
+    <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="text_to_speech_test">TTS Test</string>
-
+    <!-- Main fragment -->
     <string name="main_fragment_warning">This app is a proof of concept. Should you get a hold of this app, you should not attempt to
     use it in any safety critical situations such as real skydiving.</string>
 
+
+    <!-- Jump fragment -->
     <string name="calibrate_button">Calibrate</string>
     <string name="pressure_altitude_label">Altitude</string>
     <string name="unknown_value">\?</string>
     <string name="jump_button_off">Jump!</string>
     <string name="jump_button_on">Stop Jump</string>
-    <string name="pref_unit">Unit of Measurement</string>
-    <string name="pref_unit_default">metric</string>
+
+
+    <!-- Options -->
+    <string name="action_settings">Settings</string>
+    <string name="text_to_speech_test">TTS Test</string>
     <string name="generate_jump">Generate Jump</string>
     <string name="generate_guest_jump">Generate Guest Jump</string>
     <string name="clear_database">Clear Database</string>
+
+
+    <!-- Notifications -->
     <string name="notification_channel_name">AccuDrop</string>
     <string name="notification_channel_description">Logging Jump</string>
+
+
+    <!-- Strings related to Settings -->
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_general_unit">Unit of measurement</string>
+    <string name="pref_default_unit">metric</string>
+
+    <!-- Settings for landing pattern -->
+    <string name="pref_header_landing_pattern">Landing pattern</string>
+
+    <string name="pref_title_landing_pattern_downwind_altitude">Downwind altitude</string>
+    <string name="pref_title_landing_pattern_crosswind_altitude">Crosswind altitude</string>
+    <string name="pref_title_landing_pattern_upwind_altitude">Upwind altitude</string>
+
+    <!-- Settings for canopy -->
+    <string name="pref_header_canopy">Canopy</string>
+
+    <string name="pref_title_canopy_airspeed">Airspeed</string>
+    <string name="pref_title_canopy_glide_ratio">Glide ratio</string>
+
+    <!-- Settings for guidance -->
+    <string name="pref_header_guidance">Guidance</string>
+
+    <string name="pref_title_guidance_enabled">Enabled</string>
+    <string name="pref_title_guidance_proximity_warning_distance">Proximity warning distance</string>
 </resources>
