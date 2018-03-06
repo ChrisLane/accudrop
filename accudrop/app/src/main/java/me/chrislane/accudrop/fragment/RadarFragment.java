@@ -150,8 +150,8 @@ public class RadarFragment extends Fragment {
             // We're supposed to call performClick for accessibility reasons
             performClick();
 
-            float xArea = 20;
-            float yArea = 20;
+            float xArea = 25;
+            float yArea = 25;
 
             Pair<UUID, PointF> closestPoint = null;
             float bestScore = xArea + yArea;
