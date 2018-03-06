@@ -1,5 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -21,22 +23,26 @@ import android.widget.SeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.presenter.RadarPresenter;
+import me.chrislane.accudrop.viewmodel.RadarViewModel;
 
 public class RadarFragment extends Fragment {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
     private RadarPresenter presenter;
     private Radar radar;
+    private RadarViewModel radarViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         presenter = new RadarPresenter(this);
+        radarViewModel = ViewModelProviders.of(this).get(RadarViewModel.class);
     }
 
     @Override
@@ -123,9 +129,55 @@ public class RadarFragment extends Fragment {
         private final String TAG = Radar.class.getSimpleName();
         Paint paint = new Paint();
         RectF oval = new RectF();
+        List<Pair<UUID, PointF>> points = new ArrayList<>();
 
         public Radar(Context context) {
             super(context);
+        }
+
+        @Override
+        public boolean performClick() {
+            return super.performClick();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            super.onTouchEvent(event);
+
+            if (event.getAction() != MotionEvent.ACTION_DOWN) {
+                return false;
+            }
+            // We're supposed to call performClick for accessibility reasons
+            performClick();
+
+            float xArea = 20;
+            float yArea = 20;
+
+            Pair<UUID, PointF> closestPoint = null;
+            float bestScore = xArea + yArea;
+            for (Pair<UUID, PointF> userPoint : points) {
+                PointF point = userPoint.second;
+
+                if (point != null) {
+                    float xDistance = Math.abs(point.x - event.getX());
+                    float yDistance = Math.abs(point.y - event.getY());
+                    Log.v(TAG, "Distances: " + xDistance + ", " + yDistance);
+                    if (xDistance < xArea && yDistance < yArea) {
+                        float score = xDistance + yDistance;
+                        if (score < bestScore) {
+                            bestScore = score;
+                            closestPoint = userPoint;
+                        }
+                    }
+                }
+            }
+            if (closestPoint != null) {
+                Log.v(TAG, "Setting subject to " + closestPoint.first);
+                radarViewModel.setSubject(closestPoint.first);
+                return true;
+            }
+
+            return false;
         }
 
         @Override
@@ -153,8 +205,11 @@ public class RadarFragment extends Fragment {
 
             List<PointF> positions = getScaledPositions(width, height, shrink);
             List<Double> heightDiffs = getScaledAltitudes(height);
+            List<UUID> uuids = presenter.getUuids();
             paint.setColor(Color.RED);
-            for (int i = 0; i < positions.size(); i++) {
+
+            points.clear();
+            for (int i = 0; i < positions.size() && i < heightDiffs.size() && i < uuids.size(); i++) {
                 PointF position = positions.get(i);
                 Log.v(TAG, "Width: " + width + ", Height: " + height);
                 Log.v(TAG, "Adding Pos: " + position);
@@ -167,8 +222,12 @@ public class RadarFragment extends Fragment {
 
                 // Draw circle
                 paint.setColor(Color.RED);
-                canvas.drawCircle(width - position.x, height - newY,
-                        (width + height) * 0.003f, paint);
+                float pointX = width - position.x;
+                float pointY = height - newY;
+                canvas.drawCircle(pointX, pointY, (width + height) * 0.003f, paint);
+
+                // Store user and circle position
+                points.add(Pair.create(uuids.get(i), new PointF(pointX, pointY)));
             }
         }
     }

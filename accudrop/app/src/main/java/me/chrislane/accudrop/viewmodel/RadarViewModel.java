@@ -11,6 +11,7 @@ import java.util.UUID;
 public class RadarViewModel extends ViewModel {
     private MutableLiveData<UUID> subject = new MutableLiveData<>();
     private MutableLiveData<Date> subjectTime = new MutableLiveData<>();
+    private MutableLiveData<Integer> jumpId = new MutableLiveData<>();
 
     public LiveData<UUID> getSubject() {
         return subject;
@@ -26,5 +27,13 @@ public class RadarViewModel extends ViewModel {
 
     public void setSubjectTime(Date subjectTime) {
         this.subjectTime.setValue(subjectTime);
+    }
+
+    public LiveData<Integer> getJumpId() {
+        return jumpId;
+    }
+
+    public void setJumpId(int jumpId) {
+        this.jumpId.setValue(jumpId);
     }
 }
