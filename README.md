@@ -7,5 +7,6 @@ Project Supervisor: Alan P. Sexton
 
 ## Tools and Frameworks
 - Android SDK
+- Android Studio
 - IntelliJ Idea
 - OpenWeatherMap API
