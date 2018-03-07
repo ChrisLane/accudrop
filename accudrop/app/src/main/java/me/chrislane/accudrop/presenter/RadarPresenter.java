@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
@@ -27,17 +26,8 @@ public class RadarPresenter {
     private final RadarFragment fragment;
     private final RadarViewModel radarViewModel;
     private DatabaseViewModel databaseViewModel = null;
-    // TODO #48: Move data below to the view model
     private int maxHDistance = 500; // In metres
     private int maxVDistance = 50; // In metres
-    private List<Location> subjectLocs;
-    private List<Pair<Float, Float>> positions = new ArrayList<>();
-    private List<Double> heightDiffs = new ArrayList<>();
-    private List<Pair<UUID, Location>> guestLocations;
-    private List<Pair<UUID, List<Location>>> guestEntries;
-    private ArrayList<UUID> uuids = new ArrayList<>();
-    private Pair<UUID, List<Location>> subjectEntry;
-    private long time;
 
     public RadarPresenter(RadarFragment fragment) {
         this.fragment = fragment;
@@ -56,6 +46,7 @@ public class RadarPresenter {
         radarViewModel.setSubject(uuid);
 
         subscribeToSubject();
+        subscribeToTime();
 
         FetchLastJumpIdTask.Listener listener = jumpId -> {
             if (jumpId != null) {
@@ -67,14 +58,20 @@ public class RadarPresenter {
     }
 
     public void test() {
-        guestEntries = new ArrayList<>();
+        radarViewModel.setGuestEntries(new ArrayList<>());
+        List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
+        if (guestEntries == null) {
+            return;
+        }
+
         List<Location> locationList1 = new ArrayList<>();
         Location location1 = new Location("");
         location1.setLatitude(38.696680);
         location1.setLongitude(1.448990);
         location1.setAltitude(1);
         locationList1.add(location1);
-        subjectEntry = new Pair<>(UUID.fromString("a4f4231a-1a1a-40be-8fa2-632943fb1411"), locationList1);
+        radarViewModel.setSubjectEntry(
+                new Pair<>(UUID.fromString("a4f4231a-1a1a-40be-8fa2-632943fb1411"), locationList1));
 
         List<Location> locationList2 = new ArrayList<>();
         Location location2 = new Location("");
@@ -107,36 +104,45 @@ public class RadarPresenter {
             if (jumpId == null) {
                 generateLastJumpPositions(uuid);
             } else {
-                updateSubject(uuid);
+                subjectUpdated(uuid);
             }
         };
         radarViewModel.getSubject().observe(fragment, subjectObserver);
     }
 
-    public void updateSubject(UUID subject) {
-        guestEntries.add(subjectEntry);
-        guestEntries = extractSubject(subject, guestEntries);
+    public void subjectUpdated(UUID subject) {
+        Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
+        List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
+        if (subjectEntry == null || guestEntries == null) {
+            return;
+        }
 
-        if (subjectLocs != null) {
-            guestLocations = getGuestLocations(guestEntries, time);
-            updateGuestRelatives(guestLocations, time);
+        guestEntries.add(subjectEntry);
+        guestEntries = separateEntries(subject, guestEntries);
+
+        Long time = radarViewModel.getSubjectTime().getValue();
+        List<Location> subjectLocs = subjectEntry.second;
+        if (subjectLocs != null && time != null) {
+            radarViewModel.setGuestLocations(getGuestLocations(guestEntries, time));
+            updateGuestRelatives(radarViewModel.getGuestLocations().getValue(), time);
         }
     }
 
-    public List<Pair<UUID, List<Location>>> extractSubject(UUID subject,
-                                                           List<Pair<UUID, List<Location>>> userEntries) {
+    public List<Pair<UUID, List<Location>>> separateEntries(UUID subject,
+                                                            List<Pair<UUID, List<Location>>> userEntries) {
         for (int i = 0; i < userEntries.size(); i++) {
             Pair<UUID, List<Location>> userEntry = userEntries.get(i);
             if (userEntry.first != null &&
                     userEntry.first.equals(subject)) {
-                subjectEntry = userEntry;
-                subjectLocs = userEntry.second;
+                radarViewModel.setSubjectEntry(userEntry);
                 userEntries.remove(i);
+                break;
             }
         }
 
+        Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
         // None of the users were the subject.
-        if (subjectLocs == null) {
+        if (subjectEntry == null || subjectEntry.second == null) {
             Log.e(TAG, "Subject does not exist in jump data.");
             return null;
         }
@@ -150,12 +156,16 @@ public class RadarPresenter {
                 return;
             }
 
-            guestEntries = extractSubject(subject, userEntries);
-
-            if (subjectLocs != null) {
-                long startTime = subjectLocs.get(0).getTime();
-                guestLocations = getGuestLocations(guestEntries, startTime);
-                updateGuestRelatives(guestLocations, startTime);
+            radarViewModel.setGuestEntries(separateEntries(subject, userEntries));
+            Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
+            List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
+            if (subjectEntry != null && guestEntries != null) {
+                List<Location> subjectLocs = subjectEntry.second;
+                if (subjectLocs != null) {
+                    long startTime = subjectLocs.get(0).getTime();
+                    radarViewModel.setGuestLocations(getGuestLocations(guestEntries, startTime));
+                    updateGuestRelatives(radarViewModel.getGuestLocations().getValue(), startTime);
+                }
             }
         };
         new FetchUsersAndPositionsTask(listener, databaseViewModel).execute();
@@ -175,9 +185,20 @@ public class RadarPresenter {
     }
 
     public void updateTime(long time) {
-        this.time = time;
-        guestLocations = getGuestLocations(guestEntries, time);
-        updateGuestRelatives(guestLocations, time);
+        radarViewModel.setSubjectTime(time);
+    }
+
+    public void subscribeToTime() {
+        final Observer<Long> timeObserver = time -> {
+            if (time != null) {
+                List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
+                if (guestEntries != null) {
+                    radarViewModel.setGuestLocations(getGuestLocations(guestEntries, time));
+                    updateGuestRelatives(radarViewModel.getGuestLocations().getValue(), time);
+                }
+            }
+        };
+        radarViewModel.getSubjectTime().observe(fragment, timeObserver);
     }
 
     private Location getLocationByTime(List<Location> locations, long time) {
@@ -209,13 +230,20 @@ public class RadarPresenter {
                 ? locations.get(low) : locations.get(high);
     }
 
-    @Nullable
-    public List<Location> getSubjectLocations() {
-        return subjectEntry.second;
-    }
-
     public void updateGuestRelatives(List<Pair<UUID, Location>> locations, long time) {
-        if (subjectLocs.isEmpty() || locations.isEmpty()) {
+        List<Double> guestHeightDiffs = radarViewModel.getGuestHeightDiffs().getValue();
+        List<Pair<Float, Float>> relativeGuestPositions =
+                radarViewModel.getRelativeGuestPositions().getValue();
+        Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
+        List<UUID> guestsInView = radarViewModel.getGuestsInView().getValue();
+
+        if (guestHeightDiffs == null || relativeGuestPositions == null
+                || subjectEntry == null || guestsInView == null) {
+            return;
+        }
+        List<Location> subjectLocs = subjectEntry.second;
+
+        if (subjectLocs == null || subjectLocs.isEmpty() || locations.isEmpty()) {
             return;
         }
 
@@ -233,9 +261,9 @@ public class RadarPresenter {
             return;
         }
 
-        uuids.clear();
-        positions.clear();
-        heightDiffs.clear();
+        guestsInView.clear();
+        relativeGuestPositions.clear();
+        guestHeightDiffs.clear();
 
         // Loop over user position arrays
         for (Pair<UUID, Location> guest : locations) {
@@ -250,26 +278,14 @@ public class RadarPresenter {
                     // Add to list of positions to draw
                     float bearingTo = subjectLoc.bearingTo(guest.second);
                     Log.v(TAG, "Bearing: " + bearingTo);
-                    uuids.add(guest.first);
-                    positions.add(new Pair<>(bearingTo, hDistanceTo));
-                    heightDiffs.add(vDistanceTo);
+                    guestsInView.add(guest.first);
+                    relativeGuestPositions.add(new Pair<>(bearingTo, hDistanceTo));
+                    guestHeightDiffs.add(vDistanceTo);
                 }
             }
         }
 
         fragment.updateRadarPoints();
-    }
-
-    public List<Pair<Float, Float>> getPositions() {
-        return positions;
-    }
-
-    public List<Double> getHeightDiffs() {
-        return heightDiffs;
-    }
-
-    public List<UUID> getUuids() {
-        return uuids;
     }
 
     public int getMaxVDistance() {

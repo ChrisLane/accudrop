@@ -66,26 +66,28 @@ public class RadarFragment extends Fragment {
 
     private List<PointF> getScaledPositions(int width, int height, float shrink) {
         int maxHDistance = presenter.getMaxHDistance();
-        List<Pair<Float, Float>> positions = presenter.getPositions(); // bearing, distance
+        List<Pair<Float, Float>> relativePositions = radarViewModel.getRelativeGuestPositions().getValue(); // bearing, distance
         List<PointF> result = new ArrayList<>();
 
-        for (Pair<Float, Float> position : positions) {
-            if (position.first != null && position.second != null) {
-                // Scale distance to ellipse width
-                double scaledDistance = Util.getScaledValue(position.second, 0, maxHDistance, 0, width / 2f);
-                Log.v(TAG, "Scaled H Distance: " + scaledDistance);
-                // Calculate cartesian coordinate
-                PointF newPoint = calculateCartesian(position.first, scaledDistance);
-                Log.v(TAG, "After Cartesian: " + newPoint);
-                // Apply shrink to stay within ellipse
-                newPoint = applyShrink(newPoint, shrink);
-                Log.v(TAG, "After Shrink: " + newPoint);
-                // Move position to be relative to the centre of the screen
-                newPoint = calculateRelative(newPoint, new PointF(width / 2, height / 2));
-                Log.v(TAG, "After Relative: " + newPoint);
+        if (relativePositions != null) {
+            for (Pair<Float, Float> position : relativePositions) {
+                if (position.first != null && position.second != null) {
+                    // Scale distance to ellipse width
+                    double scaledDistance = Util.getScaledValue(position.second, 0, maxHDistance, 0, width / 2f);
+                    Log.v(TAG, "Scaled H Distance: " + scaledDistance);
+                    // Calculate cartesian coordinate
+                    PointF newPoint = calculateCartesian(position.first, scaledDistance);
+                    Log.v(TAG, "After Cartesian: " + newPoint);
+                    // Apply shrink to stay within ellipse
+                    newPoint = applyShrink(newPoint, shrink);
+                    Log.v(TAG, "After Shrink: " + newPoint);
+                    // Move position to be relative to the centre of the screen
+                    newPoint = calculateRelative(newPoint, new PointF(width / 2, height / 2));
+                    Log.v(TAG, "After Relative: " + newPoint);
 
-                // Add to the result
-                result.add(newPoint);
+                    // Add to the result
+                    result.add(newPoint);
+                }
             }
         }
 
@@ -94,14 +96,16 @@ public class RadarFragment extends Fragment {
 
     private List<Double> getScaledAltitudes(int height) {
         int maxVDistance = presenter.getMaxVDistance();
-        List<Double> heightDiffs = presenter.getHeightDiffs();
+        List<Double> guestHeightDiffs = radarViewModel.getGuestHeightDiffs().getValue();
         List<Double> result = new ArrayList<>();
 
-        for (Double heightDiff : heightDiffs) {
-            // Scale the vertical distance with the screen height
-            double scaledDiff = Util.getScaledValue(heightDiff, 0, maxVDistance, 0, height / 2f);
-            Log.v(TAG, "Scaled V Distance: " + scaledDiff);
-            result.add(scaledDiff);
+        if (guestHeightDiffs != null) {
+            for (Double heightDiff : guestHeightDiffs) {
+                // Scale the vertical distance with the screen height
+                double scaledDiff = Util.getScaledValue(heightDiff, 0, maxVDistance, 0, height / 2f);
+                Log.v(TAG, "Scaled V Distance: " + scaledDiff);
+                result.add(scaledDiff);
+            }
         }
 
         return result;
@@ -205,11 +209,14 @@ public class RadarFragment extends Fragment {
 
             List<PointF> positions = getScaledPositions(width, height, shrink);
             List<Double> heightDiffs = getScaledAltitudes(height);
-            List<UUID> uuids = presenter.getUuids();
+            List<UUID> guestsInView = radarViewModel.getGuestsInView().getValue();
+            if (guestsInView == null) {
+                return;
+            }
             paint.setColor(Color.RED);
 
             points.clear();
-            for (int i = 0; i < positions.size() && i < heightDiffs.size() && i < uuids.size(); i++) {
+            for (int i = 0; i < positions.size() && i < heightDiffs.size() && i < guestsInView.size(); i++) {
                 PointF position = positions.get(i);
                 Log.v(TAG, "Width: " + width + ", Height: " + height);
                 Log.v(TAG, "Adding Pos: " + position);
@@ -227,7 +234,7 @@ public class RadarFragment extends Fragment {
                 canvas.drawCircle(pointX, pointY, (width + height) * 0.003f, paint);
 
                 // Store user and circle position
-                points.add(Pair.create(uuids.get(i), new PointF(pointX, pointY)));
+                points.add(Pair.create(guestsInView.get(i), new PointF(pointX, pointY)));
             }
         }
     }
@@ -236,8 +243,11 @@ public class RadarFragment extends Fragment {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            List<Location> subjectLocs = presenter.getSubjectLocations();
+            Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
+            if (subjectEntry == null) {
+                return;
+            }
+            List<Location> subjectLocs = subjectEntry.second;
 
             if (subjectLocs != null) {
                 int newIndex = (int) Util.getScaledValue(progress, 0, 100,
