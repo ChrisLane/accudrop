@@ -33,8 +33,7 @@
 
         <service
             android:name=".service.LocationService"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true" />
 
         <activity
             android:name=".preference.SettingsActivity"
