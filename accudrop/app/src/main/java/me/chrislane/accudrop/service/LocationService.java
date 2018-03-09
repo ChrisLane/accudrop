@@ -4,14 +4,20 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.listener.ReadingListener;
+import me.chrislane.accudrop.network.BroadcastReceiver;
+import me.chrislane.accudrop.network.CoordSender;
+import me.chrislane.accudrop.network.Peer2Peer;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
@@ -25,6 +31,8 @@ public class LocationService extends Service {
     private PressureViewModel pressureViewModel;
     private GnssViewModel gnssViewModel;
     private ReadingListener readingListener;
+    private BroadcastReceiver receiver;
+    private CoordSender coordSender;
 
     public LocationService() {
 
@@ -55,7 +63,14 @@ public class LocationService extends Service {
         gnssViewModel.getGnssListener().startListening();
         pressureViewModel.getPressureListener().startListening();
 
+        // Register broadcast p2pReceiver
+        Peer2Peer p2p = new Peer2Peer(this);
+        receiver = p2p.getReceiver();
+        IntentFilter intentFilter = p2p.getIntentFilter();
+        registerReceiver(receiver, intentFilter);
+        subscribeToLocation();
 
+        // Build notification for foreground service
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create and set required notification channel for Android O
@@ -103,6 +118,8 @@ public class LocationService extends Service {
         gnssViewModel.getGnssListener().stopListening();
         pressureViewModel.getPressureListener().stopListening();
 
+        unregisterReceiver(receiver);
+
         stopForeground(true);
         Log.i(TAG, "Location service stopped.");
     }
@@ -110,5 +127,18 @@ public class LocationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    public void setCoordSender(CoordSender coordSender) {
+        this.coordSender = coordSender;
+    }
+
+    public void subscribeToLocation() {
+        final Observer<Location> locationObserver = location -> {
+            if (coordSender != null && location != null) {
+                coordSender.write(location.toString().getBytes());
+            }
+        };
+        gnssViewModel.getLastLocation().observeForever(locationObserver);
     }
 }
