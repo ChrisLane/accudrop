@@ -160,7 +160,7 @@ public class ReadingListener {
      * @param location The location of the position.
      * @param altitude The altitude of the position.
      */
-    private void addPositionToDb(Integer jumpId, Location location, Float altitude, double vSpeed) {
+    private void addPositionToDb(Integer jumpId, Location location, Float altitude, Double vSpeed) {
         SharedPreferences settings = databaseViewModel.getApplication()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String uuid = settings.getString("userUUID", "");
