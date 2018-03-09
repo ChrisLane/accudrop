@@ -11,8 +11,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import me.chrislane.accudrop.db.Position;
-import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.network.CoordSender;
+import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
+import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class ReadingListener {
@@ -21,14 +23,17 @@ public class ReadingListener {
     private final GnssViewModel gnssViewModel;
     private final PressureViewModel pressureViewModel;
     private final DatabaseViewModel databaseViewModel;
+    private final LocationService locationService;
     private boolean logging = false;
+    private CoordSender coordSender;
     private Integer jumpId;
     private Float prevAlt;
     private Long prevTime;
     private Double vSpeed;
 
-    public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
+    public ReadingListener(LocationService locationService, GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            DatabaseViewModel databaseViewModel) {
+        this.locationService = locationService;
         this.pressureViewModel = pressureViewModel;
         this.gnssViewModel = gnssViewModel;
         this.databaseViewModel = databaseViewModel;
@@ -84,6 +89,13 @@ public class ReadingListener {
             vSpeed = getFallRate(altitude);
             if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
+            }
+
+            if (coordSender != null && location != null) {
+                // TODO: Only send new location after a set distance moved
+                String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
+                        location.getLongitude(), altitude);
+                coordSender.write(send.getBytes());
             }
 
             // Should we stop logging?
@@ -150,6 +162,13 @@ public class ReadingListener {
             if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
+
+            if (coordSender != null && altitude != null) {
+                // TODO: Only send new location after a set distance moved
+                String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
+                        location.getLongitude(), altitude);
+                coordSender.write(send.getBytes());
+            }
         }
     }
 
@@ -204,5 +223,9 @@ public class ReadingListener {
     public void disableLogging() {
         logging = false;
         Log.i(TAG, "Logging disabled.");
+    }
+
+    public void setCoordSender(CoordSender coordSender) {
+        this.coordSender = coordSender;
     }
 }

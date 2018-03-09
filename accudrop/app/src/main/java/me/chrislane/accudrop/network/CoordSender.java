@@ -55,6 +55,7 @@ public class CoordSender implements Runnable {
     }
 
     public void write(byte[] buffer) {
+        // TODO: Send data as anything but strings...
         AsyncTask.execute(() -> {
             try {
                 out.write(buffer);

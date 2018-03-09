@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +11,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.listener.ReadingListener;
@@ -32,7 +32,7 @@ public class LocationService extends Service {
     private GnssViewModel gnssViewModel;
     private ReadingListener readingListener;
     private BroadcastReceiver receiver;
-    private CoordSender coordSender;
+    private Peer2Peer p2p;
 
     public LocationService() {
 
@@ -46,7 +46,7 @@ public class LocationService extends Service {
         gnssViewModel = new GnssViewModel(getApplication());
         pressureViewModel = new PressureViewModel(getApplication());
         DatabaseViewModel databaseViewModel = new DatabaseViewModel(getApplication());
-        readingListener = new ReadingListener(gnssViewModel, pressureViewModel, databaseViewModel);
+        readingListener = new ReadingListener(this, gnssViewModel, pressureViewModel, databaseViewModel);
 
         // Set ground pressure value
         if (intent != null) {
@@ -64,11 +64,11 @@ public class LocationService extends Service {
         pressureViewModel.getPressureListener().startListening();
 
         // Register broadcast p2pReceiver
-        Peer2Peer p2p = new Peer2Peer(this);
+        // TODO: Check preference before starting P2P proximity checks
+        p2p = new Peer2Peer(this);
         receiver = p2p.getReceiver();
         IntentFilter intentFilter = p2p.getIntentFilter();
         registerReceiver(receiver, intentFilter);
-        subscribeToLocation();
 
         // Build notification for foreground service
         Notification notification;
@@ -119,6 +119,8 @@ public class LocationService extends Service {
         pressureViewModel.getPressureListener().stopListening();
 
         unregisterReceiver(receiver);
+        p2p.endConnection();
+
 
         stopForeground(true);
         Log.i(TAG, "Location service stopped.");
@@ -130,15 +132,28 @@ public class LocationService extends Service {
     }
 
     public void setCoordSender(CoordSender coordSender) {
-        this.coordSender = coordSender;
+        readingListener.setCoordSender(coordSender);
     }
 
-    public void subscribeToLocation() {
-        final Observer<Location> locationObserver = location -> {
-            if (coordSender != null && location != null) {
-                coordSender.write(location.toString().getBytes());
+    public void checkProximity(Double lat, Double lng, Float altitude) {
+        // TODO: Move proximity checking code into its own class
+        Location them = new Location("");
+        them.setLatitude(lat);
+        them.setLongitude(lng);
+        them.setAltitude(altitude);
+
+        Location us = gnssViewModel.getLastLocation().getValue();
+        Float usAlti = pressureViewModel.getLastAltitude().getValue();
+
+        if (us != null && usAlti != null) {
+            us.setAltitude(usAlti);
+            float distance = us.distanceTo(them);
+            if (distance < 1) {
+                // TODO: Replace with a meaningful warning
+                // TODO: Save the warning details
+                Toast.makeText(this, "Proximity warning. Danger!.",
+                        Toast.LENGTH_SHORT).show();
             }
-        };
-        gnssViewModel.getLastLocation().observeForever(locationObserver);
+        }
     }
 }

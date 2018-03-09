@@ -183,7 +183,15 @@ public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
             case COORD_MSG:
                 byte[] buffer = (byte[]) msg.obj;
                 String coordString = new String(buffer, 0, msg.arg1);
-                Log.d(TAG, "Coord String: " + coordString);
+                Log.d(TAG, "Location String: " + coordString);
+                String[] strings = coordString.split(" ");
+                if (strings.length == 3) {
+                    Double lat = Double.valueOf(strings[0]);
+                    Double lng = Double.valueOf(strings[1]);
+                    Float altitude = Float.valueOf(strings[2]);
+
+                    context.checkProximity(lat, lng, altitude);
+                }
                 break;
             case COORD_SENDER:
                 context.setCoordSender((CoordSender) msg.obj);
@@ -200,5 +208,17 @@ public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
         return receiver;
     }
 
+    public void endConnection() {
+        manager.removeGroup(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "Group removed");
+            }
 
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Failed to remove group");
+            }
+        });
+    }
 }
