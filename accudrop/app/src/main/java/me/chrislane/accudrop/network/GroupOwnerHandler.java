@@ -22,6 +22,7 @@ class GroupOwnerHandler extends Thread {
     GroupOwnerHandler(Handler handler) {
         try {
             socket = new ServerSocket(Peer2Peer.SERVER_PORT);
+            socket.setReuseAddress(true);
             this.handler = handler;
             Log.d(TAG, "Socket created");
         } catch (IOException e) {

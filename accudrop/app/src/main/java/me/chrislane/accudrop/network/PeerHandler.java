@@ -22,6 +22,7 @@ class PeerHandler extends Thread {
 
         Socket socket = new Socket();
         try {
+            socket.setReuseAddress(true);
             socket.bind(null);
             socket.connect(new InetSocketAddress(groupOwnerAddress, Peer2Peer.SERVER_PORT),
                     5000);
