@@ -39,6 +39,8 @@ public class Position {
 
     public Date time;
 
+    public FallType fallType;
+
     @ColumnInfo(name = "jump_id")
     @NonNull
     public int jumpId;

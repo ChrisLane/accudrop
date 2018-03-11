@@ -7,10 +7,11 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import me.chrislane.accudrop.db.converter.DateConverter;
+import me.chrislane.accudrop.db.converter.FallTypeConverter;
 import me.chrislane.accudrop.db.converter.UuidConverter;
 
-@Database(entities = {Jump.class, Position.class}, version = 5)
-@TypeConverters({DateConverter.class, UuidConverter.class})
+@Database(entities = {Jump.class, Position.class}, version = 6)
+@TypeConverters({DateConverter.class, UuidConverter.class, FallTypeConverter.class})
 public abstract class AccudropDb extends RoomDatabase {
 
     private static AccudropDb INSTANCE;
