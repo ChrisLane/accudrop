@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -130,4 +131,28 @@ public interface PositionDao {
             "WHERE useruuid = :uuid AND jump_id = :jumpNumber " +
             "ORDER BY time ASC")
     List<Position> getOrderedLocationsByUserByJumpNumber(UUID uuid, int jumpNumber);
+
+    @Query("SELECT MIN(time) FROM position " +
+            "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
+    Date getFirstDateForUser(UUID uuid, int jumpNumber);
+
+    @Query("SELECT MAX(time) FROM position " +
+            "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
+    Date getLastDateForUser(UUID uuid, int jumpNumber);
+
+    @Query("SELECT MIN(time) FROM position " +
+            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    Date getFirstDateForUser(FallType fallType, UUID uuid, int jumpNumber);
+
+    @Query("SELECT MAX(time) FROM position " +
+            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    Date getLastDateForUser(FallType fallType, UUID uuid, int jumpNumber);
+
+    @Query("SELECT MAX(vspeed) FROM position " +
+            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber ")
+    Double getMaxVSpeed(FallType fallType, UUID uuid, int jumpNumber);
+
+    @Query("SELECT MAX(hspeed) FROM position " +
+            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    Float getMaxHSpeed(FallType fallType, UUID uuid, int jumpNumber);
 }

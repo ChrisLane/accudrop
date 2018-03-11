@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_menu_jump"
             android:title="Jump" />
         <item
+            android:id="@+id/nav_jump_stats"
+            android:icon="@drawable/ic_pref_guidance"
+            android:title="Jump Stats" />
+        <item
             android:id="@+id/nav_landing_pattern"
             android:icon="@drawable/ic_menu_landing_pattern"
             android:title="Landing Pattern" />

@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import me.chrislane.accudrop.db.AccudropDb;
 import me.chrislane.accudrop.fragment.JumpFragment;
+import me.chrislane.accudrop.fragment.JumpStatsFragment;
 import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.RadarFragment;
@@ -181,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_jump:
                 fragmentClass = JumpFragment.class;
+                break;
+            case R.id.nav_jump_stats:
+                fragmentClass = JumpStatsFragment.class;
                 break;
             case R.id.nav_landing_pattern:
                 fragmentClass = PlanFragment.class;

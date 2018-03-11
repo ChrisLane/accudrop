@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import me.chrislane.accudrop.db.AccudropDb;
+import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.db.Position;
 
@@ -240,5 +241,29 @@ public class DatabaseViewModel extends AndroidViewModel {
      */
     public void addPosition(Position position) {
         db.locationModel().insertPosition(position);
+    }
+
+    public Date getFirstDate(UUID uuid, int jumpId) {
+        return db.locationModel().getFirstDateForUser(uuid, jumpId);
+    }
+
+    public Date getLastDate(UUID uuid, int jumpId) {
+        return db.locationModel().getLastDateForUser(uuid, jumpId);
+    }
+
+    public Date getFirstDateOfFallType(FallType fallType, UUID uuid, int jumpId) {
+        return db.locationModel().getFirstDateForUser(fallType, uuid, jumpId);
+    }
+
+    public Date getLastDateOfFallType(FallType fallType, UUID uuid, int jumpId) {
+        return db.locationModel().getLastDateForUser(fallType, uuid, jumpId);
+    }
+
+    public Double getMaxVSpeedOfFallType(FallType fallType, UUID uuid, int jumpId) {
+        return db.locationModel().getMaxVSpeed(fallType, uuid, jumpId);
+    }
+
+    public Float getMaxHSpeedOfFallType(FallType fallType, UUID uuid, int jumpId) {
+        return db.locationModel().getMaxHSpeed(fallType, uuid, jumpId);
     }
 }

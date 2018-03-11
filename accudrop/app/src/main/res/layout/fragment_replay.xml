@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_gravity="bottom"
-            app:srcCompat="@drawable/ic_button_arrow_left" />
+            app:srcCompat="@drawable/ic_button_less" />
 
         <Button
             android:id="@+id/replay_forward_button"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
             android:layout_gravity="bottom|end"
-            app:srcCompat="@drawable/ic_button_arrow_right" />
+            app:srcCompat="@drawable/ic_button_greater" />
 
     </FrameLayout>
 
