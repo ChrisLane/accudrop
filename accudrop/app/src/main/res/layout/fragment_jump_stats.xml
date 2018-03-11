@@ -177,7 +177,7 @@
         app:layout_constraintTop_toBottomOf="@+id/canopy_max_speeds" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/stats_prev_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -187,7 +187,7 @@
         app:layout_constraintTop_toBottomOf="@+id/canopy_max_vspeed_value" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/stats_next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

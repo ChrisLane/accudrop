@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import me.chrislane.accudrop.viewmodel.JumpStatsViewModel;
 
 public class JumpStatsPresenter {
 
+    private static final String TAG = JumpStatsPresenter.class.getSimpleName();
     private final DatabaseViewModel dbViewModel;
     private final JumpStatsFragment fragment;
     private final JumpStatsViewModel viewModel;
@@ -36,7 +38,10 @@ public class JumpStatsPresenter {
         viewModel = ViewModelProviders.of(fragment).get(JumpStatsViewModel.class);
 
         initialise();
+
         subscribeToJumpId();
+        subscribeToJumpRange();
+        subscribeToButtonData();
     }
 
     private void initialise() {
@@ -142,5 +147,59 @@ public class JumpStatsPresenter {
         };
         new FetchTotalDuration(listener, uuid, dbViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpId);
+    }
+
+    private void subscribeToJumpRange() {
+        final Observer<Integer> firstJumpIdObserver = firstJumpId -> {
+            if (firstJumpId != null) {
+                viewModel.setFirstJumpId(firstJumpId);
+            }
+        };
+        dbViewModel.findFirstJumpId().observe(fragment, firstJumpIdObserver);
+
+        final Observer<Integer> lastJumpIdObserver = lastJumpId -> {
+            if (lastJumpId != null) {
+                viewModel.setLastJumpId(lastJumpId);
+            }
+        };
+        dbViewModel.findLastJumpId().observe(fragment, lastJumpIdObserver);
+    }
+
+    private void subscribeToButtonData() {
+        final Observer<Integer> buttonDataObserver = ignored -> {
+            Integer jumpId = viewModel.getJumpId().getValue();
+            Integer firstJumpId = viewModel.getFirstJumpId().getValue();
+            Integer lastJumpId = viewModel.getLastJumpId().getValue();
+
+            Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            if (jumpId != null && firstJumpId != null && lastJumpId != null) {
+                fragment.updateButtons(jumpId, firstJumpId, lastJumpId);
+            }
+        };
+        viewModel.getJumpId().observe(fragment, buttonDataObserver);
+        viewModel.getFirstJumpId().observe(fragment, buttonDataObserver);
+        viewModel.getLastJumpId().observe(fragment, buttonDataObserver);
+    }
+
+    public void prevJump() {
+        Integer jumpId = viewModel.getJumpId().getValue();
+        Integer firstJumpId = viewModel.getFirstJumpId().getValue();
+
+        if (jumpId != null && firstJumpId != null) {
+            if (jumpId > firstJumpId) {
+                viewModel.setJumpId(jumpId - 1);
+            }
+        }
+    }
+
+    public void nextJump() {
+        Integer jumpId = viewModel.getJumpId().getValue();
+        Integer lastJumpId = viewModel.getLastJumpId().getValue();
+
+        if (jumpId != null && lastJumpId != null) {
+            if (jumpId < lastJumpId) {
+                viewModel.setJumpId(jumpId + 1);
+            }
+        }
     }
 }

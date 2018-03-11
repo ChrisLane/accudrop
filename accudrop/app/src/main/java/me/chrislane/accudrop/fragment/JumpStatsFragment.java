@@ -1,13 +1,16 @@
 package me.chrislane.accudrop.fragment;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -20,6 +23,8 @@ public class JumpStatsFragment extends Fragment {
 
     private JumpStatsPresenter presenter;
     private View view;
+    private ImageButton prevButton;
+    private ImageButton nextButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +37,13 @@ public class JumpStatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_jump_stats, container, false);
+
+        // Set button listeners
+        prevButton = view.findViewById(R.id.stats_prev_button);
+        prevButton.setOnClickListener(v -> presenter.prevJump());
+        nextButton = view.findViewById(R.id.stats_next_button);
+        nextButton.setOnClickListener(v -> presenter.nextJump());
+
         return view;
     }
 
@@ -86,5 +98,29 @@ public class JumpStatsFragment extends Fragment {
         int speed = (int) hSpeed;
         TextView textView = view.findViewById(R.id.freefall_max_hspeed_value);
         textView.setText(String.format(Locale.ENGLISH, "%d", speed));
+    }
+
+    public void updateButtons(int jumpId, int firstJumpId, int lastJumpId) {
+        Drawable disabled = ContextCompat.getDrawable(requireContext(), R.drawable.ic_button_disabled);
+        Drawable leftArrow = ContextCompat.getDrawable(requireContext(), R.drawable.ic_button_left_arrow);
+        Drawable rightArrow = ContextCompat.getDrawable(requireContext(), R.drawable.ic_button_right_arrow);
+
+        // Check limits for previous button
+        if (jumpId <= firstJumpId) {
+            prevButton.setImageDrawable(disabled);
+            prevButton.setEnabled(false);
+        } else {
+            prevButton.setImageDrawable(leftArrow);
+            prevButton.setEnabled(true);
+        }
+
+        // Check limits for next button
+        if (jumpId >= lastJumpId) {
+            nextButton.setImageDrawable(disabled);
+            nextButton.setEnabled(false);
+        } else {
+            nextButton.setImageDrawable(rightArrow);
+            nextButton.setEnabled(true);
+        }
     }
 }
