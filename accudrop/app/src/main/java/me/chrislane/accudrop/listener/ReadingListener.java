@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.Date;
 import java.util.Locale;
 
+import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.network.CoordSender;
 import me.chrislane.accudrop.service.LocationService;
@@ -30,6 +31,10 @@ public class ReadingListener {
     private Float prevAlt;
     private Long prevTime;
     private Double vSpeed;
+    private boolean hasFreefallen = false;
+    private boolean isUnderCanopy = false;
+    private int fallToggle = 20;
+    private int canopyToggle = 10;
 
     public ReadingListener(LocationService locationService, GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            DatabaseViewModel databaseViewModel) {
@@ -87,6 +92,16 @@ public class ReadingListener {
             // Add entry to the db.
             Location location = gnssViewModel.getLastLocation().getValue();
             vSpeed = getFallRate(altitude);
+
+            // Decide the fall type
+            if (vSpeed > fallToggle && !hasFreefallen) {
+                // TODO: Set this boolean value when enabling logging
+                hasFreefallen = true;
+            } else if (vSpeed < canopyToggle && hasFreefallen) {
+                isUnderCanopy = true;
+            }
+
+            // Add the position to the database
             if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
@@ -193,6 +208,12 @@ public class ReadingListener {
         pos.time = new Date();
         pos.jumpId = jumpId;
         pos.useruuid = uuid;
+
+        if (isUnderCanopy) {
+            pos.fallType = FallType.CANOPY;
+        } else {
+            pos.fallType = FallType.FREEFALL;
+        }
 
         String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
                         "\tUser UUID: %s%n" +
