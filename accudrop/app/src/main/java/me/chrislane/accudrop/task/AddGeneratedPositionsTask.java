@@ -2,11 +2,13 @@ package me.chrislane.accudrop.task;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
@@ -26,6 +28,20 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
         this.databaseViewModel = databaseViewModel;
     }
 
+    private static Double getFallRate(float newAlti, Long newTime, Double prevAlt, Long prevTime) {
+        Double speed = null;
+
+        // Check if this is our first run
+        if (prevAlt != null && prevTime != null) {
+            double period = (newTime - prevTime) * 0.001; // Period in seconds
+            double distance = prevAlt - newAlti; // Distance in metres
+            speed = distance / period; // Speed in m/s
+        }
+
+        Log.v(TAG, "Fall Rate: " + speed + "m/s");
+        return speed;
+    }
+
     /**
      * Add positions in a route to a jump.
      */
@@ -34,7 +50,8 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
         Date date = new Date();
         date.setTime(0L);
 
-        for (Location location : route) {
+        for (int i = 0; i < route.size(); i++) {
+            Location location = route.get(i);
             Position pos = new Position();
             pos.latitude = location.getLatitude();
             pos.longitude = location.getLongitude();
@@ -43,6 +60,20 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
             //pos.time = new Date();
             pos.jumpId = jumpId;
             pos.useruuid = uuid.toString();
+
+            if (i > 0) {
+                Location prevLoc = route.get(i - 1);
+                if (prevLoc != null) {
+                    pos.vspeed = getFallRate(pos.altitude, pos.time.getTime(),
+                            prevLoc.getAltitude(), prevLoc.getTime());
+                }
+            }
+
+            if (location.getAltitude() > 1050) {
+                pos.fallType = FallType.FREEFALL;
+            } else {
+                pos.fallType = FallType.CANOPY;
+            }
 
             /*String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
                             "\tUser UUID: %s%n" +
