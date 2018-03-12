@@ -148,7 +148,8 @@ public class LocationService extends Service {
         if (us != null && usAlti != null) {
             us.setAltitude(usAlti);
             float distance = us.distanceTo(them);
-            if (distance < 1) {
+            Log.v(TAG, "Proximity = " + distance);
+            if (distance < 15) {
                 // TODO: Replace with a meaningful warning
                 // TODO: Save the warning details
                 Toast.makeText(this, "Proximity warning. Danger!.",

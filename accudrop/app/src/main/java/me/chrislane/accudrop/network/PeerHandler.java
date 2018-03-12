@@ -30,10 +30,13 @@ class PeerHandler extends Thread {
             new Thread(coordSender).start();
         } catch (IOException e) {
             e.printStackTrace();
-            try {
-                socket.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+
+            if (socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }

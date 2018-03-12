@@ -220,5 +220,17 @@ public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
                 Log.d(TAG, "Failed to remove group");
             }
         });
+
+        manager.clearLocalServices(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "Local services cleared");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Failed to clear local services");
+            }
+        });
     }
 }

@@ -31,25 +31,22 @@ public class CoordSender implements Runnable {
             handler.obtainMessage(Peer2Peer.COORD_SENDER, this).sendToTarget();
 
             while (true) {
-                try {
-                    bytes = in.read(buffer);
-                    if (bytes == -1) {
-                        break;
-                    }
-
-                    handler.obtainMessage(Peer2Peer.COORD_MSG, bytes, -1, buffer)
-                            .sendToTarget();
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception in loop: ", e);
+                bytes = in.read(buffer);
+                if (bytes == -1) {
+                    break;
                 }
+                handler.obtainMessage(Peer2Peer.COORD_MSG, bytes, -1, buffer)
+                        .sendToTarget();
             }
         } catch (IOException e) {
             Log.e(TAG, "Exception in run: ", e);
         } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (socket != null && socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

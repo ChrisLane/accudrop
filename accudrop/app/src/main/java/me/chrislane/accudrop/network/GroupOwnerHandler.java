@@ -1,9 +1,11 @@
 package me.chrislane.accudrop.network;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -21,8 +23,15 @@ class GroupOwnerHandler extends Thread {
 
     GroupOwnerHandler(Handler handler) {
         try {
-            socket = new ServerSocket(Peer2Peer.SERVER_PORT);
+            socket = new ServerSocket();
             socket.setReuseAddress(true);
+            AsyncTask.execute(() -> {
+                try {
+                    socket.bind(new InetSocketAddress(Peer2Peer.SERVER_PORT));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
             this.handler = handler;
             Log.d(TAG, "Socket created");
         } catch (IOException e) {
@@ -38,9 +47,14 @@ class GroupOwnerHandler extends Thread {
 
         while (true) {
             try {
-                Socket newSocket = socket.accept();
-                threadPool.execute(new CoordSender(newSocket, handler));
+                if (socket.isBound()) {
+                    Socket newSocket = socket.accept();
+                    threadPool.execute(new CoordSender(newSocket, handler));
+                }
             } catch (IOException e) {
+                e.printStackTrace();
+
+                threadPool.shutdown();
                 if (socket != null && !socket.isClosed()) {
                     try {
                         socket.close();
@@ -48,9 +62,6 @@ class GroupOwnerHandler extends Thread {
                         e1.printStackTrace();
                     }
                 }
-
-                e.printStackTrace();
-                threadPool.shutdown();
                 break;
             }
         }
