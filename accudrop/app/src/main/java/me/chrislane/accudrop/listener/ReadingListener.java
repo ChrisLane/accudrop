@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.Date;
@@ -94,11 +95,13 @@ public class ReadingListener {
             vSpeed = getFallRate(altitude);
 
             // Decide the fall type
-            if (vSpeed > fallToggle && !hasFreefallen) {
-                // TODO: Set this boolean value when enabling logging
-                hasFreefallen = true;
-            } else if (vSpeed < canopyToggle && hasFreefallen) {
-                isUnderCanopy = true;
+            if (vSpeed != null) {
+                if (vSpeed > fallToggle && !hasFreefallen) {
+                    // TODO: Set this boolean value when enabling logging
+                    hasFreefallen = true;
+                } else if (vSpeed < canopyToggle && hasFreefallen) {
+                    isUnderCanopy = true;
+                }
             }
 
             // Add the position to the database
@@ -127,6 +130,7 @@ public class ReadingListener {
      * @param altitude The current altitude of the user.
      * @return The fall rate of the user.
      */
+    @Nullable
     private synchronized Double getFallRate(float altitude) {
         long now = new Date().getTime();
         Double speed = null;
