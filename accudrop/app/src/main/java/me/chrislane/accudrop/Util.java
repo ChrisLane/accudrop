@@ -17,6 +17,16 @@ public class Util {
     }
 
     /**
+     * Convert metres per second to miles per hour.
+     *
+     * @param ms Metres per second.
+     * @return Miles per hour
+     */
+    public static double msToMph(double ms) {
+        return 2.2369362920544 * ms;
+    }
+
+    /**
      * Generate altitude strings with the correct unit letters.
      *
      * @param altitude The altitude.
@@ -35,6 +45,27 @@ public class Util {
         }
 
         return String.format(Locale.ENGLISH, "%.0f %s", altitude, unitSymbol);
+    }
+
+    /**
+     * Generate speed strings with the correct unit suffix.
+     *
+     * @param speed The speed.
+     * @param unit  The unit of measurement.
+     * @return A formatted string containing the speed.
+     */
+    public static String getSpeedText(Double speed, Unit unit) {
+        String unitSymbol = "";
+        switch (unit) {
+            case METRIC:
+                unitSymbol = "m/s";
+                break;
+            case IMPERIAL:
+                unitSymbol = "mph";
+                break;
+        }
+
+        return String.format(Locale.ENGLISH, "%.0f %s", speed, unitSymbol);
     }
 
     /**
