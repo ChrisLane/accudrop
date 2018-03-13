@@ -1,8 +1,10 @@
 package me.chrislane.accudrop.fragment;
 
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import me.chrislane.accudrop.R;
+import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.presenter.JumpStatsPresenter;
 
 public class JumpStatsFragment extends Fragment {
@@ -25,11 +28,17 @@ public class JumpStatsFragment extends Fragment {
     private View view;
     private ImageButton prevButton;
     private ImageButton nextButton;
+    private Util.Unit unit;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new JumpStatsPresenter(this);
+
+        // Get unit preference
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String unitString = sharedPref.getString("general_unit", "");
+        unit = Util.getUnit(unitString);
     }
 
     @Override
@@ -77,27 +86,27 @@ public class JumpStatsFragment extends Fragment {
     }
 
     public void updateCanopyVSpeed(double vSpeed) {
-        int speed = (int) vSpeed;
+        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(vSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.canopy_max_vspeed_value);
-        textView.setText(String.format(Locale.ENGLISH, "%d", speed));
+        textView.setText(formatted);
     }
 
     public void updateCanopyHSpeed(float hSpeed) {
-        int speed = (int) hSpeed;
+        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(hSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.canopy_max_hspeed_value);
-        textView.setText(String.format(Locale.ENGLISH, "%d", speed));
+        textView.setText(formatted);
     }
 
     public void updateFreefallVSpeed(double vSpeed) {
-        int speed = (int) vSpeed;
+        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(vSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.freefall_max_vspeed_value);
-        textView.setText(String.format(Locale.ENGLISH, "%d", speed));
+        textView.setText(formatted);
     }
 
     public void updateFreefallHSpeed(float hSpeed) {
-        int speed = (int) hSpeed;
+        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(hSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.freefall_max_hspeed_value);
-        textView.setText(String.format(Locale.ENGLISH, "%d", speed));
+        textView.setText(formatted);
     }
 
     public void updateButtons(int jumpId, int firstJumpId, int lastJumpId) {
