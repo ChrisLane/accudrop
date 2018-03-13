@@ -85,6 +85,14 @@ public class Util {
         }
     }
 
+    public static double getSpeedInUnit(double speed, Unit unit) {
+        if (unit == Unit.IMPERIAL) {
+            return msToMph(speed);
+        }
+
+        return speed;
+    }
+
     public static double getAltitudeInUnit(double altitude, Unit unit) {
         if (unit == Unit.IMPERIAL) {
             return metresToFeet(altitude);
