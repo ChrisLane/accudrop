@@ -104,8 +104,6 @@
         android:id="@+id/freefall_duration_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="0"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -131,7 +129,6 @@
         android:id="@+id/freefall_max_hspeed_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="0"
         android:textAlignment="center"
@@ -144,7 +141,6 @@
         android:id="@+id/freefall_max_vspeed_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:text="0"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -195,5 +191,59 @@
         android:src="@drawable/ic_button_right_arrow"
         app:layout_constraintStart_toStartOf="@+id/canopy_max_hspeed_value"
         app:layout_constraintTop_toBottomOf="@+id/canopy_max_hspeed_value" />
+
+    <ImageView
+        android:id="@+id/canopy_down_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_arrow_downward"
+        app:layout_constraintBottom_toBottomOf="@+id/canopy_max_vspeed_value"
+        app:layout_constraintEnd_toStartOf="@+id/canopy_max_vspeed_value"
+        app:layout_constraintTop_toTopOf="@+id/canopy_max_vspeed_value" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <ImageView
+        android:id="@+id/canopy_right_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_button_right_arrow"
+        app:layout_constraintBottom_toBottomOf="@+id/canopy_max_hspeed_value"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/canopy_max_hspeed_value" />
+
+    <ImageView
+        android:id="@+id/freefall_down_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_arrow_downward"
+        app:layout_constraintBottom_toBottomOf="@+id/freefall_max_vspeed_value"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/freefall_max_vspeed_value" />
+
+    <ImageView
+        android:id="@+id/freefall_right_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_button_right_arrow"
+        app:layout_constraintBottom_toBottomOf="@+id/freefall_max_hspeed_value"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/freefall_max_hspeed_value" />
 
 </android.support.constraint.ConstraintLayout>
