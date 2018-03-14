@@ -86,25 +86,25 @@ public class JumpStatsFragment extends Fragment {
     }
 
     public void updateCanopyVSpeed(double vSpeed) {
-        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(vSpeed, unit), unit);
+        String formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.canopy_max_vspeed_value);
         textView.setText(formatted);
     }
 
     public void updateCanopyHSpeed(float hSpeed) {
-        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(hSpeed, unit), unit);
+        String formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.canopy_max_hspeed_value);
         textView.setText(formatted);
     }
 
     public void updateFreefallVSpeed(double vSpeed) {
-        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(vSpeed, unit), unit);
+        String formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.freefall_max_vspeed_value);
         textView.setText(formatted);
     }
 
     public void updateFreefallHSpeed(float hSpeed) {
-        String formatted = Util.getAltitudeText(Util.getSpeedInUnit(hSpeed, unit), unit);
+        String formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed, unit), unit);
         TextView textView = view.findViewById(R.id.freefall_max_hspeed_value);
         textView.setText(formatted);
     }
