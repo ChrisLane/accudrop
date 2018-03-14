@@ -171,7 +171,7 @@ public class JumpStatsPresenter {
             Integer firstJumpId = viewModel.getFirstJumpId().getValue();
             Integer lastJumpId = viewModel.getLastJumpId().getValue();
 
-            Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            Log.v(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
             if (jumpId != null && firstJumpId != null && lastJumpId != null) {
                 fragment.updateButtons(jumpId, firstJumpId, lastJumpId);
             }
