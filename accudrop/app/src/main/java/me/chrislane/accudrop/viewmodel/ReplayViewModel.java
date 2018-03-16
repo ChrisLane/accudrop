@@ -54,7 +54,7 @@ public class ReplayViewModel extends ViewModel {
         return lastJumpId;
     }
 
-    public MutableLiveData<Integer> getFirstJumpId() {
+    public LiveData<Integer> getFirstJumpId() {
         return firstJumpId;
     }
 }
