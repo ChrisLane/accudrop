@@ -21,6 +21,8 @@ public class RadarViewModel extends ViewModel {
     private MutableLiveData<Pair<UUID, List<Location>>> subjectEntry = new MutableLiveData<>();
     private MutableLiveData<List<Pair<UUID, List<Location>>>> guestEntries = new MutableLiveData<>();
     private MutableLiveData<List<UUID>> guestsInView = new MutableLiveData<>();
+    private MutableLiveData<Integer> firstJumpId = new MutableLiveData<>();
+    private MutableLiveData<Integer> lastJumpId = new MutableLiveData<>();
 
     public RadarViewModel() {
         this.guestHeightDiffs.setValue(new ArrayList<>());
@@ -98,5 +100,21 @@ public class RadarViewModel extends ViewModel {
 
     public void setGuestsInView(List<UUID> guestsInView) {
         this.guestsInView.setValue(guestsInView);
+    }
+
+    public void setFirstJumpId(int firstJumpId) {
+        this.firstJumpId.setValue(firstJumpId);
+    }
+
+    public void setLastJumpId(int lastJumpId) {
+        this.lastJumpId.setValue(lastJumpId);
+    }
+
+    public LiveData<Integer> getLastJumpId() {
+        return lastJumpId;
+    }
+
+    public LiveData<Integer> getFirstJumpId() {
+        return firstJumpId;
     }
 }

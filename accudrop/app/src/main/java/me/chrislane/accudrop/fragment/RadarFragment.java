@@ -18,11 +18,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import me.chrislane.accudrop.R;
@@ -34,8 +36,10 @@ public class RadarFragment extends Fragment {
 
     private static final String TAG = RadarFragment.class.getSimpleName();
     private RadarPresenter presenter;
-    private Radar radar;
+    private RadarView radarView;
     private RadarViewModel radarViewModel;
+    private Button nextbtn;
+    private Button prevButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,8 +55,14 @@ public class RadarFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_radar, container, false);
         FrameLayout layout = view.findViewById(R.id.radar);
-        radar = new Radar(getContext());
-        layout.addView(radar);
+        radarView = new RadarView(getContext());
+        layout.addView(radarView);
+
+        prevButton = view.findViewById(R.id.radar_prev_button);
+        prevButton.setOnClickListener(v -> presenter.prevJump());
+
+        nextbtn = view.findViewById(R.id.radar_next_button);
+        nextbtn.setOnClickListener(v -> presenter.nextJump());
 
         SeekBar seekBar = view.findViewById(R.id.radar_seek_bar);
         seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
@@ -60,8 +70,28 @@ public class RadarFragment extends Fragment {
         return view;
     }
 
+    public void updateButtons(int jumpId, int firstJumpId, int lastJumpId) {
+        // Check limits for previous button
+        if (jumpId <= firstJumpId) {
+            prevButton.setText("❌");
+            prevButton.setEnabled(false);
+        } else {
+            prevButton.setText(String.format(Locale.ENGLISH, "❮ %d", jumpId - 1));
+            prevButton.setEnabled(true);
+        }
+
+        // Check limits for next button
+        if (jumpId >= lastJumpId) {
+            nextbtn.setText("❌");
+            nextbtn.setEnabled(false);
+        } else {
+            nextbtn.setEnabled(true);
+            nextbtn.setText(String.format(Locale.ENGLISH, "%d ❯", jumpId + 1));
+        }
+    }
+
     public void updateRadarPoints() {
-        radar.invalidate();
+        radarView.invalidate();
     }
 
     private List<PointF> getScaledPositions(int width, int height, float shrink) {
@@ -129,13 +159,13 @@ public class RadarFragment extends Fragment {
         return new PointF(x, y);
     }
 
-    public class Radar extends View {
-        private final String TAG = Radar.class.getSimpleName();
+    public class RadarView extends View {
+        private final String TAG = RadarView.class.getSimpleName();
         Paint paint = new Paint();
         RectF oval = new RectF();
         List<Pair<UUID, PointF>> points = new ArrayList<>();
 
-        public Radar(Context context) {
+        public RadarView(Context context) {
             super(context);
         }
 

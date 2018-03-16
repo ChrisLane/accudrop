@@ -39,14 +39,7 @@ public class RadarPresenter {
         }
 
         // Set the current user as the subject
-        SharedPreferences settings = databaseViewModel.getApplication()
-                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String stringUuid = settings.getString("userUUID", "");
-        UUID uuid = UUID.fromString(stringUuid);
-        radarViewModel.setSubject(uuid);
-
-        subscribeToSubject();
-        subscribeToTime();
+        setOwnerAsSubject();
 
         FetchLastJumpIdTask.Listener listener = jumpId -> {
             if (jumpId != null) {
@@ -55,6 +48,20 @@ public class RadarPresenter {
         };
         new FetchLastJumpIdTask(listener, databaseViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        subscribeToSubject();
+        subscribeToTime();
+        subscribeToButtonData();
+        subscribeToJumpId();
+        subscribeToJumpRange();
+    }
+
+    public void setOwnerAsSubject() {
+        SharedPreferences settings = databaseViewModel.getApplication()
+                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String stringUuid = settings.getString("userUUID", "");
+        UUID uuid = UUID.fromString(stringUuid);
+        radarViewModel.setSubject(uuid);
     }
 
     public void test() {
@@ -98,19 +105,43 @@ public class RadarPresenter {
         guestEntries.add(new Pair<>(UUID.fromString("bc832712-894d-4be4-8440-18aa1c90a7a7"), locationList4));
     }
 
-    public void subscribeToSubject() {
-        final Observer<UUID> subjectObserver = uuid -> {
+    private void subscribeToJumpRange() {
+        final Observer<Integer> firstJumpIdObserver = firstJumpId -> {
+            if (firstJumpId != null) {
+                radarViewModel.setFirstJumpId(firstJumpId);
+            }
+        };
+        databaseViewModel.findFirstJumpId().observe(fragment, firstJumpIdObserver);
+
+        final Observer<Integer> lastJumpIdObserver = lastJumpId -> {
+            if (lastJumpId != null) {
+                radarViewModel.setLastJumpId(lastJumpId);
+            }
+        };
+        databaseViewModel.findLastJumpId().observe(fragment, lastJumpIdObserver);
+    }
+
+    private void subscribeToJumpId() {
+        final Observer<Integer> jumpIdObserver = jumpId -> {
+            if (jumpId != null) {
+                setOwnerAsSubject();
+            }
+        };
+        radarViewModel.getJumpId().observe(fragment, jumpIdObserver);
+    }
+
+    private void subscribeToSubject() {
+        final Observer<UUID> subjectObserver = subject -> {
             Integer jumpId = radarViewModel.getJumpId().getValue();
-            if (jumpId == null) {
-                generateLastJumpPositions(uuid);
-            } else {
-                subjectUpdated(uuid);
+            if (subject != null && jumpId != null) {
+                start(subject);
+                generateJumpPositions(jumpId, subject);
             }
         };
         radarViewModel.getSubject().observe(fragment, subjectObserver);
     }
 
-    public void subjectUpdated(UUID subject) {
+    public void start(UUID subject) {
         Pair<UUID, List<Location>> subjectEntry = radarViewModel.getSubjectEntry().getValue();
         List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
         if (subjectEntry == null || guestEntries == null) {
@@ -150,7 +181,7 @@ public class RadarPresenter {
         return userEntries;
     }
 
-    public void generateLastJumpPositions(UUID subject) {
+    public void generateJumpPositions(int jumpId, UUID subject) {
         FetchUsersAndPositionsTask.Listener listener = userEntries -> {
             if (userEntries == null) {
                 return;
@@ -162,13 +193,19 @@ public class RadarPresenter {
             if (subjectEntry != null && guestEntries != null) {
                 List<Location> subjectLocs = subjectEntry.second;
                 if (subjectLocs != null) {
-                    long startTime = subjectLocs.get(0).getTime();
+                    long startTime;
+                    Long time = radarViewModel.getSubjectTime().getValue();
+                    if (time != null) {
+                        startTime = time;
+                    } else {
+                        startTime = subjectLocs.get(0).getTime();
+                    }
                     radarViewModel.setGuestLocations(getGuestLocations(guestEntries, startTime));
                     updateGuestRelatives(radarViewModel.getGuestLocations().getValue(), startTime);
                 }
             }
         };
-        new FetchUsersAndPositionsTask(listener, databaseViewModel).execute();
+        new FetchUsersAndPositionsTask(listener, databaseViewModel).execute(jumpId);
     }
 
     private List<Pair<UUID, Location>> getGuestLocations(List<Pair<UUID, List<Location>>> guestLocs, long time) {
@@ -188,7 +225,7 @@ public class RadarPresenter {
         radarViewModel.setSubjectTime(time);
     }
 
-    public void subscribeToTime() {
+    private void subscribeToTime() {
         final Observer<Long> timeObserver = time -> {
             if (time != null) {
                 List<Pair<UUID, List<Location>>> guestEntries = radarViewModel.getGuestEntries().getValue();
@@ -199,6 +236,22 @@ public class RadarPresenter {
             }
         };
         radarViewModel.getSubjectTime().observe(fragment, timeObserver);
+    }
+
+    private void subscribeToButtonData() {
+        final Observer<Integer> buttonDataObserver = ignored -> {
+            Integer jumpId = radarViewModel.getJumpId().getValue();
+            Integer firstJumpId = radarViewModel.getFirstJumpId().getValue();
+            Integer lastJumpId = radarViewModel.getLastJumpId().getValue();
+
+            Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            if (jumpId != null && firstJumpId != null && lastJumpId != null) {
+                fragment.updateButtons(jumpId, firstJumpId, lastJumpId);
+            }
+        };
+        radarViewModel.getJumpId().observe(fragment, buttonDataObserver);
+        radarViewModel.getFirstJumpId().observe(fragment, buttonDataObserver);
+        radarViewModel.getLastJumpId().observe(fragment, buttonDataObserver);
     }
 
     private Location getLocationByTime(List<Location> locations, long time) {
@@ -294,5 +347,29 @@ public class RadarPresenter {
 
     public int getMaxHDistance() {
         return maxHDistance;
+    }
+
+    public void prevJump() {
+        Integer jumpId = radarViewModel.getJumpId().getValue();
+        Integer firstJumpId = radarViewModel.getFirstJumpId().getValue();
+
+        if (jumpId != null && firstJumpId != null) {
+            if (jumpId > firstJumpId) {
+                Log.d(TAG, "Setting jump ID to " + (jumpId - 1));
+                radarViewModel.setJumpId(jumpId - 1);
+            }
+        }
+    }
+
+    public void nextJump() {
+        Integer jumpId = radarViewModel.getJumpId().getValue();
+        Integer lastJumpId = radarViewModel.getLastJumpId().getValue();
+
+        if (jumpId != null && lastJumpId != null) {
+            if (jumpId < lastJumpId) {
+                Log.d(TAG, "Setting jump ID to " + (jumpId + 1));
+                radarViewModel.setJumpId(jumpId + 1);
+            }
+        }
     }
 }
