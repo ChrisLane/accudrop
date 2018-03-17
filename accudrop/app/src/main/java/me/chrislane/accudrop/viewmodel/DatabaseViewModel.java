@@ -190,6 +190,18 @@ public class DatabaseViewModel extends AndroidViewModel {
     }
 
     /**
+     * Get the positions of a user during a jump.
+     *
+     * @param fallType The fall type to get locations of.
+     * @param uuid     The user ID.
+     * @param jumpId   The jump ID.
+     * @return A list of positions for a user during a jump.
+     */
+    public List<Position> getTypePositionsForUserForJump(FallType fallType, UUID uuid, int jumpId) {
+        return db.locationModel().getOrderedTypeLocationsByUserByJumpNumber(fallType, uuid, jumpId);
+    }
+
+    /**
      * Get a list of users and their positions for a jump.
      *
      * @param jumpId The jump ID.
@@ -205,6 +217,41 @@ public class DatabaseViewModel extends AndroidViewModel {
         // Get positions for each user and add to return value
         for (UUID user : users) {
             List<Position> positions = getPositionsForUserForJump(user, jumpId);
+            List<Location> locations = new ArrayList<>();
+            for (Position position : positions) {
+                if (position.latitude != null && position.longitude != null &&
+                        position.altitude != null) {
+                    Location location = new Location("");
+                    location.setLatitude(position.latitude);
+                    location.setLongitude(position.longitude);
+                    location.setAltitude(position.altitude);
+                    location.setTime(position.time.getTime());
+                    locations.add(location);
+                }
+            }
+            result.add(new Pair<>(user, locations));
+        }
+
+        return result;
+    }
+
+    /**
+     * Get a list of users and their positions for a jump.
+     *
+     * @param jumpId The jump ID.
+     * @return A list of users and their positions for a jump.
+     */
+    @Nullable
+    public List<Pair<UUID, List<Location>>> getUsersAndTypePositionsForJump(FallType fallType,
+                                                                            int jumpId) {
+        List<Pair<UUID, List<Location>>> result = new ArrayList<>();
+
+        // Get users in a jump
+        List<UUID> users = getUsersForJump(jumpId);
+
+        // Get positions for each user and add to return value
+        for (UUID user : users) {
+            List<Position> positions = getTypePositionsForUserForJump(fallType, user, jumpId);
             List<Location> locations = new ArrayList<>();
             for (Position position : positions) {
                 if (position.latitude != null && position.longitude != null &&

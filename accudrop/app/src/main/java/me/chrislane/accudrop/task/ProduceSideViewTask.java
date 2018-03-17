@@ -43,13 +43,10 @@ public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>
         List<List<PointF>> screenPosList = new ArrayList<>();
 
         List<Pair<UUID, List<Location>>> usersAndLocs = model.getUsersAndLocs().getValue();
-        if (usersAndLocs == null) {
-            Log.e(TAG, "Users and locations list is null.");
+        if (usersAndLocs == null || usersAndLocs.isEmpty()) {
+            Log.e(TAG, "Users and locations list is null or empty.");
             return screenPosList;
         }
-
-        Integer minAltitude = 0;
-        Integer maxAltitude = 300; // TODO #47: Read landing pattern height preferences
 
         for (int i = 0; i < mapPointList.size() && i < usersAndLocs.size(); i++) {
             List<Point> mapPoints = mapPointList.get(i);
@@ -57,7 +54,7 @@ public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>
             List<PointF> screenPos = new ArrayList<>();
 
             // Return an empty list if the route is empty.
-            if (mapPoints.size() == 0) {
+            if (mapPoints.isEmpty()) {
                 Log.d(TAG, "No points in the route.");
                 return new ArrayList<>();
             }
@@ -81,8 +78,10 @@ public class ProduceSideViewTask extends AsyncTask<Void, Void, List<List<PointF>
                 }
             }
 
-            if (locations != null && minAltitude != null && maxAltitude != null) {
-                // TODO #47: Route should only contain positions between min and max altitude
+            if (locations != null) {
+                Double minAltitude = locations.get(0).getAltitude();
+                Double maxAltitude = locations.get(locations.size() - 1).getAltitude();
+
                 // Generate screen points
                 for (int j = 0; j < mapPoints.size() && j < locations.size(); j++) {
                     double x =

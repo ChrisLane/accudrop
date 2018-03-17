@@ -290,7 +290,6 @@ public class RadarFragment extends Fragment {
                 long newTime = subjectLocs.get(newIndex).getTime();
                 presenter.updateTime(newTime);
             }
-
         }
 
         @Override

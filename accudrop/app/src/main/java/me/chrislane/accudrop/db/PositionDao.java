@@ -132,6 +132,19 @@ public interface PositionDao {
             "ORDER BY time ASC")
     List<Position> getOrderedLocationsByUserByJumpNumber(UUID uuid, int jumpNumber);
 
+    /**
+     * Gets a list of positions ordered by ascending timestamp for a user for a jump.
+     *
+     * @param fallType   The fall type to get locations of.
+     * @param uuid       The user's UUID.
+     * @param jumpNumber The jump number.
+     * @return A list of positions ordered by timestamp.
+     */
+    @Query("SELECT * FROM position " +
+            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber " +
+            "ORDER BY time ASC")
+    List<Position> getOrderedTypeLocationsByUserByJumpNumber(FallType fallType, UUID uuid, int jumpNumber);
+
     @Query("SELECT MIN(time) FROM position " +
             "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
     Date getFirstDateForUser(UUID uuid, int jumpNumber);

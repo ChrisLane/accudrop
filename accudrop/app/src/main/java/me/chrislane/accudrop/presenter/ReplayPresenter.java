@@ -6,9 +6,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import me.chrislane.accudrop.BuildConfig;
+import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
-import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
+import me.chrislane.accudrop.task.FetchUsersAndTypePositionsTask;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.ReplayViewModel;
 
@@ -44,8 +45,8 @@ public class ReplayPresenter {
      * @param jumpID The jump ID to get the route from.
      */
     private void setRoutes(int jumpID) {
-        FetchUsersAndPositionsTask.Listener listener = result -> replayViewModel.setUsersAndLocs(result);
-        new FetchUsersAndPositionsTask(listener, databaseViewModel)
+        FetchUsersAndTypePositionsTask.Listener listener = result -> replayViewModel.setUsersAndLocs(result);
+        new FetchUsersAndTypePositionsTask(listener, FallType.CANOPY, databaseViewModel)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpID);
     }
 
