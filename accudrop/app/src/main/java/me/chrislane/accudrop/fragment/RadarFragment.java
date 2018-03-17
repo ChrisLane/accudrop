@@ -283,7 +283,7 @@ public class RadarFragment extends Fragment {
             }
             List<Location> subjectLocs = subjectEntry.second;
 
-            if (subjectLocs != null) {
+            if (subjectLocs != null && !subjectLocs.isEmpty()) {
                 int newIndex = (int) Util.getScaledValue(progress, 0, 100,
                         0, subjectLocs.size() - 1);
 
