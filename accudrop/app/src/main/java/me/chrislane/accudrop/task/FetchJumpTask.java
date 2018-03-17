@@ -66,6 +66,6 @@ public class FetchJumpTask extends AsyncTask<Integer, Void, List<Location>> {
     }
 
     public interface FetchJumpListener {
-        void onFinished(List<Location> result);
+        void onFinished(List<Location> locations);
     }
 }
