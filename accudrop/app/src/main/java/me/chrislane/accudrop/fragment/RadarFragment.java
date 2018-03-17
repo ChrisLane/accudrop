@@ -133,7 +133,8 @@ public class RadarFragment extends Fragment {
         if (guestHeightDiffs != null) {
             for (Double heightDiff : guestHeightDiffs) {
                 // Scale the vertical distance with the screen height
-                double scaledDiff = Util.getScaledValue(heightDiff, 0, maxVDistance, 0, height / 2f);
+                double scaledDiff = Util.getScaledValue(heightDiff, -maxVDistance, maxVDistance,
+                        -(height / 2f), height / 2f);
                 Log.v(TAG, "Scaled V Distance: " + scaledDiff);
                 result.add(scaledDiff);
             }
