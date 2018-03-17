@@ -34,10 +34,8 @@ public class RadarPresenter {
         this.fragment = fragment;
 
         radarViewModel = ViewModelProviders.of(fragment).get(RadarViewModel.class);
-        MainActivity main = (MainActivity) fragment.getActivity();
-        if (main != null) {
-            databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
-        }
+        MainActivity main = (MainActivity) fragment.requireActivity();
+        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
 
         // Set the current user as the subject
         setOwnerAsSubject();

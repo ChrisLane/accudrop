@@ -27,11 +27,9 @@ public class PlanPresenter {
     public PlanPresenter(PlanFragment planFragment) {
         this.planFragment = planFragment;
 
-        MainActivity main = (MainActivity) planFragment.getActivity();
-        if (main != null) {
-            routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
-            windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
-        }
+        MainActivity main = (MainActivity) planFragment.requireActivity();
+        routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
+        windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
 
         // Get the OpenWeatherMap API key
         apiKey = planFragment.getResources().getString(R.string.owmApiKey);
@@ -40,11 +38,9 @@ public class PlanPresenter {
     public PlanPresenter(PlanFragment planFragment, LatLng target) {
         this.planFragment = planFragment;
 
-        MainActivity main = (MainActivity) planFragment.getActivity();
-        if (main != null) {
-            routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
-            windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
-        }
+        MainActivity main = (MainActivity) planFragment.requireActivity();
+        routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
+        windViewModel = ViewModelProviders.of(main).get(WindViewModel.class);
 
         // Get the OpenWeatherMap API key
         apiKey = planFragment.getResources().getString(R.string.owmApiKey);

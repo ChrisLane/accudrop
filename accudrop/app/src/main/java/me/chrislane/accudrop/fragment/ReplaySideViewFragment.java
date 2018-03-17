@@ -37,12 +37,10 @@ public class ReplaySideViewFragment extends Fragment {
      * Redraw the side view lines.
      */
     public void updateDrawable(boolean generatePoints) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            SideViewDrawable drawable = new SideViewDrawable(generatePoints);
-            ImageView drawBox = activity.findViewById(R.id.replay_draw_area);
-            drawBox.setImageDrawable(drawable);
-        }
+        Activity activity = requireActivity();
+        SideViewDrawable drawable = new SideViewDrawable(generatePoints);
+        ImageView drawBox = activity.findViewById(R.id.replay_draw_area);
+        drawBox.setImageDrawable(drawable);
     }
 
     public void setScreenPointsList(List<List<PointF>> screenPoints) {

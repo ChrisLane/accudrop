@@ -39,10 +39,8 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
 
         jumpPresenter = new JumpPresenter(this);
 
-        MainActivity main = (MainActivity) getActivity();
-        if (main != null) {
-            main.getLifecycle().addObserver(this);
-        }
+        MainActivity main = (MainActivity) requireActivity();
+        main.getLifecycle().addObserver(this);
     }
 
     @Override
@@ -130,15 +128,13 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
      * @return Whether the service is running.
      */
     private boolean isServiceRunning(Class<?> serviceClass) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        Activity activity = requireActivity();
+        ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
 
-            if (manager != null) {
-                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                    if (serviceClass.getName().equals(service.service.getClassName())) {
-                        return true;
-                    }
+        if (manager != null) {
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
                 }
             }
         }

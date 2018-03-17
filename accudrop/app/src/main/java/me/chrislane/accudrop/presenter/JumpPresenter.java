@@ -25,11 +25,10 @@ public class JumpPresenter {
 
     public JumpPresenter(JumpFragment jumpFragment) {
         this.jumpFragment = jumpFragment;
-        MainActivity main = (MainActivity) jumpFragment.getActivity();
-        if (main != null) {
-            pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
-            gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
-        }
+
+        MainActivity main = (MainActivity) jumpFragment.requireActivity();
+        pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
+        gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
 
         subscribeToPressure();
     }
@@ -41,38 +40,33 @@ public class JumpPresenter {
     public void startJump() {
         Log.i(TAG, "Starting jump.");
         isJumping = true;
-        MainActivity main = (MainActivity) jumpFragment.getActivity();
-        if (main != null) {
-            gnssViewModel.getGnssListener().stopListening();
-            CreateAndInsertJumpTask.Listener createListener = jumpId -> {
-            };
-            InsertJumpTask.Listener insertListener = this::startLocationService;
-            new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
-        } else {
-            Log.e(TAG, "Could not get main activity.");
-        }
+
+        MainActivity main = (MainActivity) jumpFragment.requireActivity();
+        gnssViewModel.getGnssListener().stopListening();
+        CreateAndInsertJumpTask.Listener createListener = jumpId -> {
+        };
+        InsertJumpTask.Listener insertListener = this::startLocationService;
+        new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
     }
 
     /**
      * Start the foreground location tracking service.
      */
     private void startLocationService() {
-        MainActivity main = (MainActivity) jumpFragment.getActivity();
-        if (main != null) {
-            // Get ground pressure
-            PressureViewModel pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
-            Float groundPressure = pressureViewModel.getGroundPressure().getValue();
+        MainActivity main = (MainActivity) jumpFragment.requireActivity();
+        // Get ground pressure
+        PressureViewModel pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
+        Float groundPressure = pressureViewModel.getGroundPressure().getValue();
 
-            // Create intent and add ground pressure
-            Intent locationService = new Intent(main, LocationService.class);
-            if (groundPressure != null) {
-                locationService.putExtra("groundPressure", groundPressure);
+        // Create intent and add ground pressure
+        Intent locationService = new Intent(main, LocationService.class);
+        if (groundPressure != null) {
+            locationService.putExtra("groundPressure", groundPressure);
 
-            }
-
-            // Start the service
-            main.startService(locationService);
         }
+
+        // Start the service
+        main.startService(locationService);
     }
 
     /**
@@ -81,14 +75,11 @@ public class JumpPresenter {
     public void stopJump() {
         Log.i(TAG, "Stopping jump.");
         isJumping = false;
-        MainActivity main = (MainActivity) jumpFragment.getActivity();
-        if (main != null) {
-            Intent intent = new Intent(main, LocationService.class);
-            main.stopService(intent);
-            gnssViewModel.getGnssListener().startListening();
-        } else {
-            Log.e(TAG, "Could not get main activity.");
-        }
+
+        MainActivity main = (MainActivity) jumpFragment.requireActivity();
+        Intent intent = new Intent(main, LocationService.class);
+        main.stopService(intent);
+        gnssViewModel.getGnssListener().startListening();
     }
 
     /**
@@ -117,16 +108,14 @@ public class JumpPresenter {
      */
     public void resume() {
         if (!isJumping) {
-            MainActivity main = (MainActivity) jumpFragment.getActivity();
-            if (main != null) {
-                PermissionManager permissionManager = main.getPermissionManager();
-                pressureViewModel.getPressureListener().startListening();
-                if (permissionManager.checkLocationPermission()) {
-                    gnssViewModel.getGnssListener().startListening();
-                } else {
-                    String reason = "Location access is required to track your jump location.";
-                    permissionManager.requestLocationPermission(reason);
-                }
+            MainActivity main = (MainActivity) jumpFragment.requireActivity();
+            PermissionManager permissionManager = main.getPermissionManager();
+            pressureViewModel.getPressureListener().startListening();
+            if (permissionManager.checkLocationPermission()) {
+                gnssViewModel.getGnssListener().startListening();
+            } else {
+                String reason = "Location access is required to track your jump location.";
+                permissionManager.requestLocationPermission(reason);
             }
         }
     }

@@ -51,11 +51,9 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
 
         // Add this as a location listener
         if (savedInstanceState == null) {
-            MainActivity main = (MainActivity) getActivity();
-            if (main != null) {
-                gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
-                routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
-            }
+            MainActivity main = (MainActivity) requireActivity();
+            gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
+            routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
         }
 
         camPosBuilder = new CameraPosition.Builder()
@@ -103,16 +101,14 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
      * Set up the GoogleMap with initial settings and location.
      */
     private void setupMap() {
-        MainActivity main = (MainActivity) getActivity();
-        if (main != null) {
-            PermissionManager permissionManager = main.getPermissionManager();
+        MainActivity main = (MainActivity) requireActivity();
+        PermissionManager permissionManager = main.getPermissionManager();
 
-            // Initial map setup
-            if (permissionManager.checkLocationPermission()) {
-                map.setMyLocationEnabled(true);
-            } else {
-                permissionManager.requestLocationPermission("Location access is required to find your location.");
-            }
+        // Initial map setup
+        if (permissionManager.checkLocationPermission()) {
+            map.setMyLocationEnabled(true);
+        } else {
+            permissionManager.requestLocationPermission("Location access is required to find your location.");
         }
 
         Location loc = gnssViewModel.getLastLocation().getValue();
