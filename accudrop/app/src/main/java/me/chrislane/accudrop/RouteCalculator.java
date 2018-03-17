@@ -1,10 +1,8 @@
 package me.chrislane.accudrop;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.Location;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -32,18 +30,17 @@ public class RouteCalculator {
     private Location p2;
     private Location p1;
 
-    public RouteCalculator(Context context, Pair<Double, Double> wind, LatLng target) {
+    public RouteCalculator(SharedPreferences sharedPreferences, Resources resources,
+                           Pair<Double, Double> wind, LatLng target) {
         this.windSpeed = wind.first;
         this.windDirection = wind.second;
         this.target = target;
 
-        setFromPreferences(context);
+        setFromPreferences(sharedPreferences, resources);
     }
 
-    public void setFromPreferences(Context context) {
+    public void setFromPreferences(SharedPreferences sharedPreferences, Resources resources) {
         // Unfortunately EditTextPreferences don't save in number format
-        Resources resources = context.getResources();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         p1Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_downwind_altitude",
                 String.valueOf(resources.getInteger(R.integer.pref_default_downwind_altitude))));
         p2Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_crosswind_altitude",

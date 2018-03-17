@@ -1,7 +1,11 @@
 package me.chrislane.accudrop.task;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 
@@ -52,8 +56,11 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
         // Generate random wind stats
         double randSpeed = ThreadLocalRandom.current().nextInt(0, 10);
         double randDir = ThreadLocalRandom.current().nextInt(0, 360);
+        Context context = databaseViewModel.getApplication().getApplicationContext();
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Resources resources = context.getResources();
         // Execute subject task
-        new RouteTask(routeListener, databaseViewModel.getApplication().getApplicationContext(), new Pair<>(randSpeed, randDir))
+        new RouteTask(routeListener, sharedPrefs, resources, new Pair<>(randSpeed, randDir))
                 .executeOnExecutor(THREAD_POOL_EXECUTOR, target);
 
         for (int i = 0; i < guestCount; i++) {
@@ -69,7 +76,7 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
             double guestRandSpeed = ThreadLocalRandom.current().nextInt(0, 10);
             double guestRandDir = ThreadLocalRandom.current().nextInt(0, 360);
             // Execute subject task
-            new RouteTask(guestRouteListener, databaseViewModel.getApplication().getApplicationContext(), new Pair<>(guestRandSpeed, guestRandDir))
+            new RouteTask(guestRouteListener, sharedPrefs, resources, new Pair<>(guestRandSpeed, guestRandDir))
                     .executeOnExecutor(THREAD_POOL_EXECUTOR, target);
         }
         return null;

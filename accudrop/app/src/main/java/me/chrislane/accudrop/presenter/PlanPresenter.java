@@ -1,6 +1,10 @@
 package me.chrislane.accudrop.presenter;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -62,7 +66,10 @@ public class PlanPresenter {
 
             // Run a route calculation task with the updated wind
             RouteTask.RouteTaskListener routeListener = route -> routeViewModel.setRoute(route);
-            new RouteTask(routeListener, planFragment.getContext(), windTuple).execute(target);
+            Context context = planFragment.requireContext();
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Resources resources = context.getResources();
+            new RouteTask(routeListener, sharedPrefs, resources, windTuple).execute(target);
         };
         new WindTask(windListener, this, apiKey).execute(target);
     }
