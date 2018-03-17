@@ -242,10 +242,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Initialise the app preferences.
      */
     private void initPreferences() {
-        PreferenceManager.setDefaultValues(this, R.xml.pref_canopy, false);
-        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
-        PreferenceManager.setDefaultValues(this, R.xml.pref_guidance, false);
-        PreferenceManager.setDefaultValues(this, R.xml.pref_landing_pattern, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_canopy, true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_guidance, true);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_landing_pattern, true);
         SharedPreferences settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         if (!settings.contains("userUUID")) {
             settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply();
