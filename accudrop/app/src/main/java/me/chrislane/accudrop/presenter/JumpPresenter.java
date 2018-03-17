@@ -3,6 +3,7 @@ package me.chrislane.accudrop.presenter;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import me.chrislane.accudrop.MainActivity;
@@ -11,9 +12,11 @@ import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
+import me.chrislane.accudrop.task.FetchJumpTask;
 import me.chrislane.accudrop.task.InsertJumpTask;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
+import me.chrislane.accudrop.viewmodel.JumpViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
 public class JumpPresenter {
@@ -21,6 +24,7 @@ public class JumpPresenter {
     private static final String TAG = JumpPresenter.class.getSimpleName();
     private final JumpFragment jumpFragment;
     private final DatabaseViewModel databaseViewModel;
+    private final JumpViewModel jumpViewModel;
     private PressureViewModel pressureViewModel = null;
     private GnssViewModel gnssViewModel = null;
     private boolean isJumping = false;
@@ -32,6 +36,7 @@ public class JumpPresenter {
         pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
         gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
         databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
+        jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel.class);
 
         subscribeToPressure();
     }
@@ -45,8 +50,7 @@ public class JumpPresenter {
         isJumping = true;
 
         gnssViewModel.getGnssListener().stopListening();
-        CreateAndInsertJumpTask.Listener createListener = jumpId -> {
-        };
+        CreateAndInsertJumpTask.Listener createListener = jumpViewModel::setJumpId;
         InsertJumpTask.Listener insertListener = this::startLocationService;
         new CreateAndInsertJumpTask(databaseViewModel, createListener, insertListener).execute();
     }
@@ -81,6 +85,20 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.requireActivity();
         Intent intent = new Intent(main, LocationService.class);
         main.stopService(intent);
+
+
+        // Remove the jump if no positional data was logged
+        Integer jumpId = jumpViewModel.getJumpId().getValue();
+        if (jumpId != null) {
+            FetchJumpTask.FetchJumpListener listener = locations -> {
+                if (locations != null && locations.isEmpty()) {
+                    AsyncTask.execute(() -> databaseViewModel.deleteJump(jumpId));
+                }
+            };
+            new FetchJumpTask(listener, databaseViewModel)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
 
         gnssViewModel.getGnssListener().startListening();
     }

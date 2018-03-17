@@ -313,4 +313,8 @@ public class DatabaseViewModel extends AndroidViewModel {
     public Float getMaxHSpeedOfFallType(FallType fallType, UUID uuid, int jumpId) {
         return db.locationModel().getMaxHSpeed(fallType, uuid, jumpId);
     }
+
+    public void deleteJump(int jumpId) {
+        db.jumpModel().deleteJump(jumpId);
+    }
 }

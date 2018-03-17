@@ -88,4 +88,7 @@ public interface JumpDao {
     @Query("DELETE FROM jump")
     void deleteAll();
 
+    @Query("DELETE FROM jump " +
+            "WHERE id = :jumpId")
+    void deleteJump(int jumpId);
 }
