@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.presenter.RadarPresenter;
@@ -248,8 +249,11 @@ public class RadarFragment extends Fragment {
             points.clear();
             for (int i = 0; i < positions.size() && i < heightDiffs.size() && i < guestsInView.size(); i++) {
                 PointF position = positions.get(i);
-                Log.v(TAG, "Width: " + width + ", Height: " + height);
-                Log.v(TAG, "Adding Pos: " + position);
+
+                if (BuildConfig.DEBUG) {
+                    Log.v(TAG, "Width: " + width + ", Height: " + height);
+                    Log.v(TAG, "Adding Pos: " + position);
+                }
 
                 // Draw line from original x,y to height adjusted x,y
                 float newY = (float) (position.y + heightDiffs.get(i));

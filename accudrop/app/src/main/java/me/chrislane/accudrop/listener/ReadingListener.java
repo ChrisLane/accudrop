@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.Date;
 import java.util.Locale;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.network.CoordSender;
@@ -145,7 +146,9 @@ public class ReadingListener {
         prevTime = now;
         prevAlt = altitude;
 
-        Log.v(TAG, "Fall Rate: " + speed + "m/s");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Fall Rate: " + speed + "m/s");
+        }
         return speed;
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.JumpGenerator;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
@@ -43,7 +44,10 @@ public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
             Log.e(TAG, "Could not get last jump ID.");
             return null;
         }
-        Log.d(TAG, "Generating jump " + jumpId);
+
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Generating jump " + jumpId);
+        }
 
         // Generate a route for the subject
         RouteTask.RouteTaskListener routeListener = route -> {

@@ -128,7 +128,9 @@ public class RouteCalculator {
         ground.setAltitude(0);
         route.add(ground);
 
-        Log.v(TAG, "Route calculated: " + route);
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Route calculated: " + route);
+        }
 
         return route;
     }

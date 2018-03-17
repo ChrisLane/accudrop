@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
@@ -38,7 +39,9 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
             speed = distance / period; // Speed in m/s
         }
 
-        Log.v(TAG, "Fall Rate: " + speed + "m/s");
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Fall Rate: " + speed + "m/s");
+        }
         return speed;
     }
 

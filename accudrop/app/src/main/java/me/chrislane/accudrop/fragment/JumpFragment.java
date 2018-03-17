@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.Util;
@@ -56,7 +57,11 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         // Set the jump button toggle state
         ToggleButton jumpButton = view.findViewById(R.id.jump_button);
         jumpButton.setOnCheckedChangeListener(null);
-        Log.d(TAG, "LocationService running: " + isServiceRunning(LocationService.class));
+
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "LocationService running: " + isServiceRunning(LocationService.class));
+        }
+
         jumpButton.setChecked(isServiceRunning(LocationService.class));
         jumpButton.setOnCheckedChangeListener(onClickJump());
 

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.listener.GnssListener;
 
 public class GnssViewModel extends AndroidViewModel {
@@ -54,7 +55,10 @@ public class GnssViewModel extends AndroidViewModel {
      */
     public void setLastLocation(Location location) {
         lastLocation.setValue(location);
-        Log.v(TAG, "Location set: " + location);
+
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "Location set: " + location);
+        }
     }
 
     /**

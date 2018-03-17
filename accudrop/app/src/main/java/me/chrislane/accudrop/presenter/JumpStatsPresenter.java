@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.fragment.JumpStatsFragment;
 import me.chrislane.accudrop.task.FetchFallTypeDuration;
@@ -171,7 +172,9 @@ public class JumpStatsPresenter {
             Integer firstJumpId = viewModel.getFirstJumpId().getValue();
             Integer lastJumpId = viewModel.getLastJumpId().getValue();
 
-            Log.v(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            if (BuildConfig.DEBUG) {
+                Log.v(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            }
             if (jumpId != null && firstJumpId != null && lastJumpId != null) {
                 fragment.updateButtons(jumpId, firstJumpId, lastJumpId);
             }

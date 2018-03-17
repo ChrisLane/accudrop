@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.fragment.ReplayFragment;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
 import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
@@ -82,7 +83,10 @@ public class ReplayPresenter {
             Integer firstJumpId = replayViewModel.getFirstJumpId().getValue();
             Integer lastJumpId = replayViewModel.getLastJumpId().getValue();
 
-            Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            }
+
             if (jumpId != null && firstJumpId != null && lastJumpId != null) {
                 replayFragment.updateButtons(jumpId, firstJumpId, lastJumpId);
             }

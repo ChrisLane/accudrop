@@ -16,6 +16,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.service.LocationService;
 
 public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
@@ -174,7 +175,9 @@ public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
 
     @Override
     public void onDnsSdTxtRecordAvailable(String fullDomainName, Map<String, String> txtRecordMap, WifiP2pDevice srcDevice) {
-        Log.d(TAG, srcDevice.deviceName + " is " + txtRecordMap.get(AVAILABLE));
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, srcDevice.deviceName + " is " + txtRecordMap.get(AVAILABLE));
+        }
     }
 
     @Override
@@ -183,7 +186,11 @@ public class Peer2Peer implements WifiP2pManager.ConnectionInfoListener,
             case COORD_MSG:
                 byte[] buffer = (byte[]) msg.obj;
                 String coordString = new String(buffer, 0, msg.arg1);
-                Log.d(TAG, "Location String: " + coordString);
+
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Location String: " + coordString);
+                }
+
                 String[] strings = coordString.split(" ");
                 if (strings.length == 3) {
                     Double lat = Double.valueOf(strings[0]);

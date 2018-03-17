@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
@@ -244,7 +245,10 @@ public class RadarPresenter {
             Integer firstJumpId = radarViewModel.getFirstJumpId().getValue();
             Integer lastJumpId = radarViewModel.getLastJumpId().getValue();
 
-            Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Button data: " + jumpId + ", " + firstJumpId + ", " + lastJumpId);
+            }
+
             if (jumpId != null && firstJumpId != null && lastJumpId != null) {
                 fragment.updateButtons(jumpId, firstJumpId, lastJumpId);
             }

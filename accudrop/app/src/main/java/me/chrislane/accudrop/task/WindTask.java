@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.presenter.PlanPresenter;
 
 /**
@@ -55,7 +56,9 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
 
             while ((line = reader.readLine()) != null) {
                 buffer.append(line).append("\n");
-                Log.d("JsonTask Response", "> " + line);
+                if (BuildConfig.DEBUG) {
+                    Log.d("JsonTask Response", "> " + line);
+                }
             }
 
             try {
@@ -104,7 +107,9 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
                 "&units=metric" +
                 "&appid=" + apiKey;
 
-        Log.d(TAG, "Request: " + url);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Request: " + url);
+        }
 
         return fetchJson(url);
     }
@@ -121,7 +126,9 @@ public class WindTask extends AsyncTask<LatLng, Void, JSONObject> {
             double windSpeed = wind.getDouble("speed");
             double windDirection = wind.getDouble("deg");
 
-            Log.d(TAG, "Wind: Speed = " + windSpeed + " Direction = " + windDirection);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Wind: Speed = " + windSpeed + " Direction = " + windDirection);
+            }
 
             // Run code that the caller wants to do on the result
             listener.onFinished(new Pair<>(windSpeed, windDirection));
