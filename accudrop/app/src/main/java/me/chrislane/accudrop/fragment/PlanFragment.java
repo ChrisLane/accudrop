@@ -150,6 +150,11 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
                 String unitString = sharedPref.getString("general_unit", "");
 
                 Util.Unit unit = Util.getUnit(unitString);
+                if (unit == null) {
+                    Log.w(TAG, "Unit returned was null");
+                    return;
+                }
+
                 for (int i = 0; i < route.size() - 1; i++) {
                     Location point1 = route.get(i);
                     Location point2 = route.get(i + 1);

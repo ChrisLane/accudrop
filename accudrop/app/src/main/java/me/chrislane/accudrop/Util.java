@@ -1,5 +1,8 @@
 package me.chrislane.accudrop;
 
+import android.support.annotation.Nullable;
+import android.util.Log;
+
 import java.util.Locale;
 
 public class Util {
@@ -74,6 +77,7 @@ public class Util {
      * @param unitString The unit name string.
      * @return The unit enum for the input string.
      */
+    @Nullable
     public static Unit getUnit(String unitString) {
         switch (unitString) {
             case "metric":
@@ -81,6 +85,7 @@ public class Util {
             case "imperial":
                 return Unit.IMPERIAL;
             default:
+                Log.w(TAG, "Unit string did not match: " + unitString);
                 return null;
         }
     }
