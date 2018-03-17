@@ -17,7 +17,6 @@ import me.chrislane.accudrop.fragment.ReplaySideViewFragment;
 import me.chrislane.accudrop.task.ProduceSideViewTask;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.ReplayViewModel;
-import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
 public class ReplaySideViewPresenter {
 
@@ -25,7 +24,6 @@ public class ReplaySideViewPresenter {
     private final ReplaySideViewFragment fragment;
     private final ReplayFragment parentFragment;
     private ReplayViewModel replayViewModel;
-    private RouteViewModel routeViewModel;
 
     public ReplaySideViewPresenter(ReplaySideViewFragment fragment) {
         this.fragment = fragment;
@@ -33,21 +31,8 @@ public class ReplaySideViewPresenter {
         parentFragment = (ReplayFragment) fragment.getParentFragment();
         if (parentFragment != null) {
             replayViewModel = ViewModelProviders.of(parentFragment).get(ReplayViewModel.class);
-            routeViewModel = ViewModelProviders.of(parentFragment).get(RouteViewModel.class);
-
-            setMinMaxAltitude();
         }
     }
-
-    /**
-     * Set minimum and maximum altitude values.
-     */
-    private void setMinMaxAltitude() {
-        // TODO #47: Read landing pattern height preferences
-        routeViewModel.setMinAltitude(0);
-        routeViewModel.setMaxAltitude(300); // 1000ft
-    }
-
 
     private List<List<Point>> getMapPoints() {
         GoogleMap map = parentFragment.getReplayMap().getMap();
