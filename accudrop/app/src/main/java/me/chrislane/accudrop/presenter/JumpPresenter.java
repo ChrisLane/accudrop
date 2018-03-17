@@ -12,6 +12,7 @@ import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
 import me.chrislane.accudrop.task.InsertJumpTask;
+import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
 
@@ -19,6 +20,7 @@ public class JumpPresenter {
 
     private static final String TAG = JumpPresenter.class.getSimpleName();
     private final JumpFragment jumpFragment;
+    private final DatabaseViewModel databaseViewModel;
     private PressureViewModel pressureViewModel = null;
     private GnssViewModel gnssViewModel = null;
     private boolean isJumping = false;
@@ -29,6 +31,7 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.requireActivity();
         pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel.class);
         gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
+        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
 
         subscribeToPressure();
     }
@@ -41,12 +44,11 @@ public class JumpPresenter {
         Log.i(TAG, "Starting jump.");
         isJumping = true;
 
-        MainActivity main = (MainActivity) jumpFragment.requireActivity();
         gnssViewModel.getGnssListener().stopListening();
         CreateAndInsertJumpTask.Listener createListener = jumpId -> {
         };
         InsertJumpTask.Listener insertListener = this::startLocationService;
-        new CreateAndInsertJumpTask(main, createListener, insertListener).execute();
+        new CreateAndInsertJumpTask(databaseViewModel, createListener, insertListener).execute();
     }
 
     /**
@@ -79,6 +81,7 @@ public class JumpPresenter {
         MainActivity main = (MainActivity) jumpFragment.requireActivity();
         Intent intent = new Intent(main, LocationService.class);
         main.stopService(intent);
+
         gnssViewModel.getGnssListener().startListening();
     }
 

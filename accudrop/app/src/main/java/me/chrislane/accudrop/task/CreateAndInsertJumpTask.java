@@ -1,12 +1,10 @@
 package me.chrislane.accudrop.task;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.Date;
 
-import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.db.Jump;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
@@ -20,9 +18,9 @@ public class CreateAndInsertJumpTask extends AsyncTask<Void, Void, Integer> {
     private final Listener listener;
     private final InsertJumpTask.Listener insertListener;
 
-    public CreateAndInsertJumpTask(MainActivity main, Listener listener,
+    public CreateAndInsertJumpTask(DatabaseViewModel databaseViewModel, Listener listener,
                                    InsertJumpTask.Listener insertListener) {
-        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel.class);
+        this.databaseViewModel = databaseViewModel;
         this.listener = listener;
         this.insertListener = insertListener;
     }
