@@ -1,7 +1,6 @@
 package me.chrislane.accudrop.fragment;
 
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -35,7 +34,9 @@ import me.chrislane.accudrop.presenter.PlanPresenter;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.RouteViewModel;
 
-public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReadyCallback {
+public class PlanFragment extends Fragment implements LifecycleOwner,
+        OnMapReadyCallback,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = PlanFragment.class.getSimpleName();
     private GoogleMap map;
@@ -43,6 +44,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
     private CameraPosition.Builder camPosBuilder;
     private RouteViewModel routeViewModel;
     private PlanPresenter planPresenter;
+    private SharedPreferences preferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
             gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel.class);
             routeViewModel = ViewModelProviders.of(main).get(RouteViewModel.class);
         }
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         camPosBuilder = new CameraPosition.Builder()
                 .zoom(15.5f)
@@ -70,6 +74,8 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         // Set up the map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.plan_map_fragment);
         mapFragment.getMapAsync(this);
+
+        preferences.registerOnSharedPreferenceChangeListener(this);
 
         return view;
     }
@@ -89,9 +95,9 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         setupMap();
         subscribeToRoute();
 
-        LatLng target = GnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
-        if (target != null) {
-            planPresenter = new PlanPresenter(this, target);
+        LatLng gnssLocation = GnssViewModel.getLatLng(gnssViewModel.getLastLocation().getValue());
+        if (gnssLocation != null) {
+            planPresenter = new PlanPresenter(this, gnssLocation);
         } else {
             planPresenter = new PlanPresenter(this);
         }
@@ -134,6 +140,7 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
         map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
         // Update route
+        routeViewModel.setTarget(latLng);
         planPresenter.calcRoute(latLng);
     }
 
@@ -142,40 +149,45 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
      * updates the map to display these changes.
      */
     private void subscribeToRoute() {
-        final Observer<List<Location>> routeObserver = route -> {
-            if (route != null) {
-                map.clear();
+        routeViewModel.getRoute().observe(this, this::updateRoute);
+    }
 
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                String unitString = sharedPref.getString("general_unit", "");
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        preferences.registerOnSharedPreferenceChangeListener(this);
+    }
 
-                Util.Unit unit = Util.getUnit(unitString);
-                if (unit == null) {
-                    Log.w(TAG, "Unit returned was null");
-                    return;
-                }
+    public void updateRoute(List<Location> route) {
+        if (route != null) {
+            map.clear();
 
-                for (int i = 0; i < route.size() - 1; i++) {
-                    Location point1 = route.get(i);
-                    Location point2 = route.get(i + 1);
-                    map.addPolyline(new PolylineOptions()
-                            .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
-                            .width(5)
-                            .color(Color.RED));
-                    map.addMarker(new MarkerOptions()
-                            .position(GnssViewModel.getLatLng(point1))
-                            .title(Util.getAltitudeText(
-                                    Util.getAltitudeInUnit(point1.getAltitude(), unit), unit))
-                    );
-                }
+            String unitString = preferences.getString("general_unit", "");
 
-                map.addMarker(new MarkerOptions()
-                        .position(GnssViewModel.getLatLng(route.get(route.size() - 1)))
-                        .title("Landing"));
+            Util.Unit unit = Util.getUnit(unitString);
+            if (unit == null) {
+                Log.w(TAG, "Unit returned was null");
+                return;
             }
-        };
 
-        routeViewModel.getRoute().observe(this, routeObserver);
+            for (int i = 0; i < route.size() - 1; i++) {
+                Location point1 = route.get(i);
+                Location point2 = route.get(i + 1);
+                map.addPolyline(new PolylineOptions()
+                        .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
+                        .width(5)
+                        .color(Color.RED));
+                map.addMarker(new MarkerOptions()
+                        .position(GnssViewModel.getLatLng(point1))
+                        .title(Util.getAltitudeText(
+                                Util.getAltitudeInUnit(point1.getAltitude(), unit), unit))
+                );
+            }
+
+            map.addMarker(new MarkerOptions()
+                    .position(GnssViewModel.getLatLng(route.get(route.size() - 1)))
+                    .title("Landing"));
+        }
     }
 
     /**
@@ -193,6 +205,22 @@ public class PlanFragment extends Fragment implements LifecycleOwner, OnMapReady
             } else {
                 progressBar.setVisibility(View.GONE);
             }
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case "general_unit":
+                updateRoute(routeViewModel.getRoute().getValue());
+                break;
+            case "landing_pattern_downwind_altitude":
+            case "landing_pattern_crosswind_altitude":
+            case "landing_pattern_upwind_altitude":
+                LatLng target = routeViewModel.getTarget().getValue();
+                if (target != null) {
+                    planPresenter.calcRoute(target);
+                }
         }
     }
 }

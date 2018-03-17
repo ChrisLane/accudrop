@@ -5,6 +5,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 public class RouteViewModel extends ViewModel {
@@ -12,6 +14,7 @@ public class RouteViewModel extends ViewModel {
     private final MutableLiveData<List<Location>> route = new MutableLiveData<>();
     private final MutableLiveData<Integer> minAltitude = new MutableLiveData<>();
     private final MutableLiveData<Integer> maxAltitude =  new MutableLiveData<>();
+    private final MutableLiveData<LatLng> target = new MutableLiveData<>();
 
     /**
      * Get the recommended route.
@@ -58,5 +61,13 @@ public class RouteViewModel extends ViewModel {
 
     public void setMaxAltitude(int maxAltitude) {
         this.maxAltitude.setValue(maxAltitude);
+    }
+
+    public void setTarget(LatLng target) {
+        this.target.setValue(target);
+    }
+
+    public LiveData<LatLng> getTarget() {
+        return target;
     }
 }
