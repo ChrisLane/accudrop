@@ -108,14 +108,17 @@ public class JumpPresenter {
      */
     public void resume() {
         if (!isJumping) {
-            MainActivity main = (MainActivity) jumpFragment.requireActivity();
-            PermissionManager permissionManager = main.getPermissionManager();
             pressureViewModel.getPressureListener().startListening();
-            if (permissionManager.checkLocationPermission()) {
-                gnssViewModel.getGnssListener().startListening();
-            } else {
-                String reason = "Location access is required to track your jump location.";
-                permissionManager.requestLocationPermission(reason);
+            MainActivity main = (MainActivity) jumpFragment.getActivity();
+
+            if (main != null) {
+                PermissionManager permissionManager = main.getPermissionManager();
+                if (permissionManager.checkLocationPermission()) {
+                    gnssViewModel.getGnssListener().startListening();
+                } else {
+                    String reason = "Location access is required to track your jump location.";
+                    permissionManager.requestLocationPermission(reason);
+                }
             }
         }
     }
