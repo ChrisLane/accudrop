@@ -1,4 +1,4 @@
-package me.chrislane.accudrop;
+package me.chrislane.accudrop.generator;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.task.GenerateJumpTask;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;

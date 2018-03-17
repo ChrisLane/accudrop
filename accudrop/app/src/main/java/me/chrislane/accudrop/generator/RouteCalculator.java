@@ -1,4 +1,4 @@
-package me.chrislane.accudrop;
+package me.chrislane.accudrop.generator;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.chrislane.accudrop.BuildConfig;
+import me.chrislane.accudrop.R;
+import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 
 public class RouteCalculator {

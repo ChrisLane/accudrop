@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-import me.chrislane.accudrop.RouteCalculator;
+import me.chrislane.accudrop.generator.RouteCalculator;
 
 /**
  * Calculate a route for a given target argument.

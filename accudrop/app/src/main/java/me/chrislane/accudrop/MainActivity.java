@@ -35,6 +35,7 @@ import me.chrislane.accudrop.fragment.MainFragment;
 import me.chrislane.accudrop.fragment.PlanFragment;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.fragment.ReplayFragment;
+import me.chrislane.accudrop.generator.JumpGenerator;
 import me.chrislane.accudrop.preference.SettingsActivity;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;

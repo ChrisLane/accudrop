@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.chrislane.accudrop.BuildConfig;
-import me.chrislane.accudrop.JumpGenerator;
+import me.chrislane.accudrop.generator.JumpGenerator;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 
 public class GenerateJumpTask extends AsyncTask<Integer, Void, Void> {
