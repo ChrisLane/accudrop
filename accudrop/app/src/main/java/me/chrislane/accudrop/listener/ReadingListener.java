@@ -181,7 +181,7 @@ public class ReadingListener {
         // Add entry to db
         if (location != null && logging) {
             Float altitude = pressureViewModel.getLastAltitude().getValue();
-            if (jumpId != null) {
+            if (jumpId != null && altitude != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
