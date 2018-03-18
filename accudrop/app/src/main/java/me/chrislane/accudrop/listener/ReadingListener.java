@@ -15,7 +15,6 @@ import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.network.CoordSender;
-import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
@@ -26,7 +25,6 @@ public class ReadingListener {
     private final GnssViewModel gnssViewModel;
     private final PressureViewModel pressureViewModel;
     private final DatabaseViewModel databaseViewModel;
-    private final LocationService locationService;
     private boolean logging = false;
     private CoordSender coordSender;
     private Integer jumpId;
@@ -38,9 +36,8 @@ public class ReadingListener {
     private int fallToggle = 20;
     private int canopyToggle = 10;
 
-    public ReadingListener(LocationService locationService, GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
+    public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            DatabaseViewModel databaseViewModel) {
-        this.locationService = locationService;
         this.pressureViewModel = pressureViewModel;
         this.gnssViewModel = gnssViewModel;
         this.databaseViewModel = databaseViewModel;
@@ -48,6 +45,8 @@ public class ReadingListener {
         subscribeToJumpId();
         subscribeToLocation();
         subscribeToAltitude();
+
+        enableLogging();
     }
 
     /**
@@ -83,44 +82,30 @@ public class ReadingListener {
             return;
         }
 
-        // Should we start logging?
-        // Check we have an altitude and aren't already logging.
-        if (!logging) {
-            //if (hasReachedSpeed(altitude, 20)) {
-            if (altitude >= 3000) {
-                enableLogging();
-            }
-        } else {
-            // Add entry to the db.
-            Location location = gnssViewModel.getLastLocation().getValue();
-            vSpeed = getFallRate(altitude);
+        // Add entry to the db.
+        Location location = gnssViewModel.getLastLocation().getValue();
+        vSpeed = getFallRate(altitude);
 
-            // Decide the fall type
-            if (vSpeed != null) {
-                if (vSpeed > fallToggle && !hasFreefallen) {
-                    // TODO: Set this boolean value when enabling logging
-                    hasFreefallen = true;
-                } else if (vSpeed < canopyToggle && hasFreefallen) {
-                    isUnderCanopy = true;
-                }
+        // Decide the fall type
+        if (vSpeed != null) {
+            if (vSpeed > fallToggle && !hasFreefallen) {
+                // TODO: Set this boolean value when enabling logging
+                hasFreefallen = true;
+            } else if (vSpeed < canopyToggle && hasFreefallen) {
+                isUnderCanopy = true;
             }
+        }
 
-            // Add the position to the database
-            if (jumpId != null) {
-                addPositionToDb(jumpId, location, altitude, vSpeed);
-            }
+        // Add the position to the database
+        if (jumpId != null) {
+            addPositionToDb(jumpId, location, altitude, vSpeed);
+        }
 
-            if (coordSender != null && location != null) {
-                // TODO: Only send new location after a set distance moved
-                String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
-                        location.getLongitude(), altitude);
-                coordSender.write(send.getBytes());
-            }
-
-            // Should we stop logging?
-            if (altitude < 3) {
-                disableLogging();
-            }
+        if (coordSender != null && location != null) {
+            // TODO: Only send new location after a set distance moved
+            String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
+                    location.getLongitude(), 0f);
+            coordSender.write(send.getBytes());
         }
     }
 
@@ -181,14 +166,14 @@ public class ReadingListener {
         // Add entry to db
         if (location != null && logging) {
             Float altitude = pressureViewModel.getLastAltitude().getValue();
-            if (jumpId != null) {
+            if (jumpId != null && altitude != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
             if (coordSender != null && altitude != null) {
                 // TODO: Only send new location after a set distance moved
                 String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
-                        location.getLongitude(), altitude);
+                        location.getLongitude(), 0f);
                 coordSender.write(send.getBytes());
             }
         }
