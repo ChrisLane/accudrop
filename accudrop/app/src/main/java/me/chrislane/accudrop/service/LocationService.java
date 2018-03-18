@@ -10,8 +10,11 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.widget.Toast;
+
+import java.util.Date;
+import java.util.Locale;
 
 import me.chrislane.accudrop.R;
 import me.chrislane.accudrop.listener.ReadingListener;
@@ -33,6 +36,8 @@ public class LocationService extends Service {
     private ReadingListener readingListener;
     private BroadcastReceiver receiver;
     private Peer2Peer p2p;
+    private long notificationTime;
+    private TextToSpeech tts;
 
     public LocationService() {
 
@@ -46,7 +51,7 @@ public class LocationService extends Service {
         gnssViewModel = new GnssViewModel(getApplication());
         pressureViewModel = new PressureViewModel(getApplication());
         DatabaseViewModel databaseViewModel = new DatabaseViewModel(getApplication());
-        readingListener = new ReadingListener(this, gnssViewModel, pressureViewModel, databaseViewModel);
+        readingListener = new ReadingListener(gnssViewModel, pressureViewModel, databaseViewModel);
 
         // Set ground pressure value
         if (intent != null) {
@@ -143,17 +148,27 @@ public class LocationService extends Service {
         them.setAltitude(altitude);
 
         Location us = gnssViewModel.getLastLocation().getValue();
-        Float usAlti = pressureViewModel.getLastAltitude().getValue();
+        Float usAlti = 0f;
 
-        if (us != null && usAlti != null) {
+        if (us != null) {
             us.setAltitude(usAlti);
             float distance = us.distanceTo(them);
             Log.v(TAG, "Proximity = " + distance);
             if (distance < 15) {
-                // TODO: Replace with a meaningful warning
-                // TODO: Save the warning details
-                Toast.makeText(this, "Proximity warning. Danger!.",
-                        Toast.LENGTH_SHORT).show();
+                if (new Date().getTime() - notificationTime >= 10000) {
+                    notificationTime = new Date().getTime();
+                    // TODO: Replace with a meaningful warning
+                    // TODO: Save the warning details
+                    /*Toast.makeText(this, "Distance: " + distance,
+                            Toast.LENGTH_SHORT).show();*/
+                    tts = new TextToSpeech(this, status -> {
+                        if (status == TextToSpeech.SUCCESS) {
+                            tts.setLanguage(Locale.UK);
+                            tts.speak("Warning, user " + (int) distance + " metres away.",
+                                    TextToSpeech.QUEUE_FLUSH, null, null);
+                        }
+                    });
+                }
             }
         }
     }
