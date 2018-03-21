@@ -41,6 +41,7 @@ public class RadarFragment extends Fragment {
     private RadarViewModel radarViewModel;
     private Button nextbtn;
     private Button prevButton;
+    private SeekBar seekBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,10 +66,14 @@ public class RadarFragment extends Fragment {
         nextbtn = view.findViewById(R.id.radar_next_button);
         nextbtn.setOnClickListener(v -> presenter.nextJump());
 
-        SeekBar seekBar = view.findViewById(R.id.radar_seek_bar);
+        seekBar = view.findViewById(R.id.radar_seek_bar);
         seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
 
         return view;
+    }
+
+    public void resetSeekBar() {
+        seekBar.setProgress(0);
     }
 
     public void updateButtons(int jumpId, int firstJumpId, int lastJumpId) {

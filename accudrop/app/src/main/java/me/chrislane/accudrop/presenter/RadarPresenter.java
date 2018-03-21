@@ -123,6 +123,7 @@ public class RadarPresenter {
     private void subscribeToJumpId() {
         final Observer<Integer> jumpIdObserver = jumpId -> {
             if (jumpId != null) {
+                fragment.resetSeekBar();
                 setOwnerAsSubject();
             }
         };
