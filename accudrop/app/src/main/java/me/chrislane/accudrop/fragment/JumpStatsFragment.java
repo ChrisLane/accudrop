@@ -66,7 +66,7 @@ public class JumpStatsFragment extends Fragment {
         long seconds = (millis / 1000) % 60;
 
         TextView time = view.findViewById(R.id.total_duration_value);
-        time.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
+        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds));
     }
 
     public void updateCanopyDuration(long millis) {
@@ -74,7 +74,7 @@ public class JumpStatsFragment extends Fragment {
         long seconds = (millis / 1000) % 60;
 
         TextView time = view.findViewById(R.id.canopy_duration_value);
-        time.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
+        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds));
     }
 
     public void updateFreefallDuration(long millis) {
@@ -82,7 +82,7 @@ public class JumpStatsFragment extends Fragment {
         long seconds = (millis / 1000) % 60;
 
         TextView time = view.findViewById(R.id.freefall_duration_value);
-        time.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
+        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds));
     }
 
     public void updateCanopyVSpeed(double vSpeed) {
