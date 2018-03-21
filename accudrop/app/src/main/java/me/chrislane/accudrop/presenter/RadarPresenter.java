@@ -138,6 +138,7 @@ public class RadarPresenter {
             if (subject != null && jumpId != null) {
                 if (jumpId != knownJumpId) {
                     // We've changed the jump
+                    knownJumpId = jumpId;
                     generateJumpPositions(jumpId, subject);
                 } else {
                     // Only the subject changed
