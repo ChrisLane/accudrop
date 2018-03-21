@@ -8,7 +8,6 @@ import android.util.Log;
 
 import me.chrislane.accudrop.MainActivity;
 import me.chrislane.accudrop.PermissionManager;
-import me.chrislane.accudrop.Util;
 import me.chrislane.accudrop.fragment.JumpFragment;
 import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask;
@@ -110,7 +109,7 @@ public class JumpPresenter {
         final Observer<Float> altitudeObserver = altitude -> {
             // Update altitude text
             if (altitude != null) {
-                jumpFragment.updatePressureAltitude(Util.metresToFeet(altitude), Util.Unit.IMPERIAL);
+                jumpFragment.updatePressureAltitude(altitude);
             }
         };
 

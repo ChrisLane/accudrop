@@ -6,7 +6,9 @@ import android.app.ActivityManager;
 import android.arch.lifecycle.DefaultLifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -31,6 +33,7 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     private static final String TAG = JumpFragment.class.getSimpleName();
     private View view;
     private JumpPresenter jumpPresenter;
+    private SharedPreferences preferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,8 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
         setRetainInstance(true);
 
         jumpPresenter = new JumpPresenter(this);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         MainActivity main = (MainActivity) requireActivity();
         main.getLifecycle().addObserver(this);
@@ -95,12 +100,15 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
      * Update the altitude text.
      *
      * @param altitude The altitude to set.
-     * @param unit     The unit to display after the altitude.
      */
-    public void updatePressureAltitude(Double altitude, Unit unit) {
+    public void updatePressureAltitude(Float altitude) {
         Log.v(TAG, "Updating pressure altitude text.");
+
+        String unitString = preferences.getString("general_unit", "");
+        Unit unit = Util.getUnit(unitString);
+
         TextView text = view.findViewById(R.id.pressure_altitude);
-        text.setText(Util.getAltitudeText(altitude, unit));
+        text.setText(Util.getAltitudeText(Double.valueOf(altitude), unit));
     }
 
     @Override
