@@ -62,7 +62,9 @@ public class RouteCalculator {
             glideRatio = Float.valueOf(sharedPreferences.getString("canopy_glide_ratio",
                     String.valueOf(typedValue.getFloat())));
         } catch (NumberFormatException e) {
+            // The user entered something silly as a preference value
             Log.e(TAG, "Invalid number in preferences", e);
+            // Set to some sane defaults
             p1Altitude = 300;
             p2Altitude = 180;
             p3Altitude = 90;
