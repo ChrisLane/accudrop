@@ -43,22 +43,33 @@ public class RouteCalculator {
     }
 
     public void setFromPreferences(SharedPreferences sharedPreferences, Resources resources) {
-        // Unfortunately EditTextPreferences don't save in number format
-        p1Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_downwind_altitude",
-                String.valueOf(resources.getInteger(R.integer.pref_default_downwind_altitude))));
-        p2Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_crosswind_altitude",
-                String.valueOf(resources.getInteger(R.integer.pref_default_crosswind_altitude))));
-        p3Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_upwind_altitude",
-                String.valueOf(resources.getInteger(R.integer.pref_default_upwind_altitude))));
+        double glideRatio;
+        try {
+            // Unfortunately EditTextPreferences don't save in number format
+            p1Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_downwind_altitude",
+                    String.valueOf(resources.getInteger(R.integer.pref_default_downwind_altitude))));
+            p2Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_crosswind_altitude",
+                    String.valueOf(resources.getInteger(R.integer.pref_default_crosswind_altitude))));
+            p3Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_upwind_altitude",
+                    String.valueOf(resources.getInteger(R.integer.pref_default_upwind_altitude))));
 
-        TypedValue typedValue = new TypedValue();
-        resources.getValue(R.integer.pref_default_airspeed, typedValue, false);
-        airspeed = Float.valueOf(sharedPreferences.getString("canopy_airspeed",
-                String.valueOf(typedValue.getFloat())));
+            TypedValue typedValue = new TypedValue();
+            resources.getValue(R.integer.pref_default_airspeed, typedValue, false);
+            airspeed = Float.valueOf(sharedPreferences.getString("canopy_airspeed",
+                    String.valueOf(typedValue.getFloat())));
 
-        resources.getValue(R.integer.pref_default_glide_ratio, typedValue, false);
-        double glideRatio = Float.valueOf(sharedPreferences.getString("canopy_glide_ratio",
-                String.valueOf(typedValue.getFloat())));
+            resources.getValue(R.integer.pref_default_glide_ratio, typedValue, false);
+            glideRatio = Float.valueOf(sharedPreferences.getString("canopy_glide_ratio",
+                    String.valueOf(typedValue.getFloat())));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Invalid number in preferences", e);
+            p1Altitude = 300;
+            p2Altitude = 180;
+            p3Altitude = 90;
+            airspeed = 15;
+            glideRatio = 2.5;
+        }
+
         descentRate = getSinkSpeed(airspeed, glideRatio);
     }
 
