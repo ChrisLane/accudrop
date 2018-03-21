@@ -53,6 +53,28 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
         Date date = new Date();
         date.setTime(0L);
 
+        // Add "Freefall" data (shift landing pattern up in altitude)
+        for (int i = 0; i < route.size(); i++) {
+            Location location = route.get(i);
+            Position pos = new Position();
+            pos.latitude = location.getLatitude();
+            pos.longitude = location.getLongitude();
+            pos.altitude = (int) location.getAltitude() + 1000;
+            pos.time = (Date) date.clone();
+            //pos.time = new Date();
+            pos.jumpId = jumpId;
+            pos.useruuid = uuid.toString();
+            pos.vspeed = 54.0;
+            pos.hspeed = 4f;
+            pos.fallType = FallType.FREEFALL;
+
+            databaseViewModel.addPosition(pos);
+
+            // Increment time by a second for next position
+            date.setTime(date.getTime() + 450L);
+        }
+
+        // Add canopy data
         for (int i = 0; i < route.size(); i++) {
             Location location = route.get(i);
             Position pos = new Position();
@@ -63,29 +85,9 @@ public class AddGeneratedPositionsTask extends AsyncTask<Void, Void, Void> {
             //pos.time = new Date();
             pos.jumpId = jumpId;
             pos.useruuid = uuid.toString();
-
-            if (i > 0) {
-                Location prevLoc = route.get(i - 1);
-                if (prevLoc != null) {
-                    pos.vspeed = getFallRate(pos.altitude, pos.time.getTime(),
-                            prevLoc.getAltitude(), prevLoc.getTime());
-                }
-            }
-
-            if (location.getAltitude() > 1050) {
-                pos.fallType = FallType.FREEFALL;
-            } else {
-                pos.fallType = FallType.CANOPY;
-            }
-
-            /*String msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
-                            "\tUser UUID: %s%n" +
-                            "\tJump ID: %d%n" +
-                            "\t(Lat, Long): (%f,%f)%n" +
-                            "\tAltitude: %d%n" +
-                            "\tTime: %s",
-                    pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time);
-            Log.v(TAG, msg);*/
+            pos.vspeed = 15.4 / 2.5;
+            pos.hspeed = 15.4f + 2f;
+            pos.fallType = FallType.CANOPY;
 
             databaseViewModel.addPosition(pos);
 
