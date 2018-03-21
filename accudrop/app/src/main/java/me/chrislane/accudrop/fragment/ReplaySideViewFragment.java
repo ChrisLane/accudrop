@@ -78,9 +78,9 @@ public class ReplaySideViewFragment extends Fragment {
                 Path path = new Path();
                 for (List<PointF> screenPoints : screenPointsList) {
                     if (!screenPoints.isEmpty()) {
-                        path.moveTo(screenPoints.get(0).x, screenPoints.get(0).y);
+                        path.moveTo(screenPoints.get(0).x, canvas.getHeight() - screenPoints.get(0).y);
                         for (PointF point : screenPoints) {
-                            path.lineTo(point.x, point.y);
+                            path.lineTo(point.x, canvas.getHeight() - point.y);
                         }
                         canvas.drawPath(path, paint);
                     }
