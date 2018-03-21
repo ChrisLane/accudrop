@@ -15,9 +15,10 @@ import java.util.UUID;
 
 import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.MainActivity;
+import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.fragment.RadarFragment;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
-import me.chrislane.accudrop.task.FetchUsersAndPositionsTask;
+import me.chrislane.accudrop.task.FetchUsersAndTypePositionsTask;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.RadarViewModel;
 
@@ -189,7 +190,7 @@ public class RadarPresenter {
     }
 
     public void generateJumpPositions(int jumpId, UUID subject) {
-        FetchUsersAndPositionsTask.Listener listener = userEntries -> {
+        FetchUsersAndTypePositionsTask.Listener listener = userEntries -> {
             if (userEntries == null) {
                 return;
             }
@@ -208,7 +209,7 @@ public class RadarPresenter {
                 }
             }
         };
-        new FetchUsersAndPositionsTask(listener, databaseViewModel).execute(jumpId);
+        new FetchUsersAndTypePositionsTask(listener, FallType.FREEFALL, databaseViewModel).execute(jumpId);
     }
 
     private List<Pair<UUID, Location>> getGuestLocations(List<Pair<UUID, List<Location>>> guestLocs, long time) {
