@@ -99,6 +99,8 @@ public class JumpStatsPresenter {
         FetchFallTypeMaxVSpeed.Listener vListener = vSpeed -> {
             if (vSpeed != null) {
                 fragment.updateFreefallVSpeed(vSpeed);
+            } else {
+                fragment.updateFreefallVSpeed(0);
             }
         };
         new FetchFallTypeMaxVSpeed(vListener, FallType.FREEFALL, uuid, dbViewModel)
@@ -108,6 +110,8 @@ public class JumpStatsPresenter {
         FetchFallTypeMaxHSpeed.Listener hListener = hSpeed -> {
             if (hSpeed != null) {
                 fragment.updateFreefallHSpeed(hSpeed);
+            } else {
+                fragment.updateFreefallHSpeed(0);
             }
         };
         new FetchFallTypeMaxHSpeed(hListener, FallType.FREEFALL, uuid, dbViewModel)
@@ -124,6 +128,8 @@ public class JumpStatsPresenter {
         FetchFallTypeDuration.Listener listener = millis -> {
             if (millis != null) {
                 fragment.updateCanopyDuration(millis);
+            } else {
+                fragment.updateCanopyDuration(0);
             }
         };
         new FetchFallTypeDuration(listener, FallType.CANOPY, uuid, dbViewModel)
@@ -134,6 +140,8 @@ public class JumpStatsPresenter {
         FetchFallTypeDuration.Listener listener = millis -> {
             if (millis != null) {
                 fragment.updateFreefallDuration(millis);
+            } else {
+                fragment.updateFreefallDuration(0);
             }
         };
         new FetchFallTypeDuration(listener, FallType.FREEFALL, uuid, dbViewModel)
@@ -144,6 +152,8 @@ public class JumpStatsPresenter {
         FetchTotalDuration.Listener listener = millis -> {
             if (millis != null) {
                 fragment.updateTotalDuration(millis);
+            } else {
+                fragment.updateTotalDuration(0);
             }
         };
         new FetchTotalDuration(listener, uuid, dbViewModel)
