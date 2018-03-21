@@ -169,6 +169,7 @@ public class RadarFragment extends Fragment {
     public class RadarView extends View {
         private final String TAG = RadarView.class.getSimpleName();
         Paint paint = new Paint();
+        Paint textPaint = new Paint();
         RectF oval = new RectF();
         List<Pair<UUID, PointF>> points = new ArrayList<>();
 
@@ -234,6 +235,7 @@ public class RadarFragment extends Fragment {
             paint.setColor(Color.BLACK);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5);
+            textPaint.setTextSize(20);
             oval.set(0, halfHeight - heightMove, width, halfHeight + heightMove);
             canvas.drawOval(oval, paint);
 
@@ -272,6 +274,7 @@ public class RadarFragment extends Fragment {
                 float pointX = width - position.x;
                 float pointY = height - newY;
                 canvas.drawCircle(pointX, pointY, (width + height) * 0.003f, paint);
+                canvas.drawText("Name", pointX, pointY, textPaint);
 
                 // Store user and circle position
                 points.add(Pair.create(guestsInView.get(i), new PointF(pointX, pointY)));
