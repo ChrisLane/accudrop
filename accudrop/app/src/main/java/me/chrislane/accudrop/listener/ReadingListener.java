@@ -26,7 +26,7 @@ public class ReadingListener {
     private final GnssViewModel gnssViewModel;
     private final PressureViewModel pressureViewModel;
     private final DatabaseViewModel databaseViewModel;
-    private final LocationService locationService;
+    private final boolean isGuidanceEnabled;
     private boolean logging = false;
     private CoordSender coordSender;
     private Integer jumpId;
@@ -36,14 +36,19 @@ public class ReadingListener {
     private boolean hasFreefallen = false;
     private boolean isUnderCanopy = false;
     private int fallToggle = 20;
-    private int canopyToggle = 10;
+    private int canopyToggle = 15;
+    private final SharedPreferences prefs;
 
     public ReadingListener(LocationService locationService, GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            DatabaseViewModel databaseViewModel) {
-        this.locationService = locationService;
+        LocationService locationService1 = locationService;
         this.pressureViewModel = pressureViewModel;
         this.gnssViewModel = gnssViewModel;
         this.databaseViewModel = databaseViewModel;
+
+        prefs = databaseViewModel.getApplication()
+                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        isGuidanceEnabled = prefs.getBoolean("guidance_enabled", false);
 
         subscribeToJumpId();
         subscribeToLocation();
@@ -87,7 +92,7 @@ public class ReadingListener {
         // Check we have an altitude and aren't already logging.
         if (!logging) {
             //if (hasReachedSpeed(altitude, 20)) {
-            if (altitude >= 3000) {
+            if (altitude >= 600) {
                 enableLogging();
             }
         } else {
@@ -110,11 +115,13 @@ public class ReadingListener {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
-            if (coordSender != null && location != null) {
-                // TODO: Only send new location after a set distance moved
-                String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
-                        location.getLongitude(), altitude);
-                coordSender.write(send.getBytes());
+            if (isGuidanceEnabled) {
+                if (coordSender != null && location != null) {
+                    // TODO: Only send new location after a set distance moved
+                    String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
+                            location.getLongitude(), altitude);
+                    coordSender.write(send.getBytes());
+                }
             }
 
             // Should we stop logging?
@@ -181,15 +188,17 @@ public class ReadingListener {
         // Add entry to db
         if (location != null && logging) {
             Float altitude = pressureViewModel.getLastAltitude().getValue();
-            if (jumpId != null && altitude != null) {
+            if (jumpId != null) {
                 addPositionToDb(jumpId, location, altitude, vSpeed);
             }
 
-            if (coordSender != null && altitude != null) {
-                // TODO: Only send new location after a set distance moved
-                String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
-                        location.getLongitude(), altitude);
-                coordSender.write(send.getBytes());
+            if (isGuidanceEnabled) {
+                if (coordSender != null && altitude != null) {
+                    // TODO: Only send new location after a set distance moved
+                    String send = String.format(Locale.ENGLISH, "%f %f %f", location.getLatitude(),
+                            location.getLongitude(), altitude);
+                    coordSender.write(send.getBytes());
+                }
             }
         }
     }
@@ -202,16 +211,14 @@ public class ReadingListener {
      * @param altitude The altitude of the position.
      */
     private void addPositionToDb(Integer jumpId, Location location, Float altitude, Double vSpeed) {
-        SharedPreferences settings = databaseViewModel.getApplication()
-                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String uuid = settings.getString("userUUID", "");
+        String uuid = prefs.getString("userUUID", "");
 
         Position pos = new Position();
         pos.latitude = location != null ? location.getLatitude() : null;
         pos.longitude = location != null ? location.getLongitude() : null;
         pos.hspeed = location != null ? location.getSpeed() : null;
         pos.vspeed = vSpeed;
-        pos.altitude = altitude.intValue();
+        pos.altitude = altitude != null ? altitude.intValue() : null;
         pos.time = new Date();
         pos.jumpId = jumpId;
         pos.useruuid = uuid;
