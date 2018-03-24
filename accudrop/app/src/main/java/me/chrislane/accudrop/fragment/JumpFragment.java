@@ -4,7 +4,6 @@ package me.chrislane.accudrop.fragment;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.arch.lifecycle.DefaultLifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -119,12 +118,14 @@ public class JumpFragment extends Fragment implements DefaultLifecycleObserver {
     }
 
     @Override
-    public void onResume(@NonNull LifecycleOwner owner) {
+    public void onResume() {
+        super.onResume();
         jumpPresenter.resume();
     }
 
     @Override
-    public void onPause(@NonNull LifecycleOwner owner) {
+    public void onPause() {
+        super.onPause();
         jumpPresenter.pause();
     }
 
