@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -15,7 +16,6 @@ import me.chrislane.accudrop.BuildConfig;
 import me.chrislane.accudrop.db.FallType;
 import me.chrislane.accudrop.db.Position;
 import me.chrislane.accudrop.network.CoordSender;
-import me.chrislane.accudrop.service.LocationService;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.GnssViewModel;
 import me.chrislane.accudrop.viewmodel.PressureViewModel;
@@ -37,18 +37,16 @@ public class ReadingListener {
     private boolean isUnderCanopy = false;
     private int fallToggle = 20;
     private int canopyToggle = 15;
-    private final SharedPreferences prefs;
 
-    public ReadingListener(LocationService locationService, GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
+    public ReadingListener(GnssViewModel gnssViewModel, PressureViewModel pressureViewModel,
                            DatabaseViewModel databaseViewModel) {
-        LocationService locationService1 = locationService;
         this.pressureViewModel = pressureViewModel;
         this.gnssViewModel = gnssViewModel;
         this.databaseViewModel = databaseViewModel;
 
-        prefs = databaseViewModel.getApplication()
-                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        isGuidanceEnabled = prefs.getBoolean("guidance_enabled", false);
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(databaseViewModel.getApplication());
+        isGuidanceEnabled = preferences.getBoolean("guidance_enabled", false);
 
         subscribeToJumpId();
         subscribeToLocation();
@@ -211,7 +209,9 @@ public class ReadingListener {
      * @param altitude The altitude of the position.
      */
     private void addPositionToDb(Integer jumpId, Location location, Float altitude, Double vSpeed) {
-        String uuid = prefs.getString("userUUID", "");
+        SharedPreferences settings = databaseViewModel.getApplication()
+                .getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        String uuid = settings.getString("userUUID", "");
 
         Position pos = new Position();
         pos.latitude = location != null ? location.getLatitude() : null;

@@ -7,9 +7,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class LocationService extends Service {
     private ReadingListener readingListener;
     private BroadcastReceiver receiver;
     private Peer2Peer p2p;
+    private boolean isGuidanceEnabled;
 
     public LocationService() {
 
@@ -46,7 +49,12 @@ public class LocationService extends Service {
         gnssViewModel = new GnssViewModel(getApplication());
         pressureViewModel = new PressureViewModel(getApplication());
         DatabaseViewModel databaseViewModel = new DatabaseViewModel(getApplication());
-        readingListener = new ReadingListener(this, gnssViewModel, pressureViewModel, databaseViewModel);
+        readingListener = new ReadingListener(gnssViewModel, pressureViewModel, databaseViewModel);
+
+        // Get guidance enabled preference
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        isGuidanceEnabled = preferences.getBoolean("guidance_enabled", false);
 
         // Set ground pressure value
         if (intent != null) {
@@ -64,11 +72,12 @@ public class LocationService extends Service {
         pressureViewModel.getPressureListener().startListening();
 
         // Register broadcast p2pReceiver
-        // TODO: Check preference before starting P2P proximity checks
-        p2p = new Peer2Peer(this);
-        receiver = p2p.getReceiver();
-        IntentFilter intentFilter = p2p.getIntentFilter();
-        registerReceiver(receiver, intentFilter);
+        if (isGuidanceEnabled) {
+            p2p = new Peer2Peer(this);
+            receiver = p2p.getReceiver();
+            IntentFilter intentFilter = p2p.getIntentFilter();
+            registerReceiver(receiver, intentFilter);
+        }
 
         // Build notification for foreground service
         Notification notification;
@@ -118,8 +127,10 @@ public class LocationService extends Service {
         gnssViewModel.getGnssListener().stopListening();
         pressureViewModel.getPressureListener().stopListening();
 
-        unregisterReceiver(receiver);
-        p2p.endConnection();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            p2p.endConnection();
+        }
 
 
         stopForeground(true);
