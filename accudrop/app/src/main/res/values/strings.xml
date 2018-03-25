@@ -20,7 +20,7 @@
 
     <!-- Options -->
     <string name="action_settings">Settings</string>
-    <string name="text_to_speech_test">TTS Test</string>
+    <string name="email_database_file">Send Database File</string>
     <string name="generate_jump">Generate Jump</string>
     <string name="generate_guest_jump">Generate Guest Jump</string>
     <string name="clear_database">Clear Database</string>

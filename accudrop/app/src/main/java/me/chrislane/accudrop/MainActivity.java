@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
@@ -14,18 +16,21 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.Locale;
+import java.io.File;
+import java.util.Date;
 import java.util.UUID;
 
 import me.chrislane.accudrop.db.AccudropDb;
@@ -142,14 +147,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.text_to_speech_test:
-                // TODO: Remove example code after demonstration
-                tts = new TextToSpeech(this, status -> {
-                    if (status == TextToSpeech.SUCCESS) {
-                        tts.setLanguage(Locale.UK);
-                        tts.speak("At 500 feet, turn upwind", TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                });
+            case R.id.email_database_file:
+                emailDatabaseFile();
                 return true;
             case R.id.generate_jump:
                 new JumpGenerator(this).generateJump(new LatLng(51.52, 0.08), 0);
@@ -165,6 +164,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void emailDatabaseFile() {
+        try {
+            File data = Environment.getDataDirectory();
+
+            String currentDBPath = "//data//" + "me.chrislane.accudrop"
+                    + "//databases//" + "accudrop";
+            File currentDB = new File(data, currentDBPath);
+
+            Uri U = FileProvider.getUriForFile(this,
+                    "me.chrislane.accudrop.DbFileProvider", currentDB);
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("application/x-sqlite3");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[]{"chris@chrislane.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "AccuDrop Database File");
+            i.putExtra(Intent.EXTRA_TEXT, "Date: " + new Date().toString());
+            i.putExtra(Intent.EXTRA_STREAM, U);
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(i, "Email:"));
+        } catch (Exception e) {
+            Log.e(TAG, "emailDatabaseFile: ", e);
+        }
     }
 
     /**
