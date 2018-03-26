@@ -18,6 +18,7 @@ import me.chrislane.accudrop.task.FetchFallTypeMaxHSpeed;
 import me.chrislane.accudrop.task.FetchFallTypeMaxVSpeed;
 import me.chrislane.accudrop.task.FetchLastJumpIdTask;
 import me.chrislane.accudrop.task.FetchTotalDuration;
+import me.chrislane.accudrop.task.MinMaxAltiTask;
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel;
 import me.chrislane.accudrop.viewmodel.JumpStatsViewModel;
 
@@ -64,9 +65,16 @@ public class JumpStatsPresenter {
                 fragment.updateJumpId(jumpId);
                 updateDurations(jumpId);
                 updateSpeeds(jumpId);
+                updateExitAltitude(jumpId);
             }
         };
         viewModel.getJumpId().observe(fragment, jumpIdObserver);
+    }
+
+    private void updateExitAltitude(int jumpId) {
+        MinMaxAltiTask.Listener listener = (min, max) -> fragment.updateExitAltitude(max);
+        new MinMaxAltiTask(listener, dbViewModel)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, jumpId);
     }
 
     private void updateSpeeds(int jumpId) {

@@ -61,6 +61,12 @@ public class JumpStatsFragment extends Fragment {
         number.setText(String.format(Locale.ENGLISH, "%d", jumpId));
     }
 
+    public void updateExitAltitude(int altitude) {
+        String formatted = Util.getAltitudeText(Util.getAltitudeInUnit(altitude, unit), unit);
+        TextView value = view.findViewById(R.id.exit_altitude_value);
+        value.setText(formatted);
+    }
+
     public void updateTotalDuration(long millis) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
         long seconds = (millis / 1000) % 60;

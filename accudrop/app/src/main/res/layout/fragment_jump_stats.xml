@@ -41,36 +41,32 @@
         android:text="Total Duration"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/jump_number" />
 
     <TextView
         android:id="@+id/freefall_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="Freefall Duration"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        app:layout_constraintEnd_toStartOf="@+id/canopy_duration"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/total_duration"
+        app:layout_constraintStart_toStartOf="@+id/total_duration"
         app:layout_constraintTop_toBottomOf="@+id/total_duration_value" />
 
     <TextView
         android:id="@+id/canopy_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="Canopy Duration"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/freefall_duration"
+        app:layout_constraintEnd_toEndOf="@+id/exit_altitude"
+        app:layout_constraintStart_toStartOf="@+id/exit_altitude"
         app:layout_constraintTop_toBottomOf="@+id/total_duration_value" />
 
     <TextView
@@ -91,13 +87,11 @@
         android:id="@+id/total_duration_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="0"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/total_duration"
+        app:layout_constraintStart_toStartOf="@+id/total_duration"
         app:layout_constraintTop_toBottomOf="@+id/total_duration" />
 
     <TextView
@@ -246,5 +240,30 @@
         app:layout_constraintBottom_toBottomOf="@+id/freefall_max_hspeed_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/freefall_max_hspeed_value" />
+
+    <TextView
+        android:id="@+id/exit_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Exit Altitude"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintEnd_toEndOf="@+id/guideline2"
+        app:layout_constraintStart_toEndOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/jump_number" />
+
+    <TextView
+        android:id="@+id/exit_altitude_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="@+id/exit_altitude"
+        app:layout_constraintStart_toStartOf="@+id/exit_altitude"
+        app:layout_constraintTop_toBottomOf="@+id/exit_altitude" />
 
 </android.support.constraint.ConstraintLayout>
