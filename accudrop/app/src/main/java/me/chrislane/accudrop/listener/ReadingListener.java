@@ -90,7 +90,7 @@ public class ReadingListener {
         // Check we have an altitude and aren't already logging.
         if (!logging) {
             //if (hasReachedSpeed(altitude, 20)) {
-            if (altitude >= 600) {
+            if (altitude >= 2000) {
                 enableLogging();
             }
         } else {
