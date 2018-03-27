@@ -177,18 +177,18 @@ definition]
 
 \pagestyle{plain}
 % Set up page layout.
-\setlength{\textheight}{21cm} % Height of the main body of the text
-\setlength{\topmargin}{0cm} % 1'' margin on top of page
-\setlength{\headsep}{1.5cm}  % space between header and top of body
-\addtolength{\headsep}{-\headheight} % See The LaTeX Companion, p 85
-\setlength{\footskip}{1cm}  % space between footer and bottom of body
-\setlength{\textwidth}{14cm} % width of the body of the text
-\setlength{\oddsidemargin}{2cm} % 2cm margin on the left for odd pages
-\setlength{\evensidemargin}{-1cm} % 2cm margin on the right for even pages
+%\setlength{\textheight}{21cm} % Height of the main body of the text
+%\setlength{\topmargin}{0cm} % 1'' margin on top of page
+%\setlength{\headsep}{1.5cm}  % space between header and top of body
+%\addtolength{\headsep}{-\headheight} % See The LaTeX Companion, p 85
+%\setlength{\footskip}{1cm}  % space between footer and bottom of body
+%\setlength{\textwidth}{14cm} % width of the body of the text
+%\setlength{\oddsidemargin}{2cm} % 2cm margin on the left for odd pages
+%\setlength{\evensidemargin}{-1cm} % 2cm margin on the right for even pages
 
 % Marginal notes
-\setlength{\marginparwidth}{.75in} % width of marginal notes
-\setlength{\marginparsep}{.125in} % space between marginal notes and text
+%\setlength{\marginparwidth}{.75in} % width of marginal notes
+%\setlength{\marginparsep}{.125in} % space between marginal notes and text
 
 % Make each page fill up the entire page. comment this out if you prefer.
 \flushbottom
