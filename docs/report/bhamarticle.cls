@@ -24,19 +24,19 @@ definition]
 
 % Set up handling of "draft" option.
 \DeclareOption{draft}{%
-    \PassOptionsToPackage{all}{draftcopy}%
-    \PassOptionsToClass{draft}{article}%
-    \AtEndOfClass{%
-        \RequirePackage{draftcopy}%
-        % I wanted to print timestamp of each file, but I don't see
-        % how to do that...
-        \draftcopyName{DRAFT: \today}{60 } % text for overprinting if in "draft" mode
-    }%
+  \PassOptionsToPackage{all}{draftcopy}%
+  \PassOptionsToClass{draft}{article}%
+  \AtEndOfClass{%
+    \RequirePackage{draftcopy}%
+    % I wanted to print timestamp of each file, but I don't see
+    % how to do that...
+    \draftcopyName{DRAFT: \today}{60 } % text for overprinting if in "draft" mode
+  }%
 }
 
 % Pass ALL options to article.cls.
 \DeclareOption*{%
-    \PassOptionsToClass{\CurrentOption}{article}
+  \PassOptionsToClass{\CurrentOption}{article}
 }
 
 \ProcessOptions
@@ -51,38 +51,38 @@ definition]
 
 \renewenvironment{abstract}%
 {\clearemptydoublepage
-    \onecolumn
-    \thispagestyle{plain}
-    \begin{center}
-        \vspace*{1.5cm}
-        \section*{\Large \bfseries Abstract}
-        \vspace{0.5cm}
-    \end{center}
-    \begin{quote}
+  \onecolumn
+  \thispagestyle{plain}
+  \begin{center}
+    \vspace*{1.5cm}
+    \section*{\Large \bfseries Abstract}
+    \vspace{0.5cm}
+  \end{center}
+  \begin{quote}
 }{\newpage\end{quote}\twocolumn}
 
 \newenvironment{acknowledgements}%
 {\clearemptydoublepage
-    \onecolumn
-    \thispagestyle{plain}
-    \begin{center}
-        \vspace*{1.5cm}
-        \section*{\Large \bfseries Acknowledgements}
-        \vspace*{0.5cm}
-    \end{center}
-    \begin{quote}
+  \onecolumn
+  \thispagestyle{plain}
+  \begin{center}
+    \vspace*{1.5cm}
+    \section*{\Large \bfseries Acknowledgements}
+    \vspace*{0.5cm}
+  \end{center}
+  \begin{quote}
 }{\newpage\end{quote}\twocolumn}
 
 \newenvironment{dedication}%
 {\clearemptydoublepage
-    \onecolumn
-    \thispagestyle{plain}
-    \begin{center}
-        \vspace*{1.5cm}
-        \section*{\LARGE}
-        \vspace*{0.5cm}
-    \end{center}
-    \begin{verse}
+  \onecolumn
+  \thispagestyle{plain}
+  \begin{center}
+    \vspace*{1.5cm}
+    \section*{\LARGE}
+    \vspace*{0.5cm}
+  \end{center}
+  \begin{verse}
 }{\newpage\end{verse}\twocolumn}
 
 \newenvironment{preliminary}%
@@ -104,74 +104,74 @@ definition]
 \renewcommand{\title}[1]{\ifx\empty#1\else\gdef\@title{#1}\fi}
 \newcommand{\gyear}[1]{\ifx\empty#1\else\gdef\@gyear{#1}\fi}
 
-    \global\def\@department{\mbox{}}
-    \global\def\@degree{\mbox{}}
-    \global\def\@author{\mbox{}}
-    \global\def\@studentid{\mbox{}}
-    \global\def\@supervisor{\mbox{}}
-    \global\def\@title{\mbox{}}
-    \global\def\@gyear{\number\year} % Default year is current year
+  \global\def\@department{\mbox{}}
+  \global\def\@degree{\mbox{}}
+  \global\def\@author{\mbox{}}
+  \global\def\@studentid{\mbox{}}
+  \global\def\@supervisor{\mbox{}}
+  \global\def\@title{\mbox{}}
+  \global\def\@gyear{\number\year} % Default year is current year
 
 
-    %% Change \maketitle to follow the SGS guidelines.
-    \renewcommand{\maketitle}
-    {\begin{titlepage}
-            %% Set the line spacing to 1 for the title page.
-            \begin{spacing}{1}
-                \begin{large}
-                    \begin{center}
-                        \mbox{}
-                        \vfill
-                        \begin{sc}
-                            \parbox{0.9\textwidth}{\Huge\center{\@title}\\}
-                        \end{sc}
-                        \vfill
-                        {\@author}\\
-                        {\@studentid}\\
-                        {\@degree}\\
-                        Supervisor: {\@supervisor}\\
-                        \vspace*{0.4em}
-                        \includegraphics[width=9em,height=9em]{img/crest.eps}\\
-                        \vspace*{0.5em}
-                        School of {\@department}\\
-                        University of Birmingham\\
-                        {\@date}\\
-                        \vfill
-                        Copyright {\copyright} {\@gyear} School of {\@department}, University of Birmingham\\
-                        \vspace*{0.5em}
-                    \end{center}
-                \end{large}
-            \end{spacing}
-        \end{titlepage}
-    }%\maketitle
+  %% Change \maketitle to follow the SGS guidelines.
+  \renewcommand{\maketitle}
+  {\begin{titlepage}
+      %% Set the line spacing to 1 for the title page.
+      \begin{spacing}{1}
+        \begin{large}
+          \begin{center}
+            \mbox{}
+            \vfill
+            \begin{sc}
+              \parbox{0.9\textwidth}{\Huge\center{\@title}\\}
+            \end{sc}
+            \vfill
+            {\@author}\\
+            {\@studentid}\\
+            {\@degree}\\
+            Supervisor: {\@supervisor}\\
+            \vspace*{0.4em}
+            \includegraphics[width=9em,height=9em]{img/crest.eps}\\
+            \vspace*{0.5em}
+            School of {\@department}\\
+            University of Birmingham\\
+            {\@date}\\
+            \vfill
+            Copyright {\copyright} {\@gyear} School of {\@department}, University of Birmingham\\
+            \vspace*{0.5em}
+          \end{center}
+        \end{large}
+      \end{spacing}
+    \end{titlepage}
+  }%\maketitle
 
 
-    %% Footnotes are always single-spaced.
-    %%\let\@@footnotetext=\@footnotetext
-    %%\def\@footnotetext{\begin{spacing}{1}\@@footnotetext\end{spacing}}
+  %% Footnotes are always single-spaced.
+  %%\let\@@footnotetext=\@footnotetext
+  %%\def\@footnotetext{\begin{spacing}{1}\@@footnotetext\end{spacing}}
 
-    %% Define the "thesis" page style.
-    \if@twoside % If two-sided printing.
-        \def\ps@thesis{\let\@mkboth\markboth
-            \def\@oddfoot{}
-            \let\@evenfoot\@oddfoot
-            \def\@oddhead{
-                {\sc\rightmark} \hfil \rm\thepage
-            }
-            \def\@evenhead{
-                \rm\thepage \hfil {\sc\leftmark}
-            }
-            \def\chaptermark##1{\markboth{\ifnum \c@secnumdepth >\m@ne
-        \@chapapp\ \thechapter. \ \fi ##1}{}}
-        \def\sectionmark##1{\markright{\ifnum \c@secnumdepth >\z@
+  %% Define the "thesis" page style.
+  \if@twoside % If two-sided printing.
+    \def\ps@thesis{\let\@mkboth\markboth
+      \def\@oddfoot{}
+      \let\@evenfoot\@oddfoot
+      \def\@oddhead{
+        {\sc\rightmark} \hfil \rm\thepage
+      }
+      \def\@evenhead{
+        \rm\thepage \hfil {\sc\leftmark}
+      }
+      \def\chaptermark##1{\markboth{\ifnum \c@secnumdepth >\m@ne
+    \@chapapp\ \thechapter. \ \fi ##1}{}}
+    \def\sectionmark##1{\markright{\ifnum \c@secnumdepth >\z@
 \thesection. \ \fi ##1}}}
 \else % If one-sided printing.
 \def\ps@thesis{\let\@mkboth\markboth
-    \def\@oddfoot{}
-    \def\@oddhead{
-        {\sc\rightmark} \hfil \rm\thepage
-    }
-    \def\chaptermark##1{\markright{\ifnum \c@secnumdepth >\m@ne
+  \def\@oddfoot{}
+  \def\@oddhead{
+    {\sc\rightmark} \hfil \rm\thepage
+  }
+  \def\chaptermark##1{\markright{\ifnum \c@secnumdepth >\m@ne
 \@chapapp\ \thechapter. \ \fi ##1}}}
 \fi
 
