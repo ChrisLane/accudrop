@@ -1,0 +1,14 @@
+\ProvidesPackage{style}
+
+\usepackage[utf8]{inputenc}
+\usepackage[backend=bibtex]{biblatex} % References
+\usepackage[hidelinks]{hyperref} % Clickable links
+\usepackage{url} % Wrap urls
+\usepackage{siunitx} % Typeset units
+\usepackage{graphicx} % Import graphics
+
+\graphicspath{{graphics/}}
+
+\sisetup{per-mode=symbol} % (siunitx) Use symbols for 'per' values e.g. m/s
+\DeclareSIUnit\feet{ft} % Add the imperial 'feet' unit
+\newcommand{\hPa}{\hecto\pascal} % Shorter command for hPa
