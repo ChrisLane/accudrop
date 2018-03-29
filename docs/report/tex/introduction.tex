@@ -1,6 +1,28 @@
 % !TEX root = ../main.tex
 \section{Introduction}\label{sec:introduction}
-% Aim of the work
+% What is the problem?
+Learning to skydive is a fast learning curve and every step of the way, a learner skydiver is responsible for their own and partially others' safety. Every step of a skydive has its dangers which is why the whole of a skydive should be pre-planned, in particular, the journey under canopy (parachute) is arguably the most dangerous part of the skydive. A skydiver must ensure they avoid all obstacles such as other skydivers, guide themselves to a safe landing area and avoid making any dangerous low turns. Student skydivers often struggle to predict their trajectory while planning their landing pattern and this can result in landing far from the intended landing area or taking dangerous actions in an attempt to meet their target area.
+Skydiving gear is costly; this makes sense because there are not a tremendous amount of manufacturers and everything that they create is safety-critical and specialised. There are no tools beyond radio communication with an instructor on the ground to aid student's with their canopy skills, and even this is usually not used after the first two jumps. Even with an instructor watching a skydiver's landing, they may not be able to provide useful, detailed feedback on the skydiver's landing pattern since distance and height is hard to gauge by eye from far away.
+
 % Background knowledge to understand the problem
-% Clear and detailed statement of project aims
+People skydive to get their thrill, and each person has a preference for their activity in the sky. Some people like to focus solely on their canopy flight, possibly doing canopy formation drills with other canopy flyers, flying in very close proximity. Other skydivers enjoy the freefall part of their skydive most, possibly falling with other skydivers, creating various formations.
+In any case, a skydive can be split into two sections, the freefall immediately after exiting the plane, and canopy flight once the skydiver successfully deploys their parachute.
+
+% Why is the problem important?
+The problem to be solved is important because there are substantial safety concerns when skydiving students are flying their canopies, since they may act unpredictably or in a dangerous manner that can be hazardous to others. This danger can even extend to experienced skydivers that may not be familiar with wind conditions or the landing pattern for a new dropzone.
+For a skydiver to improve their skills, they must either remember what they did precisely (which rightly is not a priority) or have tools to document their jump such as having an instructor record the jump with a camera. Tools that may be able to aid in the revision of a jump are costly, the example of having an instructor record the jump would for example typically cost more than the price of another skydive.
+Having tools readily available to skydivers at no extra cost could prevent higher numbers of accidents by preparing and improving their skydiving knowledge.
+
+% What has been done so far on the problem?
+So far there has been very little done to solve the problem of helping student skydivers improve their landing patterns and be safer in the sky; all of the support takes place on the ground with rough, estimated feedback. Any data tracked accurately during a skydive is typically from an expensive altimeter that will only display basic statistics from a jump.
+
+% Aim of our work
+The work conducted for this paper aimed to create a proof of concept app to aid skydivers before, during and after a skydive, focussing primarily on features to improve landing patterns and overall safety. We investigated the appropriateness of today's smart devices such as smartphones and smartwatches for use in fast-paced skydiving applications.
+
+% Is our contribution original? Explain why
+Through our research, we have found that this problem does not appear to have been tackled before. Very few apps exist already for gliding air sports such as paragliding but these only provide simple statistics such as current altitude and speed, nothing could be found to provide live feedback or safety-enhancing features focussed on skydivers.
+
+% Is our project non-trivial? Explain why
+Android devices are not typically made to accommodate extreme sports such as skydiving, one of the challenges of the project was working to make the app's features as robust and reliable as possible. Creating a solution to calculating a safe and correct landing pattern also posed complications, along with Android restrictions and inadequacies. We had to create the whole project in a way that could be useful to a user but also give the performance to allow for accurate tracking of a skydive.
+
 % Overview of the structure of the solution
