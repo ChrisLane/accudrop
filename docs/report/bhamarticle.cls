@@ -191,6 +191,6 @@ definition]
 %\setlength{\marginparsep}{.125in} % space between marginal notes and text
 
 % Make each page fill up the entire page. comment this out if you prefer.
-\flushbottom
+%\flushbottom
 
-\setcounter{tocdepth}{2} % Number the subsubsections
+%\setcounter{tocdepth}{2} % Number the subsubsections
