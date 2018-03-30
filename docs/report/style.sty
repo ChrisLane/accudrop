@@ -6,8 +6,24 @@
 \usepackage{url} % Wrap urls
 \usepackage{siunitx} % Typeset units
 \usepackage{graphicx} % Import graphics
+\usepackage{tikz} % Drawing
+\usepackage{environ} % Sizing tikz
 
-\graphicspath{{graphics/}}
+\graphicspath{{img/}}
+
+\usetikzlibrary{decorations.markings} % Add extra markings for tikz
+
+% Create a new environment for scaling tikz pictures
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY
+}
 
 \sisetup{per-mode=symbol} % (siunitx) Use symbols for 'per' values e.g. m/s
 \DeclareSIUnit\feet{ft} % Add the imperial 'feet' unit
