@@ -1,4 +1,67 @@
+% !TEX root = ../main
 \section{Analysis and Specification}\label{sec:analysis-and-spec}
 % How I analysed the problem
+Since the app is a proof of concept for the use of smart devices in safety-critical skydiving applications, it should contain or attempt to solve some of the problems that have not been tried before. Features to be used during a skydive have so far not been found in any existing work. The first feature that comes under that category is the ability to track a skydive; this will be used to test the abilities of smartphones in high descent rate situations. The second feature that hasn't been attempted before is communication between devices during a skydive; devices should be able to relay information between each other.
+
 % User requirements
-% Specification of solution
+\subsection{User Requirements}
+User requirements were gathered by asking three skydiver contacts three questions, about the before, during and after a skydive stages. It was explained to participants of the questionnaire that a smartphone app was to be produced to aid them in their skydiving activities. The questions that the participants were asked were:
+\begin{enumerate}
+  \item{What features would help you prepare for a skydive?}
+  \item{What features would help you during a skydive?}
+  \item{What features would help you reflect on a skydive?}
+\end{enumerate}
+
+Ideas gathered from the questionnaire were varied, giving us plenty to build on. These ideas are shown in Table~\vref{tab:user-ideas}.
+
+\begin{table*}[ht]
+  \centering
+  \caption{Collected possible requirements for a skydiving app.}\label{tab:user-ideas}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Stage  & Idea \\
+    \midrule
+    Before & Show animated skydive formation plans \\
+    Before & Wing load calculator \\
+    Before & Weather forecast \\
+    Before & Landing pattern calculator \\
+    Before & Register with drop zone for a jump \\
+    During & Log maximum speed and freefall time \\
+    During & Log landing pattern speed and location \\
+    During & Landing pattern guidance \\
+    During & Safety warnings (e.g.\ for low turns or obstacles) \\
+    During & Voice chat \\
+    After  & Readable logbook functionality containing logged data \\
+    After  & Add comments to logbook \\
+    After  & Online storage of logbook \\
+    After  & Tag friends in logbook entries \\
+    After  & Landing pattern viewer \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\subsection{Requirements Specification}
+All of the ideas generated from the questionnaire were great. However we could not implement all of them with the time restrictions placed on the project. We chose requirements that seemed feasible to implement within the given time frame and that were most relatable to the project's aims of improving skydiver safety. The chosen requirements are listed in Table~\vref{tab:user-requirements}. The table prioritises requirements using the MoSCoW method defined by~\citeauthor{clegg_case_1994}, the categories are `Must', `Should', `Could' and `Won't'. `Must' means that the project must have that requirement fulfilled, `Should' means that the requirement is important to the project but not critical to a release's success, `Could' means that the requirement would be good to have if there is enough time for it, and `Won't' requirements are requirements that are not planned to be fulfilled.
+
+\begin{table*}[ht]
+  \centering
+  \caption{User requirements for a skydiving app.}\label{tab:user-requirements}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Stage  & Requirement & MoSCoW \\
+    \midrule
+    Before & Be able to calculate and display a landing pattern for a given location & Must \\
+    During & Log the user's jump number, maximum speed and freefall time & Must \\
+    During & Log the user's landing pattern speed and location & Must \\
+    During & Be able to give live landing pattern guidance to the user & Should \\
+    During & Be able to give the user warnings of obstacles while under canopy & Should \\
+    After  & Be able to display to a user their logged data like a normal logbook & Must \\
+    After  & Allow the user to view their landing pattern & Must \\
+    After  & Allow the user to add their own comments to logbook entries & Could \\
+    After  & Provide cloud-based data storage and accounts & Won't \\
+    After  & Allow users to tag other people in logged jumps & Won't \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+Since the app is a proof of concept, the requirement priorities do not fit into their definitions quite so much, the priorities still apply but will not indicate the success or failure of the project. The indication is instead that an investigation and attempt into fulfilling the requirements must, should or could be made.
