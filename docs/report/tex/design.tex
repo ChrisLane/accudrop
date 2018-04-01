@@ -4,6 +4,8 @@
 % Algorithms used & comparison with alternatives
 % Main design decisions taken and justification
 
+In the app's most basic form of design, much of the logic exists within central `presenter' classes, with small amounts of code for updating the app's UI\@. There are sensor listeners to grab data from the smartphone's sensors for tracking a skydive, and a local database exists to store persistent data gathered from the user and sensors.
+
 \subsection{Model View Presenter}
 The Model View Presenter (MVP) design pattern was chosen for this project. Model View Presenter puts much of the logic in the `presenter', where the presenter acts like the bridge between the view and the model. The view contains minimal code and is only responsible for updating what the user sees and passing actions on to the presenter. The model is where data is stored such as data relating to the current state of the program, the presenter may subscribe to changes to this data in order to inform the view of updates. The view and the model do not communicate with each other directly. MVP was chosen over Model View Controller (MVC) since in MVC nearly all of the logic is in the `controller', where it is expected to return the correct view in response to an action in the current view. MVC does not split logic between all elements of the design pattern, the controller handles everything and the view knows as little as possible and only exists to render what the user sees. Views and their related presenters of the MVP design pattern allow for code to be separated more evenly.
 
@@ -28,7 +30,42 @@ The app is designed in a way that allows for flexible and re-usable back-end ele
   \caption{High-level app structure}\label{fig:app-structure}
 \end{figure}
 
+Every element in Figure~\vref{fig:app-structure} may contain more than one element. The view contains each separate screen to be shown in the app. There are many presenters, one for each view, handling the logic behind a view and updating and reacting to the app's state. There are several different models containing data that can be accessed by presenters.
+
+Data from the sensor listeners needs to be stored in either a model for temporary storage or the database for permanent storage, this is done via a presenter to keep all setting and getting of data going through one central access point.
+
+The database talks only to the models, these models contain ways for a presenter to get, set and subscribe to data that is stored in either the model or the database. The presenters need to be able to subscribe to data changes so that they can keep the app's state up-to-date, for example updating the view to show a new value for some stored data.
+
 \subsection{Altitude Calculation}
+The smartphone's barometer will be used to output atmospheric pressure readings. Atmospheric pressure readings can be used to calculate altitude relative to another point~\cite{he_atmospheric_2012, liu_beyond_2014}, this calculation is defined as:
+\begin{equation}\label{eq:altitude-calculation}
+  H = \frac{T_0}{L} \cdot \left({\left(\frac{P}{P_0}\right)}^{-\frac{L \cdot R}{g}} - 1\right) \\
+\end{equation}
+where
+\begin{description}
+  $H$: altitude (\si{\metre}) \\
+  $T_0$: standard air temperature (\si{\kelvin}) \\
+  $L$: temperature lapse rate (\si{\kelvin\per\metre}) \\
+  $P$: air pressure (\si{\pascal}) \\
+  $P_0$: reference air pressure (\si{\pascal}) \\
+  $R$: specific gas constant for air (\si{\joule\kilogram\kelvin}) \\
+  $g$: gravitational acceleration (\si{\metre\per\second\squared})
+\end{description}
+
+All values with the exception of the pressures and temperature are constants.
+
+Another equation for calculating altitude is the international barometric formula~\cite{bosch_bmp180:_2018}, defined as:
+\begin{equation}\label{eq:barometric-fomula}
+  H = 44330 \cdot \left(1 - {\left(\frac{P}{P_0}\right)}^{\frac{1}{5.255}}\right)
+\end{equation}
+where
+\begin{description}
+  $H$: altitude (\si{\metre}) \\
+  $P$: air pressure (\si{\hPa}) \\
+  $P_0$: reference air pressure (\si{\hPa})
+\end{description}
+
+The benefit of this equation is that it does not require an input temperature. If we used an algorithm that required a temperature input value, another requirement would be placed on the phone running the app that states that the phone must have a usable temperature sensor. This equation should be accurate up to \SI{9000}{\metre}, which is double the altitude of a normal skydive. Since this international barometric formula is simpler and yet still accurate, it was chosen to be used within the app for calculating altitudes.
 
 \subsection{Geographic Coordinates}
 
