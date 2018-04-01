@@ -1,4 +1,40 @@
-\section{Design}\label{sec:design}
+% !TEX root = ../main.tex
+\section{Design}\label{sec:design} % System design (platform independent)
 % High-level account of software structure and how it works
 % Algorithms used & comparison with alternatives
 % Main design decisions taken and justification
+
+\subsection{Model View Presenter}
+The Model View Presenter (MVP) design pattern was chosen for this project. Model View Presenter puts much of the logic in the `presenter', where the presenter acts like the bridge between the view and the model. The view contains minimal code and is only responsible for updating what the user sees and passing actions on to the presenter. The model is where data is stored such as data relating to the current state of the program, the presenter may subscribe to changes to this data in order to inform the view of updates. The view and the model do not communicate with each other directly. MVP was chosen over Model View Controller (MVC) since in MVC nearly all of the logic is in the `controller', where it is expected to return the correct view in response to an action in the current view. MVC does not split logic between all elements of the design pattern, the controller handles everything and the view knows as little as possible and only exists to render what the user sees. Views and their related presenters of the MVP design pattern allow for code to be separated more evenly.
+
+The app is designed in a way that allows for flexible and re-usable back-end elements. Figure~\vref{fig:app-structure} shows how the app is designed to be split.
+
+\begin{figure}[ht]
+  \centering
+  \begin{scaletikzpicturetowidth}{\linewidth}
+    \begin{tikzpicture}[squarednode/.style={rectangle, draw=black}]
+      \node[squarednode] (view) {View};
+      \node[squarednode] (presenter) [right=of view] {Presenter};
+      \node[squarednode] (model) [right=of presenter] {Model};
+      \node[squarednode] (listener) [above=of presenter] {Sensor Listeners};
+      \node[squarednode] (database) [above=of model] {Database};
+
+      \draw[<->] (view.east)--(presenter.west);
+      \draw[<->] (presenter.east)--(model.west);
+      \draw[<->] (listener.south)--(presenter.north);
+      \draw[<->] (model.north)--(database.south);
+    \end{tikzpicture}
+  \end{scaletikzpicturetowidth}
+  \caption{High-level app structure}\label{fig:app-structure}
+\end{figure}
+
+\subsection{Altitude Calculation}
+
+\subsection{Geographic Coordinates}
+
+\subsection{Landing Pattern}
+
+\subsection{Landing Pattern Guidance}
+
+\subsection{Safety Warnings}
+
