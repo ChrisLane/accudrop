@@ -171,8 +171,9 @@ public class RouteCalculator {
      * Calculate the position of the second turn in the route.
      */
     private void calcP2() {
+        // TODO: Add sideways movement on base leg
         double altitudeChange = p2Altitude - p3Altitude;
-        double distance = distanceFromHeight(8.9408, altitudeChange);
+        double distance = distanceFromHeight(airspeed, altitudeChange);
 
         LatLng p3LatLng = GnssViewModel.getLatLng(p3);
         LatLng loc = getPosAfterMove(p3LatLng, distance, get270Bearing(windDirection));
