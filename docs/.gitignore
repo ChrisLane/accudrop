@@ -12,3 +12,4 @@
 *-blx.bib
 *.run.xml
 *.fdb_latexmk
+_minted-*/
