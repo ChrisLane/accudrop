@@ -1,10 +1,9 @@
 \ProvidesPackage{style}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+\usepackage{fontspec}
 \usepackage[]{biblatex} % References
-\usepackage[hidelinks]{hyperref} % Clickable links
 \usepackage{url} % Wrap urls
+\usepackage[hidelinks]{hyperref} % Clickable links
 \usepackage{siunitx} % Typeset units
 \usepackage{graphicx} % Import graphics
 \usepackage{tikz} % Drawing
@@ -13,6 +12,9 @@
 \usepackage{varioref} % Adapt refs based on distance
 \usepackage{vmargin} % Margins
 \usepackage{amsmath} % Maths
+\usepackage{minted} % Code formatting
+
+\defaultfontfeatures{Ligatures=TeX}
 
 % Set margins
 \setmarginsrb{20mm}{5mm}{20mm}{10mm}%
@@ -42,3 +44,6 @@
 \newcommand{\hPa}{\hecto\pascal} % Shorter command for hPa
 
 \DeclareMathOperator{\arctantwo}{arctan2}
+
+% Centre minted code
+\RecustomVerbatimEnvironment{Verbatim}{BVerbatim}{}

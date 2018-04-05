@@ -1,8 +1,273 @@
+% !TEX root = ../main.tex
 \section{Implementation and Testing}\label{sec:implementation-and-testing}
-% Conceptual structure of algorithms
 % Implementation of algorithms
 % Data structures used
 % Implementation decisions taken and justification
+
+\subsection{Model View Processor}\label{subsec:mvp}
+Activity and Fragment classes are what we would consider as the View in our MVP design pattern.
+Android will recreate Activities and Fragments whenever the app rotates or switches the current screen being displayed. Due to this behaviour, more work is required to allow data to persist across these events so that views and running processes are not simply reset.
+
+Android offers `\citetitle{_android_????}' libraries to help with managing the Android lifecycle.
+We decided to use these libraries to form the MVP structure of the app's code base, allowing for the `Model' elements containing data and data access methods to simply extend the `ViewModel' class and persist for the entire lifecycle of the view it is attached to.
+
+Architecture components also adds the `LiveData' class which can encapsulate any other type. By returning data from our ViewModel classes in LiveData objects, we are given the ability to subscribe to these data objects so that a function we define is run when the value changes. We utilise this ability to subscribe to LiveData values in presenter classes to run back-end logic or to update our views based on the new values.
+
+\subsection{Location Data}\label{subsec:location-data}
+% GNSS
+GNSS data is collected in our `GnssListener' class, this gets the system location service and registers itself as a location listener. The GnssListener is created by a GnssViewModel that passes itself to the listener as a constructor parameter, this allows for the listener to store its location data in the GnssViewModel that might then be accessed from other parts of the app.
+
+Collecting an Android device's GNSS location requires the ``ACCESS\_FINE\_LOCATION'' permission. Once a GnssListener is instantiated, it checks whether the app has been granted the appropriate permission, if it has not then a prompt is raised for the user to grant or deny the permission for the app. If the location permission is denied then the user will be prompted again, this time with an explanation of why the app requires the permission, at this point the user can select to not be asked again, and then the feature requiring location permissions will be disabled.
+
+Initially positioning data collection was implemented by registering a `FusedLocationProviderClient', extending this class is recommended by Google for fast and accurate location data, however it was realised that this data may not be recent or accurate since it is a stored location from Google that may use cell tower or Wi-Fi/Bluetooth devices to triangulate a device's position. Location data has been known to be inaccurate with cell tower, Wi-Fi and Bluetooth location data due to the long range of cell tower signals or movement of Wi-Fi and Bluetooth signals. Due to requirement of high precision location data, the decision was made to move to GNSS location data only.
+
+% Altitude
+Altitude data is collected in a similar way to GNSS data. A `PressureViewModel' is created to store and provide access to pressure/altitude data and this creates a `PressureListener' that registers itself with the device as a sensor listener (specifically with the pressure sensor).
+
+As with the GnssListener, the PressureListener sets its data in the PressureViewModel so that other parts of the app can listen/act on the data. There is a small amount of logic in the PressureViewModel class that calculates and stores the altitude that can be calculated from the pressure reading it is given.
+
+While designing the app, it was decided that we would use the international barometric formula shown in Equation~\vref{eq:barometric-fomula} to calculate altitude. We found that Android already has an implementation of this equation in their `SensorManager' class, shown in Listing~\vref{lst:getAltitude}, thus we can reduce the code that we require.
+
+\begin{listing*}
+  \centering
+  \begin{minted}{java}
+public static float getAltitude(float p0, float p) {
+    final float coef = 1.0f / 5.255f;
+    return 44330.0f * (1.0f - (float)Math.pow(p/p0, coef));
+}
+  \end{minted}
+  \caption{Code from Android's SensorManager class to calculate altitude from two pressure values.~\cite{_android_????-1}}\label{lst:getAltitude}
+\end{listing*}
+
+\subsection{Background Threads}
+To avoid hanging the UI thread, making the app unresponsive due to long operations, we start long operations on new threads that run in the background. Long tasks are placed in classes that extend the Android `AsyncTask' class. AsyncTasks go through four stages, these are:
+\begin{itemize}
+  \item onPreExecute --- Run on the UI thread for task setup code for the task.
+  \item doInBackground --- Run on the background thread for running code that can take a long time to execute.
+  \item onProgressUpdate --- Run at any time publishProgress() and used to update other parts of the app of task progress such as by updating a progress bar.
+  \item onPostExecute --- Run on the UI thread once the background thread code has completed.
+\end{itemize}
+
+The default Android behaviour for the `execute()' method run on an AsyncTask adds the task to be run on a thread pool containing only one thread, thus tasks are run synchronously. This did initially cause a lot of major performance issues in the app since the default behaviour was previously to run many threads in parallel and so this is what we were expecting. AccuDrop has been programmed in a parallel safe way, we were able to increase performance by instead using the `executeOnExecutor()' method with a larger thread pool as an argument in order to run tasks in parallel.
+
+\subsection{Landing Pattern Planner}
+% Overlay on a Google Map
+Since Android already has great support for Google Maps, it was decided that the landing pattern planner screen would be filled by a Google Map that we could overlay a landing pattern on. An Android Google Map will also move the overlay with the map and allow for us to programmatically move the camera position.
+When creating the Google Map, we must pass a callback method that will set up the map once it is ready for modification from the system. Overlays elements can be added using methods such as `addMarker()' for labelled markers and `addPolyLine' for lines.
+
+% Calculate a landing pattern for current location if that data is available
+When the user opens the landing pattern planner screen, if location data is already available for the user, a landing pattern will automatically be generated with the target being the current location. When a landing pattern is generated, we move the camera using the CameraPosition class to centre on the landing pattern with an appropriate level of zoom to fit a landing pattern.
+
+% User can tap and hold to select a target landing area
+If a user wishes to set their own target landing area, they can do this by tapping and holding on a location on the map. This is possible since we have registered a long click listener for the map using `setOnMapLongClickListener()' that is able to initiate the logic required to calculate another route.
+
+% How we calculate the landing pattern
+\subsubsection{Getting a New Landing Pattern}
+To calculate a landing pattern, we first set the target landing area coordinates stored in a `LatLng' object (consisting of a latitude and longitude), in our RouteViewModel object. This object will contain all data relating to a landing pattern generated for a user.
+
+Next, we instantiate a new `WindTask'. A WindTask is an AsyncTask that takes a callback method, a landing pattern presenter object and an OpenWeatherMaps API key. In the onPreExecute method of the WindTask, the presenter is informed that the task has begun where the presenter then starts a scrolling progress bar. In the doInBackground method of the WindTask, wind data is fetched from the OpenWeatherMaps API, this is further explained in Section~\vref{subsubsec:fetching-wind-data}. Finally, in onPostExecute, the wind speed and direction are extracted from the JSON response from doInBackground, this is then passed as a Pair<Double, Double> (a tuple of doubles) to the task's callback method and then the presenter is told that the task has finished so that it can remove the progress bar.
+
+The WindTask callback method takes a pair of doubles that are the wind speed and direction and sets these in the WindViewModel, used to store wind data. Next, a new RouteTask is created and executed that takes as arguments another callback method and the wind data that was fetched.
+
+The RouteTask will simply create a new RouteCalculator object that will calculate a landing pattern given wind data and a target as explained in Section~\vref{subsubsec:pattern-calculation}. Once a landing pattern has been calculated, this will be passed to the callback method which then sets the route in the RouteViewModel.
+
+\subsubsection{Fetching Wind Data}\label{subsubsec:fetching-wind-data}
+% Explain doInBackground of WindTask
+To fetch weather data from OpenWeatherMaps, we craft a request URL specifying the target latitude, longitude, unit of measurement and API key. Listing~\vref{lst:api-request} shows how this URL is created in code.
+
+\begin{listing*}
+  \centering
+  \begin{minted}{java}
+String api = "https://api.openweathermap.org/data/2.5/";
+String url = api +
+      "weather?" +
+      "lat=" + latLng.latitude +
+      "&lon=" + latLng.longitude +
+      "&units=metric" +
+      "&appid=" + apiKey;
+  \end{minted}
+  \caption{Crafting an OpenWeatherMaps API request url}\label{lst:api-request}
+\end{listing*}
+
+Once a connection to the URL has been established, the response from the API is read from the InputStream from the connection, this response is JSON data containing weather information for the requested location.
+
+An example JSON response is shown in Listing~\vref{lst:json-response}.
+
+\begin{listing}
+  \begin{minted}{json}
+{
+  "coord": {
+    "lon": -1.93,
+    "lat": 52.45
+  },
+  "weather": [
+    {
+      "id": 521,
+      "main": "Rain",
+      "description": "shower rain",
+      "icon": "09d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 10.24,
+    "pressure": 989,
+    "humidity": 100,
+    "temp_min": 9,
+    "temp_max": 11
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 5.7,
+    "deg": 150
+  },
+  "clouds": {
+    "all": 75
+  },
+  "dt": 1522848000,
+  "sys": {
+    "type": 1,
+    "id": 5055,
+    "message": 0.0031,
+    "country": "GB",
+    "sunrise": 1522820049,
+    "sunset": 1522867681
+  },
+  "id": 2650236,
+  "name": "Edgbaston",
+  "cod": 200
+}
+  \end{minted}
+  \caption{An example JSON weather response from the OpenWeatherMaps API}\label{lst:json-response}
+\end{listing}
+
+Once we have read in all of the response, we then pass this to the `JSONObject' class which parses the JSON and returns a JSONObject object that we can make json queries to. The whole of the JSON response is one JSONObject, within this we have more JSONObjects such as ``coord'' and ``weather'' shown at the top of Listing~\vref{lst:json-response}, the object that we want is fetched by calling responseObject.getJSONObject(``wind''). To fetch the values from the wind object, we call windObject.getDouble(``speed'') and windObject.getDouble(``deg'') to retrieve the wind speed and direction.
+
+\subsubsection{Pattern Calculation}\label{subsubsec:pattern-calculation}
+% Explain RouteCalculator.calcRoute() onwards
+The RouteCalculator class contains a calcRoute() and several helper methods to calculate a landing pattern. The calcRoute() method returns a list of `Location' objects, these objects have several variables that can be set such as altitude, latitude, longitude, speed, etc. Each location contains a latitude, longitude and altitude to represent a location in the calculated landing pattern.
+
+The calcRoute() method calls helper methods calcP3(), calcP2() and calcP1() to calculate each point in the landing pattern in reverse, as designed in Section~\ref{subsec:landing-pattern}. Helper methods to calculate the time to travel between altitudes and coordinates after a move of a distance in a bearing are also implemented as designed in their respective sections within Section~\ref{sec:design}. The only difference is that in the method to calculate a move of a distance in a bearing, the distance is input as metres and then converted to kilometres.
+
+\subsubsection{Updating the Map}
+% Subscribed to route in RouteViewModel
+When a new route has been set in the RouteViewModel, the landing pattern presenter is given the new route since it is a subscriber to the data. The presenter then sends the new landing pattern to the view to update the displayed map overlay.
+
+The map overlay is cleared and then a line is created for a path between each point in the landing pattern using ``new PolylineOptions'' and ``add(\{coordinateA\}, \{coordinateB\}), these lines are then added to the Google Map using the addPolyLine() method.
+
+\subsection{Jump Logging}
+When logging jump data, we first add a record for a new jump in the `Jump' table and then add position entries when a jump is in progress to keep positional data for review later.
+
+In the design, we said that logging can begin if the user is above a safe skydiving altitude and if they reach a specific fall rate. We can trivially check the user's altitude using the methods stated in Section~\ref{subsec:location-data}. To check the fall rate, a simple method to take two pressure measurements and two timestamps was created to calculate the fall rate of the user.
+
+% Database
+The Android Architecture Components libraries previously mentioned in Section~\ref{subsec:mvp} also offers the `Room Persistence Library', this allows for SQLite database features and offers compile time error checking in SQL queries etc.
+
+The Android Room library was chosen for the implementation of the database since it abstracts away from the actual database technology and provides safe, checked access to a database from the app as well as ensuring that compatibility has been added by the programmer between different database schemas.
+
+% Can return LiveData
+Another benefit of using the Room library is that we specify that queries will return LiveData objects, allowing for parts of the app to subscribe to updates to database query results.
+
+Each table in the database has a `DAO' (Data Access Object) that specifies the methods that are generated to give access to the app to make SQL queries to the database. For example, there are over twenty methods to represent various queries for the position table, from getting the latest jump number, to retrieving every position for a jump.
+
+DAO methods are defined with an @Annotation that will be processed at compile-time. There are several annotations available but the ones that we used were mainly @Insert for inserting an entry and @Query for making a query to the database. Since there is the possibility that a database query could take a long time, a rule is enforced that restricts us from making queries on the UI thread that could make the UI unresponsive. All interactions with the database must be made on a different thread, such as in an AsyncTask.
+
+\subsubsection{Ensuring Data is Logged}
+Ideally, we would like to switch to a real-time process scheduler such as SCHED\_FIFO so that our process cannot be pre-empted and can perform its best. While this is possible, it would require root access to the phone, something that most users do not have.
+
+It is possible to increase thread priority on Android which could help improve performance for our app. However, this has been known to not be honoured by many flavours of Android and so time was not put into making this change.
+
+A `foreground service' was created to handle the logging of jump data. This service is able to run in the background, even if the device is locked, because the service is treated as if it is a foreground app element, it is also not subject to being killed for memory and power saving reasons.
+
+\subsection{Proximity Warnings}
+% Wi-Fi Direct
+As planned, communication for the proximity warnings was implemented using Wi-Fi Direct. Android allows for Wi-Fi direct functionality through its P2P API~\cite{_creating_????}, however the requirements to make and handle connections via the API are not simple or streamlined. A `BroadcastReceiver' that we extend must be registered through the `WifiP2pManager' system service, this handles different changes in the states of the Wi-Fi connection interface. In particular, our registered BroadcastReceiver reacts to a change in the list of peers and informs our `Peer2Peer' object to attempt to connect to one of the peers.
+
+What had not been realised until the Wi-Fi Direct functionality had been implemented is that any and all Wi-Fi Direct devices will show up in the list of peers, meaning that the app might attempt to communicate with for example a printer. We needed a way to identify signals that are from a device running the app. One consideration was that we could adjust change the device's Wi-Fi direct name and look for this in the peer list, this may however upset users that have already set up their own preferred device name.
+
+The solution found for identifying Wi-Fi Direct signals running the AccuDrop app was to use DNS Service Discovery. P2P classes were altered to register a service with the name ``accudropproximity'' and a service type of ``presence'' which is defined for peer-to-peer messaging. We were not able to find a generic service type and so the simple chat type was kept. A list of service types is available on the DNS-SD website~\cite{_dns_????}.
+
+Once the app has registered its own service, it then registers a listener for service discovery, if a service is found with the same service name, the app attempts to make a connection to it. The devices will decide between each other which device should be the ``owner'' and which should be the ``peer'', a process that is hidden from us in the operating system. Hopefully, a connection is successfully established and then each device either opens a server socket if they are the owner or connects to the other device's socket if they are the peer. Both devices can now send and receive data over this socket. Since the P2P API supports groups, more devices can connect to the group owner to send messages through the network.
+
+If a device is currently logging canopy flight, the foreground service will attempt to make these connections and send its own location. Upon receiving location data from another device, the app will place this data in a `Location' object and then use the distanceTo() method to get the distance from its own location. If the distance is below a configurable warning distance, text-to-speech is used to warn the user.
+
+Text-to-speech is simple to generate, a new `TextToSpeech' object is created with a lambda function to set the sentence to say if text-to-speech was initialised correctly. The code for generating text-to-speech can be seen in Listing~\vref{lst:tts}, the code flushes the queue immediately so that the user gets their warning almost immediately.
+
+\begin{listing*}
+  \centering
+  \begin{minted}{java}
+tts = new TextToSpeech(this, status -> {
+    if (status == TextToSpeech.SUCCESS) {
+        tts.setLanguage(Locale.UK);
+        tts.speak("Warning, user " + (int) distance + " " + unitString + " away.",
+                TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+});
+  \end{minted}
+  \caption{Code to start a text-to-speech proximity warning in the app}\label{lst:tts}
+\end{listing*}
+
+Unfortunately there do seem to be quite a few issues with the Android P2P system, these issues and frustrations have been reflected by many programmers in the various online support channels. Establishing a connection or finding other devices seems to be unreliable, we found that quite often, the system would fail in these respects.
+
+Another issue that was found is that connections must be accepted on the peer device by the user. Ideally we would like for the connections to accepted automatically in a way similar to paired Bluetooth devices so that if a connection is lost at any point from the initially connection on the ground, the connection could be re-established in any case.
+
+The final problem that was found is with the flexibility of the service types, we could not find a service type that applied to our use-case of sending location information and so a simple messaging service was chosen. An attempt was made to send serializable location objects, however the data never reached the other device once sent. We suspect that this may be a limitation of the service type and so location data is instead sent as a string and then parsed on the other end.
+
+\subsection{Jump Generation}
+Unfortunately, due to the uncommon activity that the project focusses on, and the low prominence of smartphones with barometers, it was very difficult to get actual skydive data with the app. Until we had a logged skydive, we had to instead generate jump data and use this for testing the features of the app used for reviewing a skydive.
+
+For jump generation, firstly, a new jump entry is added to the database. Then, a new landing pattern is calculated for a static coordinate with a random wind speed from \SIrange{0}{10}{\metre\per\second} and a random wind direction from \SIrange{0}{360}{\degree}.
+
+Once a landing pattern has been calculated, we add intermediary positions along the pattern to simulate higher number of measurements that we would expect when a landing pattern is being recorded.
+
+\begin{listing*}
+  \centering
+  \begin{minted}{text}
+for (i = 0; i < pattern.size() - 1; i++) {
+    set loc1 to location i in pattern
+    set loc2 to location i + 1 in pattern
+    set totalDistance to loc1.getDistanceTo(loc2)
+    set altitude to loc1.getAltitude()
+    set split to totalDistance / 5 metres
+    set altitudeDecrement to (altitude - loc2.getAltitude()) / split
+
+    append loc1 to result
+    set prevLoc to loc1
+    for (j = 0; j < split - 1; j++) {g
+        set bearing to prevLoc.bearingTo(loc2)
+        set randBear to randIntBetween(-15,15)
+        set prevLoc to prevLoc.positionAfterMove(5 metres, bearing + randBear)
+        set altitude to altitude - altitudeDecrement
+        set prevLoc.altitude to altitude
+
+        append prevLoc to result
+    }
+}
+append pattern.getLastLocation() to result
+  \end{minted}
+  \caption{Pseudocode for adding intermediary points to a list of locations in a pattern}\label{lst:intermediary-points}
+\end{listing*}
+
+The distance between two points in the landing pattern is calculated and split into a number of 5 metre gaps. For each 5 metre gap, a new location is calculated that descends an even amount for the split count and that moves 5 metres in the direction of the next calculated landing pattern point plus or minus a random \SI{15}{\degree}. Each calculated landing pattern position and newly calculated position returned as the new jump data. This can all be seen in the pseudocode in Listing~\vref{lst:intermediary-points}.
+
+Next, the data is mirrored on top of itself by reversing the list and incrementing the altitudes by the previously highest altitude plus \SI{30}{\metre}, this is what we treat as our freefall data. The fact that the large horizontal movements are not realistic for does not matter since we are only testing the ability to replay the data reliably primarily at this point.
+
+The final step is to add the generated jump positions to the database, or if there are guest entries to be added (purpose explained in Section~\vref{subsec:formation-review}, the process begins again for the guest count, randomising the data each time.
+
+This generated data can be used to test landing pattern review features in a realistic way since lots of jump positions are generated and they are generated with noise on the route of an expected level.
+
+\subsection{Landing Pattern Review}
+For the landing pattern review feature of the app, we decided to once again place an overlay on a Google Map, only this time with jump data fetched from the database. Unfortunately Google maps do not offer the ability to place overlay positions in 3D space, despite being able to adjust the map's camera height.
+
+Due to this unforeseen restriction, a new view was decided to be implemented on the same screen view that can draw a representation of the perpendicular projection of a landing pattern, updated to match the orientation of the Google Map.
+
+\subsection{Formation Review \color{red}TODO}\label{subsec:formation-review}
+
+\subsection{Settings \color{red}TODO}
+% How to store settings, silly numbers
+% How to fetch settings
+% Everything that fetches a setting, also subscribes to changes to stay updated
+
 
 % Testing strategy
 % Examples of testing
