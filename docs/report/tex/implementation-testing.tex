@@ -93,7 +93,7 @@ Once a connection to the URL has been established, the response from the API is 
 
 An example JSON response is shown in Listing~\vref{lst:json-response}.
 
-\begin{listing}
+\begin{wrapfigure}{L}{0.5\linewidth}
   \begin{minted}{json}
 {
   "coord": {
@@ -138,8 +138,8 @@ An example JSON response is shown in Listing~\vref{lst:json-response}.
   "cod": 200
 }
   \end{minted}
-  \caption{An example JSON weather response from the OpenWeatherMaps API}\label{lst:json-response}
-\end{listing}
+  \captionof{listing}{An example JSON weather response from the OpenWeatherMaps API}\label{lst:json-response}
+\end{wrapfigure}
 
 Once we have read in all of the response, we then pass this to the `JSONObject' class which parses the JSON and returns a JSONObject object that we can make json queries to. The whole of the JSON response is one JSONObject, within this we have more JSONObjects such as ``coord'' and ``weather'' shown at the top of Listing~\vref{lst:json-response}, the object that we want is fetched by calling responseObject.getJSONObject(``wind''). To fetch the values from the wind object, we call windObject.getDouble(``speed'') and windObject.getDouble(``deg'') to retrieve the wind speed and direction.
 
@@ -171,6 +171,8 @@ Another benefit of using the Room library is that we specify that queries will r
 Each table in the database has a `DAO' (Data Access Object) that specifies the methods that are generated to give access to the app to make SQL queries to the database. For example, there are over twenty methods to represent various queries for the position table, from getting the latest jump number, to retrieving every position for a jump.
 
 DAO methods are defined with an @Annotation that will be processed at compile-time. There are several annotations available but the ones that we used were mainly @Insert for inserting an entry and @Query for making a query to the database. Since there is the possibility that a database query could take a long time, a rule is enforced that restricts us from making queries on the UI thread that could make the UI unresponsive. All interactions with the database must be made on a different thread, such as in an AsyncTask.
+
+Testing the logging of a jump was difficult to do since we did not have anyone doing any skydives with a compatible device during the project until during the writing of this report. Instead, pressure and GNSS data was logged while on the ground, this revealed that logging did indeed work. One problem that was found was that originally, the database entries required every piece of data which meant that if there no satellite lock for example, data would not be logged. This was solved by changing position entries to not require all data.
 
 \subsubsection{Ensuring Data is Logged}
 Ideally, we would like to switch to a real-time process scheduler such as SCHED\_FIFO so that our process cannot be pre-empted and can perform its best. While this is possible, it would require root access to the phone, something that most users do not have.
@@ -213,7 +215,11 @@ Another issue that was found is that connections must be accepted on the peer de
 
 The final problem that was found is with the flexibility of the service types, we could not find a service type that applied to our use-case of sending location information and so a simple messaging service was chosen. An attempt was made to send serializable location objects, however the data never reached the other device once sent. We suspect that this may be a limitation of the service type and so location data is instead sent as a string and then parsed on the other end.
 
-\subsection{Jump Generation}
+Initially to test the communication between devices, the devices were kept next to each other and set up to send test messages to each other. Once the test messages were sending, the sending of GPS coordinates was tested. Messages sent between devices would be output into the logs so that we could see whether communication between the devices was working.
+
+Final testing of the proximity warnings was done by having two people holding device each and ensuring that while connected, a proximity warning is created at roughly the correct distance. This worked for a fairly large warning distance however when the warning area was reduced, the system was less reliable due to inaccuracy in the GPS sometimes detecting distances as greater than they actually are.
+
+\subsection{Jump Generation for Testing}
 Unfortunately, due to the uncommon activity that the project focusses on, and the low prominence of smartphones with barometers, it was very difficult to get actual skydive data with the app. Until we had a logged skydive, we had to instead generate jump data and use this for testing the features of the app used for reviewing a skydive.
 
 For jump generation, firstly, a new jump entry is added to the database. Then, a new landing pattern is calculated for a static coordinate with a random wind speed from \SIrange{0}{10}{\metre\per\second} and a random wind direction from \SIrange{0}{360}{\degree}.
@@ -308,6 +314,10 @@ where
   \item $R$: the result
 \end{description}
 
+Generated jump data was used to test the feature. Since we know what landing patterns should look like for the landing pattern planner, when the feature is working we can see that the same patterns are shown as being logged but with simulated GNSS noise.
+
+In order to test whether the perpendicular view is working, we can easily compare with the overlay on the Google Map. It was clear during testing when the coordinate systems for drawing on the screen were accidentally flipped since the pattern did not match between the view.
+
 \subsection{Formation Review}\label{subsec:formation-review}
 While creating the app, it was decided that one useful feature that was missed would be the ability to show many user's jump data for a formation skydive to be able to review who may have been in the wrong formation position at a point in time.
 
@@ -323,7 +333,9 @@ The list of positions to process is converted to a list of bearings, distances a
 
 All points placed on the screen are stored in a list. A listener has been registered so that if the user touches the screen, the list of points is searched to see if the user touched within an area of one of the points drawn on the screen. If the user touched within a set region of a drawn point, the view is cleared and recalculated with the user that the point represents as the new subject user.
 
-\subsection{Settings \color{red}TODO}
+In order to initially test the radar formation review screen, jump data for three users was manually created with known positions, this allowed for us to be able to see whether users were being placed on the screen correctly relative to each other.
+
+\subsection{Settings}
 A settings menu was created to allow users to be able to adjust certain values within the app such as canopy airspeed and glide ratio, and landing pattern turn heights.
 
 Modifying a setting can be presented to a user is several different forms, for example a dropdown selection menu, number entry or a toggle. With the first version of our implementation, many of the settings were number entry only. We assumed that with number entry input, values would be automatically stored as integers or floats, this was however not the case. The standard way of storing preferences in Android seems to be in string form only.
@@ -347,8 +359,9 @@ p1Altitude = Integer.valueOf(sharedPreferences
 
 The settings screen uses Android @TargetApi annotations and support libraries to provide different functionality implementations to devices running different versions of Android.
 
-Everything that accesses the app's settings/preference values registers an ``OnSharedPreferenceChangeListener'' that handles any changes to the preference values to recalculate or change the display of one of the app's features. One example of where this feature can be seen is in the landing pattern planner where each point in a landing pattern can be clicked on to reveal its altitude, if the unit of measurement preference is changed, the altitude will be recalculated into the new unit of measurement.
+Everything that accesses the app's settings/preference values registers an ``OnSharedPreference\-ChangeListener'' that handles any changes to the preference values to recalculate or change the display of one of the app's features. One example of where this feature can be seen is in the landing pattern planner where each point in a landing pattern can be clicked on to reveal its altitude, if the unit of measurement preference is changed, the altitude will be recalculated into the new unit of measurement.
 
+% TODO
 % Testing strategy
 % Examples of testing
 % Relate tests to software requirements specification
