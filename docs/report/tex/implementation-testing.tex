@@ -259,15 +259,95 @@ This generated data can be used to test landing pattern review features in a rea
 \subsection{Landing Pattern Review}
 For the landing pattern review feature of the app, we decided to once again place an overlay on a Google Map, only this time with jump data fetched from the database. Unfortunately Google maps do not offer the ability to place overlay positions in 3D space, despite being able to adjust the map's camera height.
 
-Due to this unforeseen restriction, a new view was decided to be implemented on the same screen view that can draw a representation of the perpendicular projection of a landing pattern, updated to match the orientation of the Google Map.
+Due to this unforeseen restriction, a new view was decided to be implemented on the same screen view that can draw the perpendicular projection of a landing pattern, updated to match the orientation of the Google Map.
 
-\subsection{Formation Review \color{red}TODO}\label{subsec:formation-review}
+The app will rotate 3D coordinates consisting of the user's logged latitude, longitude and altitude.
+The altitude will always be scaled across the Y coordinates of the screen and so we do not need to modify this data. Initially, orthographic projection algorithms were considered for moving the user's view point around the landing pattern, however, these would require far more calculation than is required for the feature. Instead, we rotate the landing pattern coordinates using a rotation matrix and keeping the user's view position constant.
+
+Passing the bearing from the Google Map and each landing pattern coordinate into Equation~\vref{eq:matrix-mult} gives us the new rotated coordinates that we use for the landing pattern perpendicular projection.
+
+\begin{equation}\label{eq:matrix-mult}
+  \begin{bmatrix}
+    \mathrm{newX} \\[0.3em]
+    \mathrm{newY}
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    \cos(\theta)  & \sin(\theta) \\[0.3em]
+    -\sin(\theta) & \cos(\theta)
+  \end{bmatrix}\cdot
+  \begin{bmatrix}
+    x \\[0.3em]
+    y
+  \end{bmatrix}
+\end{equation}
+where
+\begin{description}
+  \item $\theta$: the map rotation in radians
+  \item $x$: the longitude
+  \item $y$: the latitude
+  \item $\mathrm{newX}$: the resulting longitude
+  \item $\mathrm{newY}$: the resulting latitude
+\end{description}
+
+To get the correct orientation of the newly rotated landing pattern, we now take the longitude as the screen X coordinate and the altitude as the screen Y coordinate.
+
+Due to the differing sizes of device screens, we cannot scale coordinates by a static amount. Android will only give the dimensions of the area that we want to draw in at the time that the area should be should be drawn, this means that before we loop through screen coordinates, drawing lines between them, we must generate those coordinates from the landing pattern, scaled to the display size.
+
+A helper function was created that called ``getScaledValue'' that takes as arguments, a value to scale, the minimum value the input could be, the maximum value the input could be, the minimum output value to scale to, and the maximum output value to scale to. This function allows us to scale an input value from one range to another, in this case from altitude to screen height for example. The equation is as follows:
+\begin{equation}\label{eq:scale-values}
+  \mathrm{R} = \left((O_{\mathrm{max}} - O_{\mathrm{min}}) \times \frac{V - I_{\mathrm{min}}}{I_{\mathrm{max}} - I_{\mathrm{min}}}\right) + O_{\mathrm{min}}
+\end{equation}
+where
+\begin{description}
+  \item $V$: the value to scale
+  \item $I_{\mathrm{min}}$: the minimum input range value
+  \item $I_{\mathrm{max}}$: the maximum input range value
+  \item $O_{\mathrm{min}}$: the minimum output range value
+  \item $O_{\mathrm{max}}$: the maximum output range value
+  \item $R$: the result
+\end{description}
+
+\subsection{Formation Review}\label{subsec:formation-review}
+While creating the app, it was decided that one useful feature that was missed would be the ability to show many user's jump data for a formation skydive to be able to review who may have been in the wrong formation position at a point in time.
+
+User UUIDs were added to the app to give each instance its own unique identifying data, this means that different user's data can be queried from and stored in the same database table. Next, the jump generation code was modified to generate multiple users' jump data.
+
+The formation review feature is designed to look like a radar screen, there is one major difference however, the difference in altitude from the subject user is displayed by a line from their coordinates on the flat radar to another point above or below as a scaled difference in altitude.
+
+The data to present on the radar view is gathered by querying the database for all users on the same jump, then for each user, the app uses a binary search to find the positional data closest to the time in a jump that was selected for the subject user. The subject time is set via movement of a seek bar representing time from the start of the jump to the end of the jump.
+
+If the distance from the subject user's position to another user's position is over a maximum value (static in the code but could be made configurable) then the other user's position is ignored. All user's position data that is within range of the subject is stored in a list to be processed.
+
+The list of positions to process is converted to a list of bearings, distances and altitude differences from the subject user. Now that the list of user positions has be converted to positions relative to the subject, they can be scaled for the screen relative to a central point representing the subject. Since the radar is an ellipse to make distance more apparent, the 3D coordinates' Z values are scaled to the change in height of the ellipse from a circle.
+
+All points placed on the screen are stored in a list. A listener has been registered so that if the user touches the screen, the list of points is searched to see if the user touched within an area of one of the points drawn on the screen. If the user touched within a set region of a drawn point, the view is cleared and recalculated with the user that the point represents as the new subject user.
 
 \subsection{Settings \color{red}TODO}
-% How to store settings, silly numbers
-% How to fetch settings
-% Everything that fetches a setting, also subscribes to changes to stay updated
+A settings menu was created to allow users to be able to adjust certain values within the app such as canopy airspeed and glide ratio, and landing pattern turn heights.
 
+Modifying a setting can be presented to a user is several different forms, for example a dropdown selection menu, number entry or a toggle. With the first version of our implementation, many of the settings were number entry only. We assumed that with number entry input, values would be automatically stored as integers or floats, this was however not the case. The standard way of storing preferences in Android seems to be in string form only.
+
+Since we had preferences stored as numbers in string form and default preference values stored as integers, code required to fetch numerical values from preferences became more complicated.
+Fetching a preference value requires as input the ``key'' that it was stored under and a default value. Since we wanted an integer output a lot of the time, this meant that our code had to convert between strings and integers more than we'd like, as shown in Listing~\vref{lst:fetch-pref}. A lot more error checking was required because of these conversions.
+
+\begin{listing*}
+  \centering
+  \begin{minted}{java}
+p1Altitude = Integer.valueOf(sharedPreferences
+    .getString("landing_pattern_downwind_altitude",
+      String.valueOf(
+        resources.getInteger(R.integer.pref_default_downwind_altitude)
+      )
+    )
+  );
+  \end{minted}
+  \caption{Code to fetch the value for an integer preference}\label{lst:fetch-pref}
+\end{listing*}
+
+The settings screen uses Android @TargetApi annotations and support libraries to provide different functionality implementations to devices running different versions of Android.
+
+Everything that accesses the app's settings/preference values registers an ``OnSharedPreferenceChangeListener'' that handles any changes to the preference values to recalculate or change the display of one of the app's features. One example of where this feature can be seen is in the landing pattern planner where each point in a landing pattern can be clicked on to reveal its altitude, if the unit of measurement preference is changed, the altitude will be recalculated into the new unit of measurement.
 
 % Testing strategy
 % Examples of testing
