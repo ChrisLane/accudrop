@@ -51,7 +51,6 @@ definition]
 
 \renewenvironment{abstract}%
 {\clearemptydoublepage
-  \onecolumn
   \thispagestyle{plain}
   \begin{center}
     \vspace*{1.5cm}
@@ -59,11 +58,10 @@ definition]
     \vspace{0.5cm}
   \end{center}
   \begin{quote}
-}{\newpage\end{quote}\twocolumn}
+}{\newpage\end{quote}}
 
 \newenvironment{acknowledgements}%
 {\clearemptydoublepage
-  \onecolumn
   \thispagestyle{plain}
   \begin{center}
     \vspace*{1.5cm}
@@ -71,11 +69,10 @@ definition]
     \vspace*{0.5cm}
   \end{center}
   \begin{quote}
-}{\newpage\end{quote}\twocolumn}
+}{\newpage\end{quote}}
 
 \newenvironment{dedication}%
 {\clearemptydoublepage
-  \onecolumn
   \thispagestyle{plain}
   \begin{center}
     \vspace*{1.5cm}
@@ -83,7 +80,7 @@ definition]
     \vspace*{0.5cm}
   \end{center}
   \begin{verse}
-}{\newpage\end{verse}\twocolumn}
+}{\newpage\end{verse}}
 
 \newenvironment{preliminary}%
 {\pagestyle{plain}\pagenumbering{roman}}%
