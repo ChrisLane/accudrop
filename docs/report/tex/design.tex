@@ -146,6 +146,46 @@ Now that we have the distance that the canopy can travel in the upwind leg, we c
 
 To calculate the remaining coordinates for the landing pattern turn altitudes, we follow the same procedure as the upwind leg but modify the canopy ground speed and direction in which a move is made. For example, for calculating the coordinates for P1, we would be calculating a move from P2 in the wind direction for a ground speed of airspeed + wind speed.
 
+\subsection{Jump Tracking}
+Tracked jump data is stored in a local database, this allows for queries to be made to gather data relating to a jump, to be presented to a user in some form.
+
+It was decided that the database will have two tables, one table containing general jump data, this can be the jump number and the jump creation time stamp, and another table containing position data. Data stored in the position table is the jump number, altitude (\si{\metre}), vertical speed (\si{\metre\per\second}), horizontal speed (\si{\metre\per\second}), latitude, longitude, time stamp (\si{\milli\sec}) and fall type.
+
+\begin{figure}[ht]
+  \centering
+  \begin{scaletikzpicturetowidth}{0.5 * \linewidth}
+  \begin{tikzpicture}
+    \tikzstyle{entity}=[rectangle,rectangle split,rectangle split parts=2,draw=black,text width=6.5cm]
+
+    \node (Jump) [entity] {\textbf{Jump}
+        \nodepart{second}
+          id: integer (\textbf{Primary Key}) \\
+          time: integer
+        };
+
+    \node(Position) [entity,below=2cm of Jump] {\textbf{Position}
+        \nodepart{second}
+          id: integer (\textbf{Primary Key}) \\
+          useruuid: text \\
+          altitude: integer \\
+          vspeed: real \\
+          hspeed: real \\
+          latitude: real \\
+          longitude: real \\
+          time: integer \\
+          fall\_type: integer \\
+          jump\_id: integer (\textbf{Foreign Key})
+        };
+
+      \draw[->] (Position)--(Jump) node[at end,left, yshift=-2mm]{1} node[at start,left,yshift=2mm]{0..N} node[midway,right]{jump\_id:id};
+  \end{tikzpicture}
+  \end{scaletikzpicturetowidth}
+  \caption{Database entity-relationship model}\label{fig:database-relations}
+\end{figure}
+
+% Database structure/relation model
+Figure~\ref{fig:database-relations} shows the entity-relationship model of the database, displaying primary and foreign keys and all of the possible entry values.
+
 \subsection{Text to Speech}
 Since we would like to be able to communicate with the user during canopy flight for landing pattern guidance and safety warnings, text to speech was decided to be used. A user is not likely to be able to see their phone screen during a jump, and we would not want them looking at it regardless, since it may distract them from their skydiving drills. Since it is quite loud while under canopy, a user is expected to wear a Bluetooth earpiece so that we can feed them voice messages related to their jump.
 
