@@ -270,7 +270,7 @@ Due to this unforeseen restriction, a new view was decided to be implemented on 
 The app will rotate 3D coordinates consisting of the user's logged latitude, longitude and altitude.
 The altitude will always be scaled across the Y coordinates of the screen and so we do not need to modify this data. Initially, orthographic projection algorithms were considered for moving the user's view point around the landing pattern, however, these would require far more calculation than is required for the feature. Instead, we rotate the landing pattern coordinates using a rotation matrix and keeping the user's view position constant.
 
-Passing the bearing from the Google Map and each landing pattern coordinate into Equation~\vref{eq:matrix-mult} gives us the new rotated coordinates that we use for the landing pattern perpendicular projection.
+Passing the bearing from the Google Map and each landing pattern coordinate into Equation~\vref{eq:matrix-mult}~\cite{lounesto_clifford_2001} gives us the new rotated coordinates that we use for the landing pattern perpendicular projection.
 
 \begin{equation}\label{eq:matrix-mult}
   \begin{bmatrix}
