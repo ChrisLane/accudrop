@@ -66,3 +66,14 @@ All of the ideas generated from the questionnaire were great. However we could n
 \end{table*}
 
 Since the app is a proof of concept, the requirement priorities do not fit into their definitions quite so much, the priorities still apply but will not indicate the success or failure of the project. The indication is instead that an investigation and attempt into fulfilling the requirements must, should or could be made.
+
+\subsection{Proof of Concept Requirements}\label{subsec:proof-requirements}
+For the app to succeed as a proof of concept, we have some slightly different requirements, these are based more on the hardware of smartphone devices for tracking a skydive since we already know that smartphones can compute and display advanced non-extreme sports features.
+The requirements are:
+\begin{itemize}
+  \item The app/device must accurately calculate altitude at skydiving altitudes above \SI{3000}{\metre} (accurate to \SI{10}{\metre})
+  \item The app/device must accurately calculate altitude at landing pattern altitudes below \SI{500}{\metre} (accurate to \SI{5}{\metre})
+  \item The app/device must accurately track GNSS horizontal location (accurate to \SI{10}{\metre})
+  \item The app/device must calculate altitude data with low latency (latency less than \SI{1}{\second})
+  \item The app/device must be able to communicate with other devices across a range of \SI{80}{\metre}
+\end{itemize}
