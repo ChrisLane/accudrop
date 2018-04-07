@@ -1,3 +1,48 @@
+% !TEX root = ../main.tex
 \section{Discussion}\label{sec:discussion}
 % Summarise achievements and deficiencies
 % What could be done with more time
+
+% What the app set out to achieve
+\subsection{Review of the Proof of Concept}
+This project set out to create a proof of concept app to investigate whether smart devices could be used to aid skydivers and increase their safety.
+
+The app fulfils all of its `Must' requirements and most of its `Should' requirements.
+Features exist as planned to assist a skydiver in their learning and safety before, during and after a jump. Landing patterns can be accurately calculated for any given target with current wind conditions, jump data can be accurately logged and data can be replayed post-jump.
+
+Overall, the project as a proof of concept can be considered a success. After testing the app for a real skydive, the logged data when compared with a real skydiving altimeter revealed that the first four of our proof of concept requirements from Section~\ref{subsec:proof-requirements} were met. We specified that that app/device should be to calculate altitudes above \SI{3000}{\metre} accurately to \SI{10}{\metre}, in our tests we achieved an accuracy smaller than \SI{5}{\metre}, operating on a higher precision than many real skydiving altimeters, that typically round by up to \SI{30}{\metre}.
+
+The app should accurately calculate altitude below \SI{500}{\metre} to \SI{5}{\metre}, our tests revealed an accuracy of less than \SI{5}{\metre} again for these altitudes.
+
+A latency of less than \SI{1}{\second} for altitude calculations was required, logged data shows that we have achieved altitude calculation and storage roughly every \SI{300}{\milli\second}.
+
+GNSS was required to have a horizontal accuracy less than or equal to \SI{10}{\metre}, actual accuracy was typically \SI{\approx5}{\metre} with brief inaccuracies of \SI{10}{\metre}, these could likely be smoothed from the data as an improvement.
+
+The only requirement that was not met by the project was for communication between devices to work up to a range of \SI{80}{\metre}, we only achieved \SI{50}{\metre}. It should be noted that our range test was conducted at ground level where buildings, other Wi-Fi signals and such will have caused some interference. Connections at altitude where there are fewer interferences may extend to further ranges. It should also be noted that while the requirement has not been met, we still consider this to be a success since the system would still be able to give a skydiver a minimum of \SI{\approx3}{\second} to react after a proximity warning, which is still an improvement in safety.
+
+\subsection{Reflection}
+Unfortunately, there was not enough time remaining to implement the live landing pattern guidance system which certainly would contribute significantly to proving the ability for smartphones to assist skydivers. There should be no doubts after having seen the tracking data from real skydives using the app, that a guidance system could be implemented and accurately guide a skydiver to their landing area. The smartphone that we tested with for real skydives (a Samsung Note 4) is not a recent smartphone and yet it was still able to record data accurately for a skydive. The design for adjusting a landing pattern that can be communicated to a skydiver during a jump has already been stated in this report, it just has to be implemented.
+
+% Finding phones to test with etc.
+One of the largest problems holding the project up was the lack of compatible devices and skydivers available for testing. Many of the more advanced features of the app such as jump tracking require that a barometer be available in the device however, devices are both Android and have a barometer. When a device was available for testing, it was found that the GNSS was very poor on the phone, often not picking up any satellite signal and meaning that both GNSS and barometer data could not be tested at the same time.
+
+Being able to get real skydive data was even more difficult, meaning that extra work had to be put into generating jump data to test the jump review parts of the app. Requirements to test the app for a real skydive and collect data were:
+\begin{itemize}
+  \item A smartphone available to borrow with both GNSS and barometer hardware
+  \item Device running a version of Android compatible with SDK 23
+  \item Device available for one of very few skydive contacts to borrow
+  \item Skydiving contact plans to go skydiving
+  \item Weather permits for skydiving (unlikely with features implemented by winter)
+\end{itemize}
+One opportunity did arise to collect some real skydiving data towards the end of the project, however, due to a bug in the program, the app did not record any data. Only one jump was done and so there was no opportunity to fix the app and try again.
+
+% No testing until writing report
+% Live calculations during and more advanced calculations post-jump
+Data that was successfully recorded for skydives was collected during the writing of this report. Data for ten skydives was collected. Had the data been collected earlier in the project, changes could have been made to the app to make the fall rate data calculation work for the small inaccuracies in the altitude measurements, as was done via a spreadsheet with the raw data in Section~\ref{subsec:skydive-logging}. Due to the wild inaccuracies in fall rate, skydive logbook features could only be demonstrated correctly using generated data. A quick and easy solution would be to take altitude measurements less frequently to calculate fall rate over a larger distance, however then we would be losing precision that would be desired by a user.
+Since fall rate is only required during the tracking of a jump for initial freefall detection and then parachute deployment detection (both very different speeds), if more time was available, we might do a rough calculation for these detections and then more advanced calculation on the logged data after a jump where latency is not a problem.
+
+Work was done on the formation skydive review feature however this only used generated data for testing. For real usage, skydivers would have to share their jump data between devices. A problem arises when sharing jump data between devices and that is that timing on different devices are not synchronised. An investigation was made into how this problem could be solved and the conclusion was that adjusting timestamps for a jump based on differences between the device's time and GNSS time could be done to have a single point for time synchronisation. GNSS time should be more than accurate enough for synchronisation purposes since it is typically accurate within \SI{40}{\nano\second}~\cite{_gps_????}.
+
+We didn't just want to implement all of the features that we had planned, we wanted to implement them well. Android guidelines were followed wherever possible and compatibility libraries were used when available to ensure compatibility with older devices. Following Android guidelines and using their systems was occasionally a time consuming process since often many restrictions and warnings must be considered. The MVP design pattern was followed closely since this reduced crashes in the app on rotation events and such that force app activities to be reinitialised. Due to the time constraints of the project, there was less refactoring of code in the final months. The code could be improved to use Android features that have been added during the project, clean up code and improve performance.
+
+We are sure that the possibilities for the use of smartphones in skydiving will only increase as technologies improve. With IOT devices becoming more ubiquitous, mesh networking capabilities for low power devices are being developed, this could dramatically improve the possibilities for the communication of devices during a skydive and solve the issues that we faced in our tests.
