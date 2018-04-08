@@ -41,7 +41,7 @@ Data from the sensor listeners need to be stored in either a model for temporary
 
 The database talks only to the models; these models contain ways for a presenter to get, set and subscribe to data that is stored in either the model or the database. The presenters need to be able to subscribe to data changes so that they can keep the app's state up-to-date, for example updating the view to show a new value for some stored data.
 
-\subsection{Altitude Calculation}
+\subsection{Altitude Calculation}\label{subsec:altitude-calc-design}
 The smartphone's barometer will be used to output atmospheric pressure readings. Atmospheric pressure readings can be used to calculate altitude relative to another point~\cite{he_atmospheric_2012, liu_beyond_2014}. There are two competing atmospheric pressure calculations, the first is defined as:
 \begin{equation}\label{eq:altitude-calculation}
   H = \frac{T_0}{L} \cdot \left({\left(\frac{P}{P_0}\right)}^{-\frac{L \cdot R}{g}} - 1\right)
