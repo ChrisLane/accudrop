@@ -199,7 +199,7 @@ Examples of messages that were planned for the user:
 
 The proximity warning begins with the word ``proximity'', this is so that the first thing the skydiver hears immediately alerts them to start checking their airspace for dangers.
 
-\subsection{Landing Pattern Guidance}
+\subsection{Landing Pattern Guidance}\label{subsec:landing-guidance}
 How to do live landing pattern guidance was a harder problem to solve since the order in which the turns are calculated, how they are calculated and what aspects of the pattern are most important were not clearly defined for skydivers.
 
 The solution mainly revolves around the fact that because the plane dropping skydivers will fly into the wind, skydivers should only ever be dropped downwind, upwind or at the ideal drop location and not too far across the wind. Due to this, we can assume that the base leg of the landing pattern will always be between the altitudes required to get from the current location to directly in line with the target landing area. With this assumption, the landing pattern generated will always be either directly upwind or downwind of the target location even if the guidance cannot get the user directly to the landing area. All that remains to adjust are downwind and upwind legs.
