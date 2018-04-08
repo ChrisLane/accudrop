@@ -344,7 +344,7 @@ Modifying a setting can be presented to a user is several different forms, for e
 Since we had preferences stored as numbers in string form and default preference values stored as integers, code required to fetch numerical values from preferences became more complicated.
 Fetching a preference value requires as input the ``key'' that it was stored under and a default value. Since we wanted an integer output a lot of the time, this meant that our code had to convert between strings and integers more than we'd like, as shown in Listing~\ref{lst:fetch-pref}. A lot more error checking was required because of these conversions.
 
-\begin{listing*}
+\begin{listing}
   \centering
   \begin{minted}{java}
 p1Altitude = Integer.valueOf(sharedPreferences
@@ -356,7 +356,7 @@ p1Altitude = Integer.valueOf(sharedPreferences
   );
   \end{minted}
   \caption{Code to fetch the value for an integer preference}\label{lst:fetch-pref}
-\end{listing*}
+\end{listing}
 
 The settings screen uses Android \texttt{@TargetApi} annotations and support libraries to provide different functionality implementations to devices running different versions of Android.
 
