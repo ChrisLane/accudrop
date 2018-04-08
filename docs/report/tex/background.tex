@@ -6,13 +6,13 @@ In this section, we will explore existing work that can be used to gain an under
 
 \subsection{Skydiving}
 % More background than given in introduction for what reader needs to know to understand solution
-There are many different types of skydives; two popular types are flat and freefly. In flat skydiving, a skydiver will be in a belly-to-earth orientation, falling at \SI{\approx53}{\metre\per\second}. A freefly skydive requires much more skill, where a skydiver will be in any orientation from sitting down to head-down. Freeflyers will fall much faster than someone falling flat.
+There are many different types of skydives; two popular types are flat and freefly. In flat skydiving, a skydiver will be in a belly-to-earth orientation, falling at \SI{\sim53}{\metre\per\second}. A freefly skydive requires much more skill, where a skydiver will be in any orientation from sitting down to head-down. Freeflyers will fall much faster than someone falling flat.
 Skydivers may also prefer to focus on their canopy flight, flying in formation with others. Canopy formations can be quite dangerous since there is potential for canopies to become entangled in one another.
-Another skydiving activity that is quite popular is ``swooping'', this is when a person spirals their canopy to a high descent rate towards the ground, the canopy is then flattened to transfer a lot of the speed into a horizontal movement across the ground before landing. A ``swooper'' often only cares for the very last part of their jump and so will exit the plane at a much lower altitude such as \SI{18000}{\metre}, deploying their parachute after only a few seconds.
+Another skydiving activity that is quite popular is ``swooping'', this is when a person spirals their canopy to a high descent rate towards the ground, the canopy is then flattened to transfer a lot of the speed into a horizontal movement across the ground before landing. A ``swooper'' often only cares for the very last part of their jump and so will exit the plane at a much lower altitude (\SI{1800}{\metre}), deploying their parachute after only a few seconds.
 A typical freefall plane exit altitude can vary, an exit altitude of \SI{3650}{\metre} in a ``belly-to-earth'' orientation (``flat'' skydiving) will give approximately 60 seconds of freefall.
 
 \subsubsection{Canopy Characteristics}
-A canopy's airspeed is its horizontal speed relative to the air. If there is a wind speed of \SI{5}{\metre\per\second} and a canopy's airspeed is \SI{15}{\metre\per\second}, the canopy's ground speed can be calculated depending on the canopy's heading relative to the wind. If the canopy is heading upwind, the ground speed can be calculated as $Airspeed - WindSpeed$, downwind and the ground speed is $Airspeed + WindSpeed$.
+A canopy's airspeed is its horizontal speed relative to the air.  A canopy's ground speed can be calculated depending on the canopy's heading relative to the wind. If there is a wind speed of \SI{5}{\metre\per\second} and a canopy's airspeed is \SI{15}{\metre\per\second}, and the heading is upwind, the ground speed can be calculated as $Airspeed - WindSpeed$, downwind and the ground speed is $Airspeed + WindSpeed$.
 A canopy also has a glide ratio that is used to describe the fall rate relative to the airspeed, as shown in Equation~\ref{eq:fallrate}. A canopy with an airspeed of \SI{15}{\metre\per\second} might have a glide ratio of 2.5. A canopy's fall rate can be considered constant with no toggle input (steering).
 
 \begin{equation}\label{eq:fallrate}
@@ -20,14 +20,14 @@ A canopy also has a glide ratio that is used to describe the fall rate relative 
 \end{equation}
 
 \subsubsection{Landing}
-The last part of a skydive is the canopy flight to the landing area once the canopy has been successfully deployed. Most skydivers will aim to have deployed their parachute by a minimum altitude of \SI{\approx900}{\metre}.
+The last part of a skydive is the canopy flight to the landing area once the canopy has been successfully deployed. Most skydivers will aim to have deployed their parachute by a minimum altitude of \SI{\sim900}{\metre}.
 Once the skydiver is under their canopy and has done all of their safety checks, they will either remain in or travel to the ``holding area'', this is an area upwind of the landing area where flyers will remain until they near their initial landing pattern starting altitude.
 
 Skydivers are taught to take a three-stage landing pattern initially until they get on to more advanced techniques. Figure~\vref{fig:landing-pattern} shows an example of a typical landing pattern that skydivers are expected to take, it uses safe turning heights and leaves enough altitude between turn heights for alterations if required. If the final turn is too low, the flyer risks speeding towards the ground with the increased fall rate that a turn causes. In Figure~\vref{fig:landing-pattern}, the final turn is at \SI{90}{\metre}, leaving enough altitude for the canopy to flatten out again. The landing pattern starts upwind of the landing area, and the flyer travels downwind, this leg of the journey is longer since the wind behind the canopy will push it further horizontally over the same altitude difference. The crosswind section of the landing pattern is called the ``base'', this is when the flyer should align themselves with their planned landing area. The final leg of the journey is when the flyer is facing into the wind, this reduces the forward speed of the canopy, thus reducing the risk of injury. Landing patterns can follow either a right or left-hand turn pattern; this is usually a preference set by the drop zone.
 
 \begin{figure}[ht]
   \centering
-  \begin{scaletikzpicturetowidth}{0.5 * \linewidth}
+  \begin{scaletikzpicturetowidth}{0.3\linewidth}
     \begin{tikzpicture}[scale=\tikzscale]
       \begin{scope}[very thick,
         decoration={markings,
@@ -38,13 +38,13 @@ Skydivers are taught to take a three-stage landing pattern initially until they 
 
         % Path
         \draw[postaction={decorate}] (4,-8)--(4,0) node[at start,right]{\SI{300}{\metre}}; % downwind
-        \draw[postaction={decorate}] (4,0)--(0,0) node[at start,above]{\SI{180}{\metre}}; % base
-        \draw[postaction={decorate}] (0,0)--(0,-3) node[at start,above]{\SI{90}{\metre}}; %upwind
+      \draw[postaction={decorate}] (4,0)--(0,0) node[at start,above]{\SI{180}{\metre}} node[midway,above]{base}; % base
+        \draw[postaction={decorate},->] (0,0)--(0,-3) node[at start,above]{\SI{90}{\metre}}; %upwind
 
         % Wind
         \draw[blue,->] (0,-7.5)--(0,-5) node[black,align=center,midway,left]{Wind\\Direction};
       \end{scope}
     \end{tikzpicture}
   \end{scaletikzpicturetowidth}
-  \caption{A typical skydiver landing pattern}\label{fig:landing-pattern}
+  \caption{A typical skydiver landing pattern with turn altitudes at \SI{300}{\metre}, \SI{180}{\metre} and \SI{90}{\metre}}\label{fig:landing-pattern}
 \end{figure}
