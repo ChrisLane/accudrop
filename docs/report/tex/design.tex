@@ -20,11 +20,11 @@ The app is designed in a way that allows for flexible and re-usable back-end ele
   \centering
   \begin{scaletikzpicturetowidth}{\linewidth}
     \begin{tikzpicture}[squarednode/.style={rectangle, draw=black}]
-      \node[squarednode] (view) {View};
-      \node[squarednode] (presenter) [right=of view] {Presenter};
-      \node[squarednode] (model) [right=of presenter] {Model};
-      \node[squarednode] (listener) [above=of presenter] {Sensor Listeners};
-      \node[squarednode] (database) [above=of model] {Database};
+      \node[squarednode,fill=red!30] (view) {View};
+      \node[squarednode,fill=blue!30] (presenter) [right=of view] {Presenter};
+      \node[squarednode,fill=orange!30] (model) [right=of presenter] {Model};
+      \node[squarednode,fill=green!30] (listener) [above=of presenter] {Sensor Listeners};
+      \node[squarednode,fill=purple!30] (database) [above=of model] {Database};
 
       \draw[<->] (view.east)--(presenter.west);
       \draw[<->] (presenter.east)--(model.west);
