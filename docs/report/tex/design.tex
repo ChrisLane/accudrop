@@ -9,7 +9,7 @@ In this section, the high-level design of the app's back-end algorithms, data st
 In the app's most basic form of design, much of the logic exists within central `presenter' classes, with small amounts of code for updating the app's UI\@. There are sensor listeners to grab data from the smartphone's sensors for tracking a skydive, and a local database exists to store persistent data gathered from the user and sensors.
 
 \subsection{Platform}
-The decision was made to create the app for Android mobile devices since these offer the easiest access to sensors, OS features and have an extensive amount of support available online. Apple's iOS was ruled out since only the iPhone 6, and newer devices contain a barometer currently. These devices cost a small fortune when compared to the spare Android phones with barometers that some people have lying around that could be used for testing.
+The decision was made to create the app for Android mobile devices since these offer the easiest access to sensors, OS features and have an extensive amount of support available online. Apple's iOS was ruled out since only the iPhone 6, and newer devices contain a barometer currently. These devices cost a lot of money and would be hard to get hold of when compared to spare Android phones with barometers that some people have, going unused, that could be used for testing.
 
 \subsection{Model View Presenter}
 The Model View Presenter (MVP) design pattern was chosen for this project. Model View Presenter puts much of the logic in the `presenter', where the presenter acts like the bridge between the view and the model. The view contains minimal code and is only responsible for updating what the user sees and passing actions on to the presenter. The model is where data is stored such as data relating to the current state of the program; the presenter may subscribe to changes to this data to inform the view of updates. The view and the model do not communicate with each other directly. MVP was chosen over Model View Controller (MVC) since in MVC nearly all of the logic is in the `controller', where it is expected to return the correct view in response to an action in the current view. MVC does not split logic between all elements of the design pattern; the controller handles everything, and the view knows as little as possible and only exists to render what the user sees. Views and their related presenters of the MVP design pattern allow for code to be separated more evenly.
@@ -42,7 +42,7 @@ Data from the sensor listeners need to be stored in either a model for temporary
 The database talks only to the models; these models contain ways for a presenter to get, set and subscribe to data that is stored in either the model or the database. The presenters need to be able to subscribe to data changes so that they can keep the app's state up-to-date, for example updating the view to show a new value for some stored data.
 
 \subsection{Altitude Calculation}
-The smartphone's barometer will be used to output atmospheric pressure readings. Atmospheric pressure readings can be used to calculate altitude relative to another point~\cite{he_atmospheric_2012, liu_beyond_2014}, this calculation is defined as:
+The smartphone's barometer will be used to output atmospheric pressure readings. Atmospheric pressure readings can be used to calculate altitude relative to another point~\cite{he_atmospheric_2012, liu_beyond_2014}. There are two competing atmospheric pressure calculations, the first is defined as:
 \begin{equation}\label{eq:altitude-calculation}
   H = \frac{T_0}{L} \cdot \left({\left(\frac{P}{P_0}\right)}^{-\frac{L \cdot R}{g}} - 1\right)
 \end{equation}
@@ -59,7 +59,7 @@ where
 
 All values except pressures and temperature are constants.
 
-Another equation for calculating altitude is the international barometric formula~\cite{bosch_bmp180:_2018}, defined as:
+The second equation for calculating altitude is the international barometric formula~\cite{bosch_bmp180:_2018}, defined as:
 \begin{equation}\label{eq:barometric-fomula}
   H = 44330 \cdot \left(1 - {\left(\frac{P}{P_0}\right)}^{\frac{1}{5.255}}\right)
 \end{equation}
@@ -99,7 +99,7 @@ where
   \item $\mathrm{Lon}$: result longitude (\si{\radian})
 \end{description}
 
-This equation has been included in the app design as it does much of the work of the landing pattern calculations and is repeatedly used.
+This equation is repeatedly used in the app design as it does much of the work of the landing pattern calculations.
 
 \subsection{Landing Pattern Planning}\label{subsec:landing-pattern}
 The app can show a landing pattern for a user-specified target landing area based on user-specified landing pattern turn heights and current wind conditions at the landing area.
@@ -118,7 +118,7 @@ To calculate the upwind leg of the landing pattern, we take the final turn altit
 
 \begin{figure}[ht]
   \centering
-  \begin{scaletikzpicturetowidth}{0.5 * \linewidth}
+  \begin{scaletikzpicturetowidth}{0.3 * \linewidth}
     \begin{tikzpicture}[scale=\tikzscale]
       \begin{scope}[very thick,
         decoration={markings,
@@ -130,7 +130,7 @@ To calculate the upwind leg of the landing pattern, we take the final turn altit
         % Path
         \draw[postaction={decorate}] (4,-8)--(4,0) node[at start,right]{P1} node[midway,right]{3}; % downwind
         \draw[postaction={decorate}] (4,0)--(0,0) node[at start,above]{P2} node[midway,above]{2}; % base
-        \draw[postaction={decorate}] (0,0)--(0,-3) node[at start,above]{P3}node[midway,left]{1}; %upwind
+        \draw[postaction={decorate},->] (0,0)--(0,-3) node[at start,above]{P3}node[midway,left]{1}; %upwind
 
         % Wind
         \draw[blue,->] (0,-7.5)--(0,-5) node[black,align=center,midway,left]{Wind\\Direction};
@@ -151,7 +151,7 @@ To calculate the remaining coordinates for the landing pattern turn altitudes, w
 \subsection{Jump Tracking}
 Tracked jump data is stored in a local database; this allows for queries to be made to gather data relating to a jump, to be presented to a user in some form.
 
-It was decided that the database will have two tables, one table containing general jump data, this can be the jump number and the jump creation time stamp, and another table containing position data. Data stored in the position table is the jump number, altitude (\si{\metre}), vertical speed (\si{\metre\per\second}), horizontal speed (\si{\metre\per\second}), latitude, longitude, timestamp (\si{\milli\sec}) and fall type.
+It was decided that the database will have two tables, one table containing general jump data, this can be the jump number and the jump creation time stamp, and another table containing position data. Data stored in the position table is the jump number, altitude (\si{\metre}), vertical speed (\si{\metre\per\second}), horizontal speed (\si{\metre\per\second}), latitude, longitude, timestamp (\si{\milli\second}) and fall type.
 
 \begin{figure}[ht]
   \centering
@@ -189,7 +189,7 @@ It was decided that the database will have two tables, one table containing gene
 Figure~\ref{fig:database-relations} shows the entity-relationship model of the database, displaying primary and foreign keys and all of the possible entry values.
 
 \subsection{Text to Speech}
-Since we would like to be able to communicate with the user during canopy flight for landing pattern guidance and safety warnings, text to speech was decided to be used. A user is not likely to be able to see their phone screen during a jump, and we would not want them looking at it regardless, since it may distract them from their skydiving drills. Since it is quite loud while under canopy, a user is expected to wear a Bluetooth earpiece so that we can feed them voice messages related to their jump.
+We would like to be able to communicate with the user during canopy flight for landing pattern guidance and safety warnings, for this we used text to speech. A user is not likely to be able to see their phone screen during a jump, and we would not want them looking at it regardless, since it may distract them from their skydiving drills. Since it is quite loud while under canopy, a user is expected to wear a Bluetooth earpiece so that we can feed them voice messages related to their jump.
 
 Examples of messages that were planned for the user:
 \begin{itemize}
