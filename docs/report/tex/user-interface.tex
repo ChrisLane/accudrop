@@ -38,7 +38,7 @@ When implementing the interface of the app, we tried to follow the Android style
 % App Icon
 An app icon was created that reflects the subject of the app, with a scalable SVG parachutist image in the centre. The whole icon is simple, scalable and allows for Android to adjust the size and shape depending on which version of the OS is being used. The icon that was created for Android Oreo can be seen in Figure~\vref{fig:icon}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \captionsetup{width=0.24\textwidth}
   \begin{minipage}[b]{0.25\textwidth}
@@ -65,17 +65,17 @@ The landing pattern planner feature's user interface was implemented very simila
 
 The user can hold down on a location to set their target landing area. While weather data and landing patterns are being generated, a progress bar will show at the top of the screen to indicate that the app is working on their request. Typically, the app will finish the landing pattern generation quickly, and so the progress bar is not required. One significant difference from the original designs for the interface is that map markers are used at each turn point. The map markers are used to allow the user to interact with the route to see the altitudes of each turn. The colour red is used for the route's line overlays since this is easily visible on most dropzone map areas which are typically mostly green.
 
+\begin{wrapfigure}{l}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{landing-scrot}
+    \caption{The landing pattern viewer feature.}\label{fig:landing-scrot}
+\end{wrapfigure}
+
 % Jump Stats
 The jump statistics screen is simple, values for different statistics are displayed in text form. Each statistic value is updated once the value has been fetched, so the UI never hangs while waiting for data. At the bottom of the screen, there are buttons to switch move between different jumps, as these buttons are used, the large jump number at the top of the display and all of the statistics are updated. The screen will adapt to a rotation of the device, providing a different layout that still allows for all of the data to be displayed on the screen. Arrows indicate the difference between speed statistics, with a down arrow indicating fall rate and a right arrow indicating horizontal speed.
 
 The choice was made to keep jump statistics separate from jump data replay features such as landing pattern and freefall review to keep the interface simple and easy to use for a user, rather than requiring swiping gestures to scroll or use other gestures.
 The jump statistics UI can be seen Figure~\ref{fig:stats}.
-
-\begin{wrapfigure}[20]{l}{0.25\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{landing-scrot}
-    \caption{The landing pattern viewer feature.}\label{fig:landing-scrot}
-\end{wrapfigure}
 
 % Landing Pattern Viewer
 The landing pattern viewer is designed to match the landing pattern planner screen. A Google Map is used that the logged positional data from a jump is overlayed onto. Since Google Map overlays cannot be positioned using 3D coordinates, the screen is split into two parts. The second part of the screen is used to show how altitude data compares to horizontal movement in the landing pattern data.
@@ -83,7 +83,6 @@ The landing pattern viewer is designed to match the landing pattern planner scre
 The perpendicular view of the landing pattern can be altered, to change the direction from which the pattern is being looked at, this is done by rotating the Google Map. The perpendicular view represents a view in the direction from the bottom of the Google Map to the top.
 
 The perpendicular view is not very intuitive to understand. Improvements could be made by redesigning or adding a side-scrolling sky view to indicate which way the view is moving. Alternatively, more advanced graphical technology could be used to present the landing pattern in a three-dimensional view. Unfortunately, time was not available for these improvements to be made.
-
 The landing pattern viewer display can be seen in Figure~\ref{fig:landing-scrot}.
 
 \begin{figure}[!t]
@@ -92,14 +91,15 @@ The landing pattern viewer display can be seen in Figure~\ref{fig:landing-scrot}
   \caption{The freefall formation skydiving radar view feature.}\label{fig:radar}
 \end{figure}
 
-% Freefall Radar View
-The freefall radar view (shown in Figure~\ref{fig:radar}) was designed alongside the implementation; the feature was based on a radar found in many games. The radar view is shown as an ellipse to simulate it being looked at from an angle. A subject is positioned in the middle of the screen as a dot with many other dots around them representing other skydivers' positions. A line from the radar plane to each dot indicates the altitude difference of each skydiver from the subject user's altitude.
-
 \begin{wrapfigure}[19]{r}{0.25\textwidth}
   \centering
   \includegraphics[width=\linewidth]{settings-scrot}
   \caption{The settings screen for the app.}\label{fig:settings}
 \end{wrapfigure}
+
+% Freefall Radar View
+The freefall radar view (shown in Figure~\ref{fig:radar}) was designed alongside the implementation; the feature was based on a radar found in many games. The radar view is shown as an ellipse to simulate it being looked at from an angle. A subject is positioned in the middle of the screen as a dot with many other dots around them representing other skydivers' positions. A line from the radar plane to each dot indicates the altitude difference of each skydiver from the subject user's altitude.
+
 
 Different subject skydivers can be selected by simply touching one of the dots, each dot's identity can be identified by a small label giving the skydiver's name. To avoid the view being cluttered by lines of skydivers that are very far from the subject, if a skydiver's position would be drawn off the screen, the position is not drawn.
 
@@ -107,4 +107,4 @@ Buttons allow for a user to switch between different jumps, and a seek bar allow
 
 % Settings
 Android has many guidelines for settings windows, as well as templates that can be generated in their IDE, Android Studio. Guidelines and templates were used to organise and design a settings screen that appears to be very similar to a typical Android operating system settings screen.
-The settings screen that created is included in Figure~\ref{fig:settings}.
+One of the settings pages that was created is included in Figure~\ref{fig:settings}.

@@ -21,7 +21,7 @@ GNSS data is collected in our `\texttt{GnssListener}' class, this gets the syste
 
 Collecting an Android device's GNSS location requires the ``\texttt{ACCESS\_FINE\_LOCATION}'' permission. Once a \texttt{GnssListener} is instantiated, it checks whether the app has been granted the appropriate permission if it has not then a prompt is raised for the user to grant or deny the permission for the app. If the location permission is denied, then the user will be prompted again, this time with an explanation of why the app requires the permission, at this point the user can select not to be asked again, and then the feature requiring location permissions will be disabled.
 
-Initially positioning data collection was implemented by registering a `\texttt{FusedLocationProviderClient}', Google recommends extending this class for fast and accurate location data. However, it was realised that this data might not be recent or accurate since it is a stored location from Google that may use cell tower or Wi-Fi/Bluetooth devices to triangulate a device's position. Location data has been known to be inaccurate with cell tower, Wi-Fi and Bluetooth location data due to the long range of cell tower signals or movement of Wi-Fi and Bluetooth signals. Due to the requirement of high precision location data, the decision was made to move to GNSS location data only.
+Initially positioning data collection was implemented by registering a `\texttt{FusedLocationProvider\-Client}', Google recommends extending this class for fast and accurate location data. However, it was realised that this data might not be recent or accurate since it is a stored location from Google that may use cell tower or Wi-Fi/Bluetooth devices to triangulate a device's position. Location data has been known to be inaccurate with cell tower, Wi-Fi and Bluetooth location data due to the long range of cell tower signals or movement of Wi-Fi and Bluetooth signals. Due to the requirement of high precision location data, the decision was made to move to GNSS location data only.
 
 % Altitude
 Altitude data is collected in a similar way to GNSS data. A `\texttt{PressureViewModel}' is created to store and provide access to pressure/altitude data, and this creates a `\texttt{PressureListener}' that registers itself with the device as a sensor listener (specifically with the pressure sensor).
@@ -242,7 +242,8 @@ for (i = 0; i < pattern.size() - 1; i++) {
     for (j = 0; j < split - 1; j++) {g
         set bearing to prevLoc.bearingTo(loc2)
         set randBear to randIntBetween(-15,15)
-        set prevLoc to prevLoc.positionAfterMove(5 metres, bearing + randBear)
+        set prevLoc to prevLoc.positionAfterMove(5 metres,
+          bearing + randBear)
         set altitude to altitude - altitudeDecrement
         set prevLoc.altitude to altitude
 
