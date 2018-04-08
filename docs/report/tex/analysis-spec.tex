@@ -1,7 +1,9 @@
 % !TEX root = ../main
 \section{Analysis and Specification}\label{sec:analysis-and-spec}
+In this section, an explanation of how the problem that the project aims to solve was analysed to reveal both user requirements for the app as a product, as well as requirements for the project to succeed as a proof of concept.
+
 % How I analysed the problem
-Since the app is a proof of concept for the use of smart devices in safety-critical skydiving applications, it should contain or attempt to solve some of the problems that have not been tried before. Features to be used during a skydive have so far not been found in any existing work. The first feature that comes under that category is the ability to track a skydive; this will be used to test the abilities of smartphones in high descent rate situations. The second feature that hasn't been attempted before is communication between devices during a skydive; devices should be able to relay information between each other.
+Since the app is a proof of concept for the use of smart devices in safety-critical skydiving applications, it should contain or attempt to solve some of the problems that have not been attempted already. Features to be used during a skydive have so far not been found in any existing work. Our first feature that comes under that category is the ability to track a skydive; this will be used to test the abilities of smartphones in high descent rate situations. Our second feature that hasn't been attempted before is communication between devices during a skydive; devices should be able to relay information between each other.
 
 % User requirements
 \subsection{User Requirements}
@@ -19,18 +21,18 @@ Ideas gathered from the questionnaire were varied, giving us plenty to build on.
   \caption{Collected possible requirements for a skydiving app.}\label{tab:user-ideas}
   \begin{tabular}{@{}ll@{}}
     \toprule
-    Stage  & Idea \\
+    \textbf{Stage}  & \textbf{Idea} \\
     \midrule
     Before & Show animated skydive formation plans \\
            & Wing load calculator \\
            & Weather forecast \\
            & Landing pattern calculator \\
-           & Register with drop zone for a jump \\
+           & Register with drop zone for a jump \vspace{2mm} \\
     During & Log maximum speed and freefall time \\
            & Log landing pattern speed and location \\
            & Landing pattern guidance \\
            & Safety warnings (e.g.\ for low turns or obstacles) \\
-           & Voice chat \\
+           & Voice chat \vspace{2mm} \\
     After  & Readable logbook functionality containing logged data \\
            & Add comments to logbook \\
            & Online storage of logbook \\
@@ -48,14 +50,14 @@ All of the ideas generated from the questionnaire were great. However we could n
   \caption{User requirements for a skydiving app.}\label{tab:user-requirements}
   \begin{tabular}{@{}lll@{}}
     \toprule
-    Stage  & Requirement & MoSCoW \\
+    \textbf{Stage}  & \textbf{Requirement} & \textbf{MoSCoW} \\
     \midrule
     Before & Be able to calculate and display a landing pattern for a given target & Must \\
-           & Be able to calculate landing patterns for a target's current wind conditions & Must \\
+           & Be able to calculate landing patterns for a target's current wind conditions & Must \vspace{2mm} \\
     During & Log the user's jump number, maximum speed and freefall time & Must \\
            & Log the user's landing pattern speed and location & Must \\
            & Be able to give live landing pattern guidance to the user & Should \\
-           & Be able to give the user warnings of obstacles while under canopy & Should \\
+           & Be able to give the user warnings of obstacles while under canopy & Should \vspace{2mm} \\
     After  & Be able to display to a user their logged data like a normal logbook & Must \\
            & Allow the user to view their landing pattern & Must \\
            & Allow the user to add their own comments to logbook entries & Could \\
