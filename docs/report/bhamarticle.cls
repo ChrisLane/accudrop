@@ -134,8 +134,6 @@ definition]
             University of Birmingham\\
             {\@date}\\
             \vfill
-            Copyright {\copyright} {\@gyear} School of {\@department}, University of Birmingham\\
-            \vspace*{0.5em}
           \end{center}
         \end{large}
       \end{spacing}
