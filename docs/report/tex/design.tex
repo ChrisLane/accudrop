@@ -1,5 +1,7 @@
 % !TEX root = ../main.tex
 \section{Design}\label{sec:design} % System design (platform independent)
+In this section, the high-level design of the app's back-end algorithms, data structures and processes are explained, with justification of main design decisions.
+
 % High-level account of software structure and how it works
 % Algorithms used & comparison with alternatives
 % Main design decisions taken and justification
@@ -274,7 +276,7 @@ This gives us an altitude of \SI{84}{\metre} in this example, a reduction of \SI
 Users of the app can be given proximity warnings via text to speech through a Bluetooth earpiece; these are warnings that inform the user of anyone being within a configurable dangerous distance after canopy flight has been detected.
 The feature requires that two people flying within proximities warranting a warning both have the app running with both devices capable of communicating with each other.
 
-Bluetooth was initially considered for the communication technology to be used in the proximity warnings feature since it is widely supported and is set to have mesh network in future versions. Mesh networks would allow for a dynamic platform for many devices to communicate through during a skydive. Unfortunately, as mentioned in Section~\ref{sec:related-work}, Bluetooth does not have a considerable range. For this reason, Wi-Fi communication was chosen as the communication technology instead.
+Bluetooth was initially considered for the communication technology to be used in the proximity warnings feature since it is widely supported and is set to have mesh network in future versions. Mesh networks would allow for a dynamic platform for many devices to communicate through during a skydive. Unfortunately, as mentioned in Section~\ref{subsec:related-work}, Bluetooth does not have a considerable range. For this reason, Wi-Fi communication was chosen as the communication technology instead.
 
 Wi-Fi has a much more significant range and bandwidth than Bluetooth and so is be more suited to fulfil the long-range requirement that we have for proximity warnings. Unfortunately, there are no Wi-Fi mesh networking capabilities on smartphones, meaning that the app should instead cycle through connections to different devices or select one device as a host for many other devices to connect to. Cycling through many different connections would add latency to the receiving of positional data for any user since no data could be transferred between two users until the connection cycle returns to that connection. Selecting one device as a host for many other devices to connect to makes much more sense since all data can be sent to the host and re-dispersed out to all clients. With this method, all clients can be aware of each other's positions with fewer re-connections required.
 
