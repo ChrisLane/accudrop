@@ -13,7 +13,7 @@ Android will recreate Activities and Fragments whenever the app rotates or switc
 Android offers `\citetitle{_android_????}' libraries to help with managing the Android lifecycle.
 We decided to use these libraries to form the MVP structure of the app's codebase, allowing for the `Model' elements containing data and data access methods to simply extend the `\texttt{ViewModel}' class and persist for the entire lifecycle of the view to which it is attached.
 
-The architecture components library also adds the `\texttt{LiveData}' class which can encapsulate any other type. By returning data from our \tecttt{ViewModel} classes in \texttt{LiveData} objects, we are given the ability to subscribe to these data objects so that a function we define is run when the value changes. We utilise this ability to subscribe to \texttt{LiveData} values in presenter classes to run back-end logic or to update our views based on the new values.
+The architecture components library also adds the `\texttt{LiveData}' class which can encapsulate any other type. By returning data from our \texttt{ViewModel} classes in \texttt{LiveData} objects, we are given the ability to subscribe to these data objects so that a function we define is run when the value changes. We utilise this ability to subscribe to \texttt{LiveData} values in presenter classes to run back-end logic or to update our views based on the new values.
 
 \subsection{Location Data}\label{subsec:location-data}
 % GNSS
