@@ -3,11 +3,11 @@
 In this section, an explanation of how the problem that the project aims to solve was analysed to reveal both user requirements for the app as a product, as well as requirements for the project to succeed as a proof of concept.
 
 % How I analysed the problem
-Since the app is a proof of concept for the use of smart devices in safety-critical skydiving applications, it should contain or attempt to solve some of the problems that have not been attempted already. Features to be used during a skydive have so far not been found in any existing work. Our first feature that comes under that category is the ability to track a skydive; this will be used to test the abilities of smartphones in high descent rate situations. Our second feature that hasn't been attempted before is communication between devices during a skydive; devices should be able to relay information between each other.
+Since the app is a proof of concept for the use of smart devices in safety-critical skydiving applications, it should contain or attempt to solve some of the problems that have not been attempted already. Features to be used during a skydive have so far not been found in any existing work. Our first feature that comes under that category is the ability to track a skydive; this will be used to test the abilities of smartphones in high descent rate situations. Our second feature that hasn't been attempted before is communication between devices during a skydive; devices should be able to transmit information between each other.
 
 % User requirements
 \subsection{User Requirements}
-User requirements were gathered by asking three skydiver contacts three questions, about the before, during and after a skydive stages. It was explained to participants of the questionnaire that a smartphone app was to be produced to aid them in their skydiving activities. The questions that the participants were asked were:
+User requirements were gathered by asking three skydivers three questions, about before, during and after a skydive. It was explained to participants of the questionnaire that a smartphone app was to be produced to aid them in their skydiving activities. The questions that the participants were asked were:
 \begin{enumerate}
   \item{What features would help you prepare for a skydive?}
   \item{What features would help you during a skydive?}
@@ -43,7 +43,7 @@ Ideas gathered from the questionnaire were varied, giving us plenty to build on.
 \end{table*}
 
 \subsection{Requirements Specification}
-All of the ideas generated from the questionnaire were great. However we could not implement all of them with the time restrictions placed on the project. We chose requirements that seemed feasible to implement within the given time frame and that were most relatable to the project's aims of improving skydiver safety. The chosen requirements are listed in Table~\vref{tab:user-requirements}. The table prioritises requirements using the MoSCoW method defined by~\citeauthor{clegg_case_1994}, the categories are `Must', `Should', `Could' and `Won't'. `Must' means that the project must have that requirement fulfilled, `Should' means that the requirement is important to the project but not critical to a release's success, `Could' means that the requirement would be good to have if there is enough time for it, and `Won't' requirements are requirements that are not planned to be fulfilled.
+The ideas generated from the questionnaire were great. However, we could not implement all of them with the time restrictions placed on the project. We chose requirements that seemed feasible to implement within the given time frame and that were most relatable to the project's aims of improving skydiver safety. The chosen requirements are listed in Table~\vref{tab:user-requirements}. The table prioritises requirements using the MoSCoW method defined by~\citeauthor{clegg_case_1994}, the categories are `Must', `Should', `Could' and `Won't'. `Must' means that the project must have that requirement fulfilled, `Should' means that the requirement is important to the project but not critical to a release's success, `Could' means that the requirement would be good to have if there is enough time for it, and `Won't' requirements are requirements that are not planned to be fulfilled.
 
 \begin{table*}[ht]
   \centering
@@ -67,15 +67,15 @@ All of the ideas generated from the questionnaire were great. However we could n
   \end{tabular}
 \end{table*}
 
-Since the app is a proof of concept, the requirement priorities do not fit into their definitions quite so much, the priorities still apply but will not indicate the success or failure of the project. The indication is instead that an investigation and attempt into fulfilling the requirements must, should or could be made.
+Since the app is a proof of concept, the requirement priorities do not fit into their definitions quite so much, the priorities still apply but will not indicate the success or failure of the project. The indication is instead that an investigation and attempt into fulfilling the requirements can be carried out.
 
 \subsection{Proof of Concept Requirements}\label{subsec:proof-requirements}
-For the app to succeed as a proof of concept, we have some slightly different requirements, these are based more on the hardware of smartphone devices for tracking a skydive since we already know that smartphones can compute and display advanced non-extreme sports features.
+For the app to succeed as a proof of concept, we have some slightly different requirements to the user requirements. These requirements are based more on the hardware of smartphone devices for tracking a skydive since we already know that smartphones can compute and display advanced non-extreme sports features.
 The requirements are:
 \begin{itemize}
-  \item The app/device must accurately calculate altitude at skydiving altitudes above \SI{3000}{\metre} (accurate to \SI{10}{\metre})
+  \item The app/device must accurately calculate altitude at altitudes above \SI{3000}{\metre} (accurate to \SI{10}{\metre})
   \item The app/device must accurately calculate altitude at landing pattern altitudes below \SI{500}{\metre} (accurate to \SI{5}{\metre})
-  \item The app/device must accurately track GNSS horizontal location (accurate to \SI{10}{\metre})
+  \item The app/device must accurately track horizontal location (accurate to \SI{10}{\metre})
   \item The app/device must calculate altitude data with low latency (latency less than \SI{1}{\second})
-  \item The app/device must be able to communicate with other devices across a range of \SI{80}{\metre}
+  \item The app/device must be able to communicate with other devices across a safe range under canopy of \SI{80}{\metre}
 \end{itemize}
