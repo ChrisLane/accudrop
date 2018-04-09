@@ -3,7 +3,7 @@
 In this section, the user interface of the app is explained, with explanation of how designs were chosen using independent third-parties and justification of main decisions.
 
 % Initial designs
-Some initial designs were created for user interfaces for features that had been planned; these included jump tracking, landing pattern planner, jump stats review and a settings menu. Each feature had several different designs. Eight people were asked to pick their favourite of the designs for each feature and also comment on what improvements could be made or which aspects of other designs they would like to see brought into the app.
+Some initial designs were created for user interfaces of features that had been planned; these included jump tracking, landing pattern planner, jump stats review and a settings menu. Each feature had several different designs. Eight people were asked to pick their favourite of the designs for each feature and also comment on what improvements could be made or which aspects of other designs they would like to see brought into the app.
 
 Figure~\vref{fig:app-designs} shows several of the designs that were created and shown to participants providing feedback including both skydivers and non-skydivers.
 
@@ -58,10 +58,10 @@ An app icon was created that reflects the subject of the app, with a scalable SV
 \end{figure}
 
 % Splash screen
-Loading an app can occasionally take a long time on slower systems, Android recommends that the first screen to be loaded by the phone is a splash screen that does not contain any logic other than loading the rest of the app. The splash screen ensures that a user is aware that the app has been started and does not attempt to interact with main elements of the app that may not be loaded to work correctly yet. The splash screen follows the green colour scheme of the app and shows the app icon in the centre; this can be seen in Figure~\vref{fig:splash}.
+Loading an app can occasionally take a long time on slower systems, Android recommends that the first screen to be loaded by the phone is a splash screen that does not contain any logic other than loading the rest of the app. The splash screen ensures that a user is aware that the app has been started and does not attempt to interact with main elements of the app that may not be fully loaded yet. The splash screen follows the green colour scheme of the app and shows the app icon in the centre; this can be seen in Figure~\vref{fig:splash}.
 
 % Landing Pattern Planner
-The landing pattern planner feature's user interface was implemented very similarly to the initial designs. Figure~\vref{fig:planner} shows a screenshot of the app with the feature in use. Google Maps look great on Android and are easily added to a screen. Most people are already familiar with Google Maps on mobile and so can use the familiar controls to manipulate the map.
+The landing pattern planner feature's user interface was implemented very similarly to the initial designs. Figure~\vref{fig:planner} shows a screenshot of the app with the feature in use. Google Maps integrate well on Android and are easily added to a screen. Most people are already familiar with Google Maps on mobile and so can use the familiar controls to manipulate the map.
 
 The user can hold down on a location to set their target landing area. While weather data and landing patterns are being generated, a progress bar will show at the top of the screen to indicate that the app is working on their request. Typically, the app will finish the landing pattern generation quickly, and so the progress bar is not required. One significant difference from the original designs for the interface is that map markers are used at each turn point. The map markers are used to allow the user to interact with the route to see the altitudes of each turn. The colour red is used for the route's line overlays since this is easily visible on most dropzone map areas which are typically mostly green.
 
@@ -72,15 +72,15 @@ The user can hold down on a location to set their target landing area. While wea
 \end{wrapfigure}
 
 % Jump Stats
-The jump statistics screen is simple, values for different statistics are displayed in text form. Each statistic value is updated once the value has been fetched, so the UI never hangs while waiting for data. At the bottom of the screen, there are buttons to switch move between different jumps, as these buttons are used, the large jump number at the top of the display and all of the statistics are updated. The screen will adapt to a rotation of the device, providing a different layout that still allows for all of the data to be displayed on the screen. Arrows indicate the difference between speed statistics, with a down arrow indicating fall rate and a right arrow indicating horizontal speed.
+The jump statistics screen is simple, values for different statistics are displayed in text form. Each statistic value is updated once the value has been fetched, so the UI never hangs while waiting for data. At the bottom of the screen, there are buttons to move between different jumps. As these buttons are used, the large jump identifier at the top of the display and all of the statistics are updated. The screen will adapt to a rotation of the device, providing a different layout that still allows for all of the data to be displayed on the screen. Arrows indicate the difference between speed statistics, with a down arrow indicating fall rate and a right arrow indicating horizontal speed.
 
 The choice was made to keep jump statistics separate from jump data replay features such as landing pattern and freefall review to keep the interface simple and easy to use for a user, rather than requiring swiping gestures to scroll or use other gestures.
-The jump statistics UI can be seen Figure~\ref{fig:stats}.
+The jump statistics UI can be seen in Figure~\ref{fig:stats}.
 
 % Landing Pattern Viewer
 The landing pattern viewer is designed to match the landing pattern planner screen. A Google Map is used that the logged positional data from a jump is overlayed onto. Since Google Map overlays cannot be positioned using 3D coordinates, the screen is split into two parts. The second part of the screen is used to show how altitude data compares to horizontal movement in the landing pattern data.
 
-The perpendicular view of the landing pattern can be altered, to change the direction from which the pattern is being looked at, this is done by rotating the Google Map. The perpendicular view represents a view in the direction from the bottom of the Google Map to the top.
+The perpendicular view of the landing pattern can be altered, to change the direction from which the pattern is being looked at, this is done by rotating the map. The perpendicular view represents a view in the direction from the bottom of the map to the top.
 
 The perpendicular view is not very intuitive to understand. Improvements could be made by redesigning or adding a side-scrolling sky view to indicate which way the view is moving. Alternatively, more advanced graphical technology could be used to present the landing pattern in a three-dimensional view. Unfortunately, time was not available for these improvements to be made.
 The landing pattern viewer display can be seen in Figure~\ref{fig:landing-scrot}.
