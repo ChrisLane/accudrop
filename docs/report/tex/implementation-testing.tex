@@ -95,7 +95,7 @@ Once a connection to the URL has been established, the response from the API is 
 
 An example JSON response is shown in Listing~\ref{lst:json-response}. Once we have read in all of the response, we then pass this to the `\texttt{JSONObject}' class which parses the JSON and returns a \texttt{JSONObject} object that we can make JSON queries to. The whole of the JSON response is one \texttt{JSONObject}, within this we have more \texttt{JSONObjects} such as ``\texttt{coord}'' and ``\texttt{weather}'' shown at the top of Listing~\ref{lst:json-response}, the object that we want is fetched by calling \mintinline{java}{responseObject.getJSONObject("wind")}. To fetch the values from the wind object, we call \mintinline{java}{windObject.getDouble("speed")} and \mintinline{java}{windObject.getDouble("deg")} to retrieve the wind speed and direction.
 
-\begin{wrapfigure}{R}{0.45\textwidth}
+\begin{wrapfigure}[41]{R}{0.45\textwidth}
   \begin{minted}{json}
 {
   "coord": {
