@@ -229,7 +229,7 @@ If reducing the altitudes of the turns will result in dangerously low turns, the
         % Path
         \draw[postaction={decorate}] (4,-8)--(4,1) node[at start,right]{\SI{300}{\metre}}; % downwind
         \draw[postaction={decorate}] (4,1)--(0,1) node[at start,above]{\SI{180}{\metre}}; % base
-        \draw[postaction={decorate}] (0,1)--(0,-1) node[at start,above]{\SI{90}{\metre}}; %upwind
+        \draw[postaction={decorate},->] (0,1)--(0,-1) node[at start,above]{\SI{90}{\metre}}; %upwind
 
         %%%%
         %% Pattern 2
@@ -240,7 +240,7 @@ If reducing the altitudes of the turns will result in dangerously low turns, the
         % Path
         \draw[postaction={decorate}] (14,-8)--(14,0) node[at start,right]{\SI{300}{\metre}}; % downwind
         \draw[postaction={decorate}] (14,0)--(10,0) node[at start,above]{\SI{190}{\metre}}; % base
-        \draw[postaction={decorate}] (10,0)--(10,-3) node[at start,above]{\SI{100}{\metre}}; %upwind
+        \draw[postaction={decorate},->] (10,0)--(10,-3) node[at start,above]{\SI{100}{\metre}}; %upwind
 
         %%%%
         %% Pattern 3
@@ -251,7 +251,7 @@ If reducing the altitudes of the turns will result in dangerously low turns, the
         % Path
         \draw[postaction={decorate}] (24,-8)--(24,-1) node[at start,right]{\SI{300}{\metre}}; % downwind
         \draw[postaction={decorate}] (24,-1)--(20,-1) node[at start,above]{\SI{200}{\metre}}; % base
-        \draw[postaction={decorate}] (20,-1)--(20,-5) node[at start,above]{\SI{110}{\metre}}; %upwind
+        \draw[postaction={decorate},->] (20,-1)--(20,-5) node[at start,above]{\SI{110}{\metre}}; %upwind
 
       \end{scope}
     \end{tikzpicture}
