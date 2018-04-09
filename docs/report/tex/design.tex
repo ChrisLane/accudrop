@@ -283,6 +283,6 @@ Wi-Fi has a much more significant range and bandwidth than Bluetooth and so is b
 \subsection{Freefall and Canopy Deploy Detection}
 After contacting several skydiving altimeter manufacturers and receiving either no response or being declined any information, we had to design our freefall detection parameters from scratch.
 
-The app should only log data from the point that a skydiver jumps from the plane to when they land on the ground. To detect freefall, we set a couple of prerequisites that must be met. Firstly, the altitude should be over a safe skydiving altitude of \SI{1500}{\metre} and secondly, the fall rate calculated for the user must pass \SI{20}{\metre\per\second}. The fall rate is reached \SI{\approx2}{\second} after jumping from the plane.
+The app should only log data from the point that a skydiver jumps from the plane to when they land on the ground. To detect freefall, we set a couple of prerequisites that must be met. Firstly, the altitude should be over a safe skydiving altitude of \SI{1500}{\metre} and secondly, the fall rate calculated for the user must pass \SI{20}{\metre\per\second}. The fall rate is reached \SI{\sim2}{\second} after jumping from the plane.
 
 Canopy flight will only ever happen after some freefall, and so for canopy flight detection, the first prerequisite is that freefall must have already been detected. The next prerequisite is that the fall rate must have dropped below \SI{15}{\metre\per\second}.
