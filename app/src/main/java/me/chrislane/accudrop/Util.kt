@@ -12,7 +12,7 @@ object Util {
      * @param metres Metres to be converted.
      * @return The number of feet in the metres value.
      */
-    fun metresToFeet(metres: Double): Double {
+    private fun metresToFeet(metres: Double): Double {
         return 3.281f * metres
     }
 
@@ -22,7 +22,7 @@ object Util {
      * @param ms Metres per second.
      * @return Miles per hour
      */
-    fun msToMph(ms: Double): Double {
+    private fun msToMph(ms: Double): Double {
         return 2.2369362920544 * ms
     }
 

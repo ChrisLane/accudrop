@@ -42,10 +42,6 @@ class FetchUsersAndTypePositionsTask(private val listener: (MutableList<Pair<UUI
         listener(result)
     }
 
-    interface Listener {
-        fun onFinished(result: MutableList<Pair<UUID, MutableList<Location>>>)
-    }
-
     companion object {
         private val TAG = FetchUsersAndPositionsTask::class.java.simpleName
     }

@@ -8,7 +8,6 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
-import android.speech.tts.TextToSpeech
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
@@ -22,7 +21,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
-import me.chrislane.accudrop.db.AccudropDb
+import me.chrislane.accudrop.db.AccuDropDb
 import me.chrislane.accudrop.fragment.*
 import me.chrislane.accudrop.generator.JumpGenerator
 import me.chrislane.accudrop.preference.SettingsActivity
@@ -31,14 +30,8 @@ import java.io.File
 import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private val tts: TextToSpeech? = null
     private var currentFragmentTag: String? = null
-    /**
-     * Get the permission manager.
-     *
-     * @return Permission manager.
-     */
-    var permissionManager: PermissionManager? = null
+    lateinit var permissionManager: PermissionManager
         private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,7 +135,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.clear_database -> {
-                AccudropDb.clearDatabase(this)
+                AccuDropDb.clearDatabase(this)
                 Toast.makeText(this, "Restart app to clear DB.", Toast.LENGTH_SHORT)
                         .show()
                 return true
@@ -156,18 +149,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             val data = Environment.getDataDirectory()
 
-            val currentDBPath = ("//data//" + "me.chrislane.accudrop"
-                    + "//databases//" + "accudrop")
+            val currentDBPath = ("//data//" + "me.chrislane.accudrop" + "//databases//" + "accudrop")
             val currentDB = File(data, currentDBPath)
 
-            val U = FileProvider.getUriForFile(this,
-                    "me.chrislane.accudrop.DbFileProvider", currentDB)
+            val u = FileProvider.getUriForFile(this, "me.chrislane.accudrop.DbFileProvider", currentDB)
             val i = Intent(Intent.ACTION_SEND)
             i.type = "application/x-sqlite3"
             i.putExtra(Intent.EXTRA_EMAIL, arrayOf("chris@chrislane.com"))
             i.putExtra(Intent.EXTRA_SUBJECT, "AccuDrop Database File")
             i.putExtra(Intent.EXTRA_TEXT, "Date: " + Date().toString())
-            i.putExtra(Intent.EXTRA_STREAM, U)
+            i.putExtra(Intent.EXTRA_STREAM, u)
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(Intent.createChooser(i, "Email:"))
         } catch (e: Exception) {
@@ -229,7 +220,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (currentFragmentTag == null) {
             fragment = MainFragment()
-            currentFragmentTag = MainFragment.TAG
+            currentFragmentTag = MainFragment::class.java.simpleName
         } else {
             fragment = fragmentManager.findFragmentByTag(currentFragmentTag)
         }
@@ -262,7 +253,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        permissionManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     companion object {

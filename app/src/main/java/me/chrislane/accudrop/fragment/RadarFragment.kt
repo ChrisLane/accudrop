@@ -22,9 +22,9 @@ import me.chrislane.accudrop.viewmodel.RadarViewModel
 import java.util.*
 
 class RadarFragment : Fragment() {
-    private var presenter: RadarPresenter? = null
+    private lateinit var presenter: RadarPresenter
+    private lateinit var radarViewModel: RadarViewModel
     private var radarView: RadarView? = null
-    private var radarViewModel: RadarViewModel? = null
     private var nextbtn: Button? = null
     private var prevButton: Button? = null
     private var seekBar: SeekBar? = null
@@ -40,53 +40,53 @@ class RadarFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_radar, container, false)
-        val layout = view.findViewById<FrameLayout>(R.id.radar)
-        radarView = RadarView(context!!)
-        layout.addView(radarView)
+        val layout: FrameLayout? = view.findViewById(R.id.radar)
+        radarView = context?.let { RadarView(it) }
+        layout?.addView(radarView)
 
         prevButton = view.findViewById(R.id.radar_prev_button)
-        prevButton!!.setOnClickListener { v -> presenter!!.prevJump() }
+        prevButton?.setOnClickListener { presenter.prevJump() }
 
         nextbtn = view.findViewById(R.id.radar_next_button)
-        nextbtn!!.setOnClickListener { v -> presenter!!.nextJump() }
+        nextbtn?.setOnClickListener { presenter.nextJump() }
 
         seekBar = view.findViewById(R.id.radar_seek_bar)
-        seekBar!!.setOnSeekBarChangeListener(SeekBarChangeListener())
+        seekBar?.setOnSeekBarChangeListener(SeekBarChangeListener())
 
         return view
     }
 
     fun resetSeekBar() {
-        seekBar!!.progress = 0
+        seekBar?.progress = 0
     }
 
     fun updateButtons(jumpId: Int, firstJumpId: Int, lastJumpId: Int) {
         // Check limits for previous button
         if (jumpId <= firstJumpId) {
-            prevButton!!.text = "❌"
-            prevButton!!.isEnabled = false
+            prevButton?.text = "❌"
+            prevButton?.isEnabled = false
         } else {
-            prevButton!!.setText(String.format(Locale.ENGLISH, "❮ %d", jumpId - 1))
-            prevButton!!.isEnabled = true
+            prevButton?.text = String.format(Locale.ENGLISH, "❮ %d", jumpId - 1)
+            prevButton?.isEnabled = true
         }
 
         // Check limits for next button
         if (jumpId >= lastJumpId) {
-            nextbtn!!.text = "❌"
-            nextbtn!!.isEnabled = false
+            nextbtn?.text = "❌"
+            nextbtn?.isEnabled = false
         } else {
-            nextbtn!!.isEnabled = true
-            nextbtn!!.setText(String.format(Locale.ENGLISH, "%d ❯", jumpId + 1))
+            nextbtn?.isEnabled = true
+            nextbtn?.text = String.format(Locale.ENGLISH, "%d ❯", jumpId + 1)
         }
     }
 
     fun updateRadarPoints() {
-        radarView!!.invalidate()
+        radarView?.invalidate()
     }
 
     private fun getScaledPositions(width: Int, height: Int, shrink: Float): MutableList<PointF> {
-        val maxHDistance = presenter!!.maxHDistance
-        val relativePositions = radarViewModel!!.getRelativeGuestPositions().value // bearing, distance
+        val maxHDistance = presenter.maxHDistance
+        val relativePositions = radarViewModel.getRelativeGuestPositions().value // bearing, distance
         val result = mutableListOf<PointF>()
 
         if (relativePositions != null) {
@@ -115,8 +115,8 @@ class RadarFragment : Fragment() {
     }
 
     private fun getScaledAltitudes(height: Int): MutableList<Double> {
-        val maxVDistance = presenter!!.maxVDistance
-        val guestHeightDiffs = radarViewModel!!.getGuestHeightDiffs().value
+        val maxVDistance = presenter.maxVDistance
+        val guestHeightDiffs = radarViewModel.getGuestHeightDiffs().value
         val result = mutableListOf<Double>()
 
         if (guestHeightDiffs != null) {
@@ -133,24 +133,26 @@ class RadarFragment : Fragment() {
     }
 
     inner class RadarView(context: Context) : View(context) {
-        private val TAG = RadarView::class.java!!.getSimpleName()
-        internal var paint = Paint()
-        internal var textPaint = Paint()
-        internal var oval = RectF()
-        internal var points: MutableList<Pair<UUID, PointF>> = mutableListOf()
-
-        override fun performClick(): Boolean {
-            return super.performClick()
-        }
+        val TAG: String = RadarView::class.java.simpleName
+        private var paint = Paint()
+        private var textPaint = Paint()
+        private var oval = RectF()
+        private var points: MutableList<Pair<UUID, PointF>> = mutableListOf()
+        private lateinit var event: MotionEvent
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
             super.onTouchEvent(event)
+            this.event = event
 
             if (event.action != MotionEvent.ACTION_DOWN) {
                 return false
             }
             // We're supposed to call performClick for accessibility reasons
-            performClick()
+            return performClick()
+        }
+
+        override fun performClick(): Boolean {
+            super.performClick()
 
             val xArea = 25f
             val yArea = 25f
@@ -175,10 +177,9 @@ class RadarFragment : Fragment() {
             }
             if (closestPoint != null) {
                 Log.v(TAG, "Setting subject to " + closestPoint.first!!)
-                radarViewModel!!.setSubject(closestPoint.first as UUID)
+                radarViewModel.setSubject(closestPoint.first as UUID)
                 return true
             }
-
             return false
         }
 
@@ -207,7 +208,7 @@ class RadarFragment : Fragment() {
 
             val positions = getScaledPositions(width, height, shrink)
             val heightDiffs = getScaledAltitudes(height)
-            val guestsInView = radarViewModel!!.getGuestsInView().value ?: return
+            val guestsInView = radarViewModel.getGuestsInView().value ?: return
             paint.color = Color.RED
 
             points.clear()
@@ -243,7 +244,7 @@ class RadarFragment : Fragment() {
     internal inner class SeekBarChangeListener : SeekBar.OnSeekBarChangeListener {
 
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-            val subjectEntry = radarViewModel!!.getSubjectEntry().value ?: return
+            val subjectEntry = radarViewModel.getSubjectEntry().value ?: return
             val subjectLocs = subjectEntry.second
 
             if (subjectLocs != null && !subjectLocs.isEmpty()) {
@@ -251,7 +252,7 @@ class RadarFragment : Fragment() {
                         0.0, (subjectLocs.size - 1).toDouble()).toInt()
 
                 val newTime = subjectLocs[newIndex].time
-                presenter!!.updateTime(newTime)
+                presenter.updateTime(newTime)
             }
         }
 
@@ -266,7 +267,7 @@ class RadarFragment : Fragment() {
 
     companion object {
 
-        private val TAG = RadarFragment::class.java!!.getSimpleName()
+        private val TAG = RadarFragment::class.java.simpleName
 
         private fun applyShrink(point: PointF, shrink: Float): PointF {
             // TODO #50: Scale to ellipse, not just height change in ellipse.

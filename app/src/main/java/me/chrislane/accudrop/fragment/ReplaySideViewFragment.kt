@@ -9,7 +9,7 @@ import me.chrislane.accudrop.R
 import me.chrislane.accudrop.presenter.ReplaySideViewPresenter
 
 class ReplaySideViewFragment : Fragment() {
-    private var presenter: ReplaySideViewPresenter? = null
+    private lateinit var presenter: ReplaySideViewPresenter
     private var screenPointsList: MutableList<MutableList<PointF>>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +45,7 @@ class ReplaySideViewFragment : Fragment() {
             canvas.drawRect(0f, (canvas.height * 0.95).toFloat(), canvas.width.toFloat(), canvas.height.toFloat(), paint)
 
             if (generatePoints) {
-                presenter!!.produceViewPositions(canvas.width, canvas.height, 20)
+                presenter.produceViewPositions(canvas.width, canvas.height, 20)
             }
 
             if (screenPointsList != null) {
@@ -80,7 +80,6 @@ class ReplaySideViewFragment : Fragment() {
     }
 
     companion object {
-
-        private val TAG = ReplaySideViewFragment::class.java.simpleName
+        private val TAG: String = ReplaySideViewFragment::class.java.simpleName
     }
 }

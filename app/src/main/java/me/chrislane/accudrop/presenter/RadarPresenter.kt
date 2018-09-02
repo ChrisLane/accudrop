@@ -37,6 +37,7 @@ class RadarPresenter(private val fragment: RadarFragment) {
         val listener = { jumpId: Int? ->
             if (jumpId != null) {
                 radarViewModel.setJumpId(jumpId)
+                radarViewModel.getSubjectEntry()
             }
         }
         FetchLastJumpIdTask(listener, databaseViewModel)
@@ -49,8 +50,8 @@ class RadarPresenter(private val fragment: RadarFragment) {
         subscribeToJumpRange()
     }
 
-    fun setOwnerAsSubject() {
-        val settings = databaseViewModel!!.getApplication<Application>()
+    private fun setOwnerAsSubject() {
+        val settings = databaseViewModel.getApplication<Application>()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         val stringUuid = settings.getString("userUUID", "")
         val uuid = UUID.fromString(stringUuid)
@@ -59,7 +60,7 @@ class RadarPresenter(private val fragment: RadarFragment) {
 
     fun test() {
         radarViewModel.setGuestEntries(mutableListOf())
-        val guestEntries = radarViewModel.getGuestEntries().value?.toMutableList() ?: return
+        val guestEntries = radarViewModel.getGuestEntries().value ?: return
 
         val locationList1 = mutableListOf<Location>()
         val location1 = Location("")
@@ -101,14 +102,14 @@ class RadarPresenter(private val fragment: RadarFragment) {
                 radarViewModel.setFirstJumpId(firstJumpId)
             }
         }
-        databaseViewModel!!.findFirstJumpId().observe(fragment, firstJumpIdObserver)
+        databaseViewModel.findFirstJumpId().observe(fragment, firstJumpIdObserver)
 
         val lastJumpIdObserver = Observer<Int> { lastJumpId ->
             if (lastJumpId != null) {
                 radarViewModel.setLastJumpId(lastJumpId)
             }
         }
-        databaseViewModel!!.findLastJumpId().observe(fragment, lastJumpIdObserver)
+        databaseViewModel.findLastJumpId().observe(fragment, lastJumpIdObserver)
     }
 
     private fun subscribeToJumpId() {
@@ -150,6 +151,10 @@ class RadarPresenter(private val fragment: RadarFragment) {
 
         val time = radarViewModel.getSubjectTime().value
         val subjectLocs = subjectEntry.second
+        if (subjectLocs != null && time == null) {
+            val newTime = subjectLocs[0].time
+            radarViewModel.setSubjectTime(newTime)
+        }
         if (subjectLocs != null && time != null) {
             val guestLocations = getGuestLocations(guestEntries, time)
             radarViewModel.setGuestLocations(guestLocations)
@@ -157,8 +162,8 @@ class RadarPresenter(private val fragment: RadarFragment) {
         }
     }
 
-    fun separateEntries(subject: UUID?,
-                        userEntries: MutableList<Pair<UUID, MutableList<Location>>>): MutableList<Pair<UUID, MutableList<Location>>> {
+    private fun separateEntries(subject: UUID?,
+                                userEntries: MutableList<Pair<UUID, MutableList<Location>>>): MutableList<Pair<UUID, MutableList<Location>>> {
         for (i in userEntries.indices) {
             val userEntry = userEntries[i]
             if (userEntry.first != null && userEntry.first == subject) {
@@ -177,11 +182,11 @@ class RadarPresenter(private val fragment: RadarFragment) {
         return userEntries
     }
 
-    fun generateJumpPositions(jumpId: Int, subject: UUID?) {
+    private fun generateJumpPositions(jumpId: Int, subject: UUID?) {
         val listener = listener@{ userEntries: MutableList<Pair<UUID, MutableList<Location>>> ->
             val guestEntries = separateEntries(subject, userEntries)
             val subjectEntry = radarViewModel.getSubjectEntry().value
-            guestEntries?.let { radarViewModel.setGuestEntries(it) }
+            guestEntries.let { radarViewModel.setGuestEntries(it) }
             if (subjectEntry != null) {
                 val subjectLocs = subjectEntry.second
                 if (subjectLocs != null && !subjectLocs.isEmpty()) {
@@ -218,7 +223,7 @@ class RadarPresenter(private val fragment: RadarFragment) {
                 val guestEntries = radarViewModel.getGuestEntries().value
                 if (guestEntries != null) {
                     radarViewModel.setGuestLocations(getGuestLocations(guestEntries, time))
-                    updateGuestRelatives(radarViewModel.getGuestLocations().value, time)
+                    updateGuestRelatives(radarViewModel.getGuestLocations().value!!, time)
                 }
             }
         }
@@ -260,12 +265,10 @@ class RadarPresenter(private val fragment: RadarFragment) {
         while (low <= high) {
             val mid = (high + low) / 2
 
-            if (time < locations[mid].time) {
-                high = mid - 1
-            } else if (time > locations[mid].time) {
-                low = mid + 1
-            } else {
-                return locations[mid]
+            when {
+                time < locations[mid].time -> high = mid - 1
+                time > locations[mid].time -> low = mid + 1
+                else -> return locations[mid]
             }
         }
 
@@ -275,7 +278,7 @@ class RadarPresenter(private val fragment: RadarFragment) {
             locations[high]
     }
 
-    fun updateGuestRelatives(guestLocations: MutableList<Pair<UUID, Location>>?, time: Long) {
+    private fun updateGuestRelatives(guestLocations: MutableList<Pair<UUID, Location>>, time: Long) {
         val guestHeightDiffs = radarViewModel.getGuestHeightDiffs().value
         val relativeGuestPositions = radarViewModel.getRelativeGuestPositions().value
         val subjectEntry = radarViewModel.getSubjectEntry().value
@@ -292,7 +295,7 @@ class RadarPresenter(private val fragment: RadarFragment) {
 
         val subjectLocs = subjectEntry.second
 
-        if (subjectLocs == null || subjectLocs.isEmpty() || guestLocations!!.isEmpty()) {
+        if (subjectLocs == null || subjectLocs.isEmpty() || guestLocations.isEmpty()) {
             fragment.updateRadarPoints()
             return
         }

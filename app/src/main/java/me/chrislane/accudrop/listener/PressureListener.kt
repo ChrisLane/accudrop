@@ -11,13 +11,11 @@ import android.util.Log
 import me.chrislane.accudrop.viewmodel.PressureViewModel
 
 class PressureListener(private val pressureViewModel: PressureViewModel) : SensorEventListener {
-    private val sensorManager: SensorManager?
+    private val sensorManager: SensorManager? = pressureViewModel.getApplication<Application>()
+            .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
     private var barometer: Sensor? = null
 
     init {
-
-        sensorManager = pressureViewModel.getApplication<Application>()
-                .getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         if (sensorManager != null) {
             barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)
         }
@@ -52,7 +50,7 @@ class PressureListener(private val pressureViewModel: PressureViewModel) : Senso
 
     companion object {
 
-        private val TAG = PressureListener::class.java!!.getSimpleName()
-        private val ONE_SECOND_DELAY = 1000000
+        private val TAG: String = PressureListener::class.java.simpleName
+        private const val ONE_SECOND_DELAY = 1000000
     }
 }

@@ -44,7 +44,7 @@ class CoordSender internal constructor(private val socket: Socket?, private val 
         // TODO: Send data as anything but strings...
         AsyncTask.execute {
             try {
-                out!!.write(buffer)
+                out?.write(buffer)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

@@ -15,18 +15,12 @@ import me.chrislane.accudrop.viewmodel.JumpStatsViewModel
 import java.util.*
 
 class JumpStatsPresenter(private val fragment: JumpStatsFragment) {
-    private val dbViewModel: DatabaseViewModel
-    private val viewModel: JumpStatsViewModel
-    private val main: FragmentActivity
+    private val dbViewModel: DatabaseViewModel = ViewModelProviders.of(fragment).get(DatabaseViewModel::class.java)
+    private val viewModel: JumpStatsViewModel = ViewModelProviders.of(fragment).get(JumpStatsViewModel::class.java)
+    private val main: FragmentActivity = fragment.requireActivity()
     private lateinit var uuid: UUID
 
     init {
-
-        main = fragment.requireActivity()
-
-        dbViewModel = ViewModelProviders.of(fragment).get(DatabaseViewModel::class.java)
-        viewModel = ViewModelProviders.of(fragment).get(JumpStatsViewModel::class.java)
-
         initialise()
 
         subscribeToJumpId()

@@ -18,16 +18,11 @@ import me.chrislane.accudrop.viewmodel.GnssViewModel
 import java.util.*
 
 class ReplayMapFragment : Fragment(), OnMapReadyCallback {
-    private var camPosBuilder: CameraPosition.Builder? = null
-    /**
-     * Get the Google Map.
-     *
-     * @return The Google Map.
-     */
-    var map: GoogleMap? = null
+    lateinit var map: GoogleMap
         private set
-    private var replayMapPresenter: ReplayMapPresenter? = null
-    private var bearing: Float = 0.toFloat()
+    private lateinit var replayMapPresenter: ReplayMapPresenter
+    private lateinit var camPosBuilder: CameraPosition.Builder
+    private var bearing: Float = 0F
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,12 +61,12 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
      */
     private fun setupMap() {
         // Set map settings
-        map!!.uiSettings.isMapToolbarEnabled = false
-        map!!.isBuildingsEnabled = true
-        map!!.mapType = GoogleMap.MAP_TYPE_HYBRID
-        map!!.setOnCameraMoveListener(GoogleMap.OnCameraMoveListener { this.onCameraMove() })
+        map.uiSettings.isMapToolbarEnabled = false
+        map.isBuildingsEnabled = true
+        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+        map.setOnCameraMoveListener { this.onCameraMove() }
 
-        replayMapPresenter!!.addObservers()
+        replayMapPresenter.addObservers()
     }
 
     /**
@@ -81,7 +76,7 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
      * This method updates the side view if there are any changes in the camera bearing.
      */
     private fun onCameraMove() {
-        val newBearing = map!!.cameraPosition.bearing
+        val newBearing = map.cameraPosition.bearing
 
         if (bearing != newBearing) {
             bearing = newBearing
@@ -93,18 +88,16 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
     /**
      * Send screen coordinates to the side view to be updated.
      */
-    fun updateSideView() {
+    private fun updateSideView() {
         val replayFragment = parentFragment as ReplayFragment?
-        if (replayFragment != null) {
-            replayFragment.replaySideView!!.updateDrawable(true)
-        }
+        replayFragment?.replaySideView?.updateDrawable(true)
     }
 
     /**
      * Place a jump route on the map.
      */
     fun updateMapRoutes(usersAndLocs: MutableList<Pair<UUID, MutableList<Location>>>) {
-        map!!.clear()
+        map.clear()
 
         // Set camera location
         // TODO: Make this use the 'subject' user rather than just the first
@@ -112,9 +105,9 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
             val subjectRoute = usersAndLocs[0].second
             if (subjectRoute != null && !subjectRoute.isEmpty()) {
                 val lastPos = GnssViewModel.getLatLng(subjectRoute[subjectRoute.size - 1])
-                Log.d(TAG, lastPos!!.toString())
-                val camPos = camPosBuilder!!.target(lastPos).build()
-                map!!.moveCamera(CameraUpdateFactory.newCameraPosition(camPos))
+                Log.d(TAG, lastPos.toString())
+                val camPos = camPosBuilder.target(lastPos).build()
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos))
             }
         }
 
@@ -130,7 +123,7 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
 
                     options.add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
                 }
-                map!!.addPolyline(options)
+                map.addPolyline(options)
             } else {
                 Log.w(TAG, "No route available for this jump.")
             }
@@ -140,7 +133,6 @@ class ReplayMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     companion object {
-
         private val TAG = ReplayMapFragment::class.java.simpleName
     }
 }

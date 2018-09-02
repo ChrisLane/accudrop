@@ -38,8 +38,4 @@ class MinMaxLatLngTask(private val listener: (Double, Double) -> Unit, private v
             listener(result.first, result.second)
         }
     }
-
-    interface Listener {
-        fun onFinished(min: Double, max: Double)
-    }
 }

@@ -4,12 +4,11 @@ import android.location.Location
 import android.os.AsyncTask
 import android.util.Log
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel
-import java.util.*
 
 /**
  * Get the latest jump.
  */
-class FetchJumpTask(private val listener: FetchJumpListener, private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, MutableList<Location>>() {
+class FetchJumpTask(private val listener: (MutableList<Location>) -> Unit, private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, MutableList<Location>>() {
 
     override fun doInBackground(vararg integers: Int?): MutableList<Location> {
         val jumpNumber: Int?
@@ -47,15 +46,10 @@ class FetchJumpTask(private val listener: FetchJumpListener, private val databas
         super.onPostExecute(locations)
 
         Log.d(TAG, "Finished getting jump data.")
-        listener.onFinished(locations)
-    }
-
-    interface FetchJumpListener {
-        fun onFinished(locations: MutableList<Location>?)
+        listener(locations)
     }
 
     companion object {
-
-        private val TAG = FetchJumpTask::class.java!!.getSimpleName()
+        private val TAG = FetchJumpTask::class.java.simpleName
     }
 }

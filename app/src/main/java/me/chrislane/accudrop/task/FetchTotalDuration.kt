@@ -13,17 +13,15 @@ class FetchTotalDuration(private val listener: (Long?) -> Unit, private val uuid
         val first = viewModel.getFirstDate(uuid, jumpId)
         val last = viewModel.getLastDate(uuid, jumpId)
 
+        if (first == null || last == null) {
+            return null
+        }
         return last.time - first.time
-
     }
 
     override fun onPostExecute(millis: Long?) {
         super.onPostExecute(millis)
 
         listener(millis)
-    }
-
-    interface Listener {
-        fun onFinished(millis: Long?)
     }
 }

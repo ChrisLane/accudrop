@@ -36,8 +36,4 @@ class MinMaxAltiTask(private val listener: (Int, Int) -> Unit, private val datab
             listener(result.first, result.second)
         }
     }
-
-    interface Listener {
-        fun onFinished(min: Int, max: Int)
-    }
 }

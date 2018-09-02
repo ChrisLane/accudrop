@@ -15,17 +15,16 @@ class FetchFallTypeDuration(private val listener: (Long?) -> Unit, private val f
         val first = viewModel.getFirstDateOfFallType(fallType, uuid, jumpId)
         val last = viewModel.getLastDateOfFallType(fallType, uuid, jumpId)
 
-        return last.time - first.time
+        if (first == null || last == null) {
+            return null
+        }
 
+        return last.time - first.time
     }
 
     override fun onPostExecute(millis: Long?) {
         super.onPostExecute(millis)
 
         listener(millis)
-    }
-
-    interface Listener {
-        fun onFinished(millis: Long?)
     }
 }

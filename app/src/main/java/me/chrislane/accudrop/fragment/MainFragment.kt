@@ -16,6 +16,6 @@ class MainFragment : Fragment() {
     }
 
     companion object {
-        val TAG = MainFragment::class.java.simpleName
+        private val TAG: String = MainFragment::class.java.simpleName
     }
 }

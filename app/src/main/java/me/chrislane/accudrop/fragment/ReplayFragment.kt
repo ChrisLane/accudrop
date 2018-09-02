@@ -12,21 +12,11 @@ import java.util.*
 
 class ReplayFragment : Fragment() {
 
-    /**
-     * Get the replay map fragment.
-     *
-     * @return The replay map fragment.
-     */
-    var replayMap: ReplayMapFragment? = null
+    lateinit var replayMap: ReplayMapFragment
         private set
-    /**
-     * Get the replay side view fragment.
-     *
-     * @return The replay side view fragment.
-     */
-    var replaySideView: ReplaySideViewFragment? = null
+    lateinit var replaySideView: ReplaySideViewFragment
         private set
-    private var presenter: ReplayPresenter? = null
+    private lateinit var presenter: ReplayPresenter
     private var prevButton: Button? = null
     private var nextbtn: Button? = null
 
@@ -48,10 +38,10 @@ class ReplayFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_replay, container, false)
 
         prevButton = view.findViewById(R.id.replay_back_button)
-        prevButton!!.setOnClickListener { v -> presenter!!.prevJump() }
+        prevButton?.setOnClickListener { presenter.prevJump() }
 
         nextbtn = view.findViewById(R.id.replay_forward_button)
-        nextbtn!!.setOnClickListener { v -> presenter!!.nextJump() }
+        nextbtn?.setOnClickListener { presenter.nextJump() }
 
         return view
     }
@@ -59,20 +49,24 @@ class ReplayFragment : Fragment() {
     fun updateButtons(jumpId: Int, firstJumpId: Int, lastJumpId: Int) {
         // Check limits for previous button
         if (jumpId <= firstJumpId) {
-            prevButton!!.text = "❌"
-            prevButton!!.isEnabled = false
+            prevButton?.text = "❌"
+            prevButton?.isEnabled = false
         } else {
-            prevButton!!.setText(String.format(Locale.ENGLISH, "❮ %d", jumpId - 1))
-            prevButton!!.isEnabled = true
+            prevButton?.text = String.format(Locale.ENGLISH, "❮ %d", jumpId - 1)
+            prevButton?.isEnabled = true
         }
 
         // Check limits for next button
         if (jumpId >= lastJumpId) {
-            nextbtn!!.text = "❌"
-            nextbtn!!.isEnabled = false
+            nextbtn?.text = "❌"
+            nextbtn?.isEnabled = false
         } else {
-            nextbtn!!.isEnabled = true
-            nextbtn!!.setText(String.format(Locale.ENGLISH, "%d ❯", jumpId + 1))
+            nextbtn?.isEnabled = true
+            nextbtn?.text = String.format(Locale.ENGLISH, "%d ❯", jumpId + 1)
         }
+    }
+
+    companion object {
+        private val TAG: String = ReplayFragment::class.java.simpleName
     }
 }

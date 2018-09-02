@@ -9,10 +9,10 @@ import java.util.*
 /**
  * Create and insert a new jump into the database.
  */
-class CreateAndInsertJumpTask(private val databaseViewModel: DatabaseViewModel, private val listener: Listener,
-                              private val insertListener: InsertJumpTask.Listener) : AsyncTask<Void, Void, Int>() {
+class CreateAndInsertJumpTask(private val databaseViewModel: DatabaseViewModel, private val createListener: (Int) -> Unit,
+                              private val insertListener: () -> Unit) : AsyncTask<Void, Void, Int>() {
 
-    override fun doInBackground(vararg params: Void): Int? {
+    override fun doInBackground(vararg params: Void): Int {
         var jumpId = databaseViewModel.lastJumpId
 
         jumpId = if (jumpId != null) {
@@ -25,22 +25,17 @@ class CreateAndInsertJumpTask(private val databaseViewModel: DatabaseViewModel, 
         return jumpId
     }
 
-    override fun onPostExecute(result: Int?) {
+    override fun onPostExecute(result: Int) {
         val jump = Jump()
-        jump.id = result!!
+        jump.id = result
         jump.time = Date()
 
-        listener.onFinished(result)
+        createListener(result)
 
         InsertJumpTask(databaseViewModel, insertListener).execute(jump)
     }
 
-    interface Listener {
-        fun onFinished(jumpId: Int)
-    }
-
     companion object {
-
         private val TAG = CreateAndInsertJumpTask::class.java.simpleName
     }
 }

@@ -25,9 +25,9 @@ import me.chrislane.accudrop.presenter.JumpPresenter
 import me.chrislane.accudrop.service.LocationService
 
 class JumpFragment : Fragment(), DefaultLifecycleObserver {
-    private var jumpView: View? = null
-    private var jumpPresenter: JumpPresenter? = null
-    private var preferences: SharedPreferences? = null
+    private lateinit var jumpView: View
+    private lateinit var jumpPresenter: JumpPresenter
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super<Fragment>.onCreate(savedInstanceState)
@@ -46,11 +46,11 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
         jumpView = inflater.inflate(R.layout.fragment_jump, container, false)
 
         // Add click listener for fragment jumpView.
-        val calibrateButton = jumpView!!.findViewById<Button>(R.id.calibrate_button)
-        calibrateButton.setOnClickListener { this.onClickCalibrate(it) }
+        val calibrateButton = jumpView.findViewById<Button>(R.id.calibrate_button)
+        calibrateButton.setOnClickListener { this.onClickCalibrate() }
 
         // Set the jump button toggle state
-        val jumpButton = jumpView!!.findViewById<ToggleButton>(R.id.jump_button)
+        val jumpButton = jumpView.findViewById<ToggleButton>(R.id.jump_button)
         jumpButton.setOnCheckedChangeListener(null)
 
         if (BuildConfig.DEBUG) {
@@ -65,12 +65,10 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
 
     /**
      * Zeros the altitude.
-     *
-     * @param view The jumpView calling the method.
      */
-    private fun onClickCalibrate(view: View) {
+    private fun onClickCalibrate() {
         Log.d(TAG, "Calibrating.")
-        jumpPresenter!!.calibrate()
+        jumpPresenter.calibrate()
     }
 
     /**
@@ -81,9 +79,9 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
     private fun onClickJump(): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                jumpPresenter!!.startJump()
+                jumpPresenter.startJump()
             } else {
-                jumpPresenter!!.stopJump()
+                jumpPresenter.stopJump()
             }
         }
     }
@@ -93,30 +91,30 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
      *
      * @param altitude The altitude to set.
      */
-    fun updatePressureAltitude(altitude: Float?) {
+    fun updatePressureAltitude(altitude: Float) {
         Log.v(TAG, "Updating pressure altitude text.")
 
-        val unitString = preferences!!.getString("general_unit", "")
-        val unit = Util.getUnit(unitString!!)
+        val unitString = preferences.getString("general_unit", "")
+        val unit = Util.getUnit(unitString)
 
-        val text = jumpView!!.findViewById<TextView>(R.id.pressure_altitude)
-        text.text = Util.getAltitudeText(java.lang.Double.valueOf(altitude!!.toDouble()), unit!!)
+        val text = jumpView.findViewById<TextView>(R.id.pressure_altitude)
+        text.text = Util.getAltitudeText(java.lang.Double.valueOf(altitude.toDouble()), unit)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putBoolean("jumpButton", jumpPresenter!!.isJumping)
+        outState.putBoolean("jumpButton", jumpPresenter.isJumping)
     }
 
     override fun onResume() {
         super<Fragment>.onResume()
-        jumpPresenter!!.resume()
+        jumpPresenter.resume()
     }
 
     override fun onPause() {
         super<Fragment>.onPause()
-        jumpPresenter!!.pause()
+        jumpPresenter.pause()
     }
 
     /**
@@ -143,7 +141,6 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
     }
 
     companion object {
-
-        private val TAG = JumpFragment::class.java!!.getSimpleName()
+        private val TAG: String = JumpFragment::class.java.simpleName
     }
 }

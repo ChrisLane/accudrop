@@ -14,16 +14,7 @@ import me.chrislane.accudrop.listener.GnssListener
 
 class GnssViewModel(application: Application) : AndroidViewModel(application) {
     private val lastLocation = MutableLiveData<Location>()
-    /**
-     * Get the GNSS listener.
-     *
-     * @return The GNSS listener.
-     */
-    val gnssListener: GnssListener
-
-    init {
-        gnssListener = GnssListener(this)
-    }
+    val gnssListener: GnssListener = GnssListener(this)
 
     /**
      * Get the device location for the last location updateDrawable.
@@ -49,7 +40,7 @@ class GnssViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
 
-        private val TAG = GnssViewModel::class.java!!.getSimpleName()
+        private val TAG = GnssViewModel::class.java.simpleName
 
         /**
          * Get a LatLng object from a Position object.
@@ -57,10 +48,8 @@ class GnssViewModel(application: Application) : AndroidViewModel(application) {
          * @param location The location to get latitude and longitude from.
          * @return A LatLng object with latitude and longitude of the given location.
          */
-        fun getLatLng(location: Location?): LatLng? {
-            return if (location != null) {
-                LatLng(location.latitude, location.longitude)
-            } else null
+        fun getLatLng(location: Location): LatLng {
+            return LatLng(location.latitude, location.longitude)
         }
     }
 }

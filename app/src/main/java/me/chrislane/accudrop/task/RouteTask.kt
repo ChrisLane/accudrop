@@ -27,8 +27,4 @@ class RouteTask(private val listener: (MutableList<Location>) -> Any, private va
         super.onPostExecute(route)
         listener(route)
     }
-
-    interface RouteTaskListener {
-        fun onFinished(route: MutableList<Location>)
-    }
 }

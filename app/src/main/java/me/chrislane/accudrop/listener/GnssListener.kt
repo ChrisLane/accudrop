@@ -12,12 +12,8 @@ import android.widget.Toast
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 
 class GnssListener(private val gnssViewModel: GnssViewModel) : android.location.LocationListener {
-    private val locationManager: LocationManager
-
-    init {
-        locationManager = gnssViewModel.getApplication<Application>()
-                .getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    }
+    private val locationManager: LocationManager = gnssViewModel.getApplication<Application>()
+            .getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     /**
      * Tell the location manager to start collecting location updates.
@@ -63,7 +59,6 @@ class GnssListener(private val gnssViewModel: GnssViewModel) : android.location.
     }
 
     companion object {
-
-        private val TAG = GnssListener::class.java!!.getSimpleName()
+        private val TAG = GnssListener::class.java.simpleName
     }
 }

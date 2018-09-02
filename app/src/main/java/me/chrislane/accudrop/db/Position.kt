@@ -3,7 +3,8 @@ package me.chrislane.accudrop.db
 import android.arch.persistence.room.*
 import java.util.*
 
-@Entity(tableName = "position", indices = arrayOf(Index("jump_id")), foreignKeys = arrayOf(ForeignKey(entity = Jump::class, parentColumns = arrayOf("id"), childColumns = arrayOf("jump_id"))))
+@Entity(tableName = "position", indices = [Index("jump_id")],
+        foreignKeys = [ForeignKey(entity = Jump::class, parentColumns = arrayOf("id"), childColumns = arrayOf("jump_id"))])
 class Position {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

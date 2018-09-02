@@ -18,8 +18,8 @@ import me.chrislane.accudrop.viewmodel.WindViewModel
 class PlanPresenter {
     private val planFragment: PlanFragment
     private val apiKey: String
-    private var routeViewModel: RouteViewModel? = null
-    private var windViewModel: WindViewModel? = null
+    private var routeViewModel: RouteViewModel
+    private var windViewModel: WindViewModel
 
     constructor(planFragment: PlanFragment) {
         this.planFragment = planFragment
@@ -54,11 +54,11 @@ class PlanPresenter {
     fun calcRoute(target: LatLng) {
         val windListener = { windTuple: Pair<Double, Double> ->
             // Update the windViewModel
-            windViewModel!!.setWindSpeed(windTuple.first)
-            windViewModel!!.setWindDirection(windTuple.second)
+            windViewModel.setWindSpeed(windTuple.first)
+            windViewModel.setWindDirection(windTuple.second)
 
             // Run a route calculation task with the updated wind
-            val routeListener = { route: MutableList<Location> -> routeViewModel!!.setRoute(route) }
+            val routeListener = { route: MutableList<Location> -> routeViewModel.setRoute(route) }
             val context = planFragment.requireContext()
             val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
             val resources = context.resources

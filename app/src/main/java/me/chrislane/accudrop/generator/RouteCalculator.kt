@@ -13,23 +13,12 @@ import me.chrislane.accudrop.Util
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 
 class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources,
-                      wind: Pair<Double, Double>,
-        /**
-         * Get the current landing target.
-         *
-         * @return The current landing target.
-         */
-                      /**
-                       * Set the target location for route calculations.
-                       *
-                       * @param target The target location.
-                       */
-                      var target: LatLng?) {
+                      wind: Pair<Double, Double>, var target: LatLng) {
     private val route = mutableListOf<Location>()
     private var airspeed: Double = 0.toDouble() // Metres per second
     private var descentRate: Double = 0.toDouble() // Metres per second
-    private val windDirection: Double
-    private val windSpeed: Double
+    private val windDirection: Double = wind.second
+    private val windSpeed: Double = wind.first
     private var p3Altitude: Double = 0.toDouble()
     private var p2Altitude: Double = 0.toDouble()
     private var p1Altitude: Double = 0.toDouble()
@@ -38,13 +27,10 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
     private lateinit var p1: Location
 
     init {
-        this.windSpeed = wind.first
-        this.windDirection = wind.second
-
         setFromPreferences(sharedPreferences, resources)
     }
 
-    fun setFromPreferences(sharedPreferences: SharedPreferences, resources: Resources) {
+    private fun setFromPreferences(sharedPreferences: SharedPreferences, resources: Resources) {
         var glideRatio: Double
         try {
             // Unfortunately EditTextPreferences don't save in number format
@@ -94,8 +80,8 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         route.add(p3)
 
         val ground = Location("")
-        ground.latitude = target!!.latitude
-        ground.longitude = target!!.longitude
+        ground.latitude = target.latitude
+        ground.longitude = target.longitude
         ground.altitude = 0.0
         route.add(ground)
 
@@ -114,7 +100,7 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         val distance = distanceFromHeight(airspeed + windSpeed, altitudeChange)
 
         val p2LatLng = GnssViewModel.getLatLng(p2)
-        val loc = getPosAfterMove(p2LatLng!!, distance, windDirection)
+        val loc = getPosAfterMove(p2LatLng, distance, windDirection)
         val location = Location("")
         location.latitude = loc.latitude
         location.longitude = loc.longitude
@@ -131,7 +117,7 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         val distance = distanceFromHeight(airspeed, altitudeChange)
 
         val p3LatLng = GnssViewModel.getLatLng(p3)
-        val loc = getPosAfterMove(p3LatLng!!, distance, get270Bearing(windDirection))
+        val loc = getPosAfterMove(p3LatLng, distance, get270Bearing(windDirection))
         val location = Location("")
         location.latitude = loc.latitude
         location.longitude = loc.longitude
@@ -146,7 +132,7 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         val distance = distanceFromHeight(airspeed - windSpeed, p3Altitude)
 
         // Subtract distance along upwind direction from coordinates
-        val loc = getPosAfterMove(target!!, distance, getOppositeBearing(windDirection))
+        val loc = getPosAfterMove(target, distance, getOppositeBearing(windDirection))
         val location = Location("")
         location.latitude = loc.latitude
         location.longitude = loc.longitude
@@ -207,18 +193,18 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
     private fun get270Bearing(bearing: Double): Double {
         var result = bearing - 90
         if (result < 0) {
-            result = 360 + result
+            result += 360
         }
         return result
     }
 
-    fun getSinkSpeed(airspeed: Double, glideRatio: Double): Double {
+    private fun getSinkSpeed(airspeed: Double, glideRatio: Double): Double {
         return airspeed / glideRatio
     }
 
     companion object {
 
-        private val TAG = RouteCalculator::class.java!!.getSimpleName()
+        private val TAG = RouteCalculator::class.java.simpleName
 
         /**
          *

@@ -17,13 +17,10 @@ import me.chrislane.accudrop.viewmodel.ReplayViewModel
 import java.util.*
 
 class ReplayPresenter(private val replayFragment: ReplayFragment) {
-    private val replayViewModel: ReplayViewModel
-    private val databaseViewModel: DatabaseViewModel
+    private val replayViewModel: ReplayViewModel = ViewModelProviders.of(replayFragment).get(ReplayViewModel::class.java)
+    private val databaseViewModel: DatabaseViewModel = ViewModelProviders.of(replayFragment).get(DatabaseViewModel::class.java)
 
     init {
-
-        replayViewModel = ViewModelProviders.of(replayFragment).get(ReplayViewModel::class.java)
-        databaseViewModel = ViewModelProviders.of(replayFragment).get(DatabaseViewModel::class.java)
 
         subscribeToJumpId()
         subscribeToJumpRange()
@@ -80,7 +77,7 @@ class ReplayPresenter(private val replayFragment: ReplayFragment) {
     }
 
     private fun subscribeToButtonData() {
-        val buttonDataObserver = Observer<Int>{ ignored ->
+        val buttonDataObserver = Observer<Int>{
             val jumpId = replayViewModel.getJumpId().value
             val firstJumpId = replayViewModel.getFirstJumpId().value
             val lastJumpId = replayViewModel.getLastJumpId().value

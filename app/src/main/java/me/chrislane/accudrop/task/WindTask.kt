@@ -76,10 +76,6 @@ class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng,
         planPresenter.setTaskRunning(false)
     }
 
-    interface WeatherTaskListener {
-        fun onFinished(windTuple: Pair<Double, Double>)
-    }
-
     companion object {
         private val TAG = WindTask::class.java.simpleName
 
@@ -98,12 +94,13 @@ class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng,
                 reader = BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8))
 
                 val buffer = StringBuilder()
-                val line = reader.readLine()
+                var line = reader.readLine()
                 while (line != null) {
                     buffer.append(line).append("\n")
                     if (BuildConfig.DEBUG) {
                         Log.d("JsonTask Response", "> $line")
                     }
+                    line = reader.readLine()
                 }
 
                 try {

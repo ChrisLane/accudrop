@@ -7,12 +7,12 @@ import me.chrislane.accudrop.db.FallType
 class FallTypeConverter {
 
     @TypeConverter
-    fun toFallType(falltype: String): FallType {
-        return FallType.valueOf(falltype)
+    fun toFallType(fallType: String): FallType {
+        return FallType.valueOf(fallType)
     }
 
     @TypeConverter
-    fun toString(falltype: FallType): String {
-        return falltype.name
+    fun toString(fallType: FallType): String {
+        return fallType.name
     }
 }

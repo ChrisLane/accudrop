@@ -14,8 +14,4 @@ class FetchLastJumpIdTask(private val listener: (Int?) -> Unit, private val data
         super.onPostExecute(jumpId)
         listener(jumpId)
     }
-
-    interface Listener {
-        fun onFinished(jumpId: Int?)
-    }
 }

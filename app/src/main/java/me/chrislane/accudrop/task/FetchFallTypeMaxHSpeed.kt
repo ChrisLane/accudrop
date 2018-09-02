@@ -20,8 +20,4 @@ class FetchFallTypeMaxHSpeed(private val listener: (Float?) -> Unit, private val
 
         listener(hSpeed)
     }
-
-    interface Listener {
-        fun onFinished(hSpeed: Float?)
-    }
 }

@@ -10,15 +10,15 @@ import me.chrislane.accudrop.viewmodel.ReplayViewModel
 import java.util.*
 
 class ReplayMapPresenter(private val replayMapFragment: ReplayMapFragment) {
-    private val parentFragment: Fragment?
-    private var replayViewModel: ReplayViewModel? = null
+    private val parentFragment: Fragment? = replayMapFragment.parentFragment
+    private var replayViewModel: ReplayViewModel
 
     init {
 
-        parentFragment = replayMapFragment.parentFragment
-        if (parentFragment != null) {
-            replayViewModel = ViewModelProviders.of(parentFragment).get(ReplayViewModel::class.java)
+        if (parentFragment == null) {
+            throw Exception("Missing parent fragment (Replay)")
         }
+        replayViewModel = ViewModelProviders.of(parentFragment).get(ReplayViewModel::class.java)
     }
 
     /**
@@ -37,6 +37,6 @@ class ReplayMapPresenter(private val replayMapFragment: ReplayMapFragment) {
                 replayMapFragment.updateMapRoutes(it)
             }
         }
-        replayViewModel?.getUsersAndLocs()?.observe(parentFragment!!, routeObserver)
+        replayViewModel.getUsersAndLocs().observe(parentFragment!!, routeObserver)
     }
 }

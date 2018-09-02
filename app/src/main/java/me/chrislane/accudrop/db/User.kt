@@ -8,7 +8,7 @@ import java.util.*
 class User {
 
     @PrimaryKey
-    var uuid: UUID = UUID.randomUUID()
+    var uuid: UUID = UUID.fromString("")
 
     var name: String? = null
 }

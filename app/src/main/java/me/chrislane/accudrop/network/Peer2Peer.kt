@@ -203,11 +203,11 @@ class Peer2Peer(private val context: LocationService) : WifiP2pManager.Connectio
     companion object {
 
         private val TAG = Peer2Peer::class.java.simpleName
-        private val AVAILABLE = "available"
-        private val INSTANCE_NAME = "_accudropproximity"
-        private val SERVICE_TYPE = "_presence._tcp"
-        internal val COORD_MSG = 1000
-        internal val COORD_SENDER = 1001
-        internal val SERVER_PORT = 8000
+        private const val AVAILABLE = "available"
+        private const val INSTANCE_NAME = "_accudropproximity"
+        private const val SERVICE_TYPE = "_presence._tcp"
+        internal const val COORD_MSG = 1000
+        internal const val COORD_SENDER = 1001
+        internal const val SERVER_PORT = 8000
     }
 }

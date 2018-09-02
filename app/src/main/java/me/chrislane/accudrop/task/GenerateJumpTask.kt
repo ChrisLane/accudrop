@@ -18,7 +18,6 @@ class GenerateJumpTask(private val subjectUUID: UUID, private val target: LatLng
     override fun doInBackground(vararg guestCounts: Int?): Void? {
         val guestCount = guestCounts[0] ?: throw IllegalArgumentException("Expected guest count")
 
-
         // Add a new jump to the database
         databaseViewModel.addJump()
 

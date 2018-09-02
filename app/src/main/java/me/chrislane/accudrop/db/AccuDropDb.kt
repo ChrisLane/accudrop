@@ -10,9 +10,9 @@ import me.chrislane.accudrop.db.converter.DateConverter
 import me.chrislane.accudrop.db.converter.FallTypeConverter
 import me.chrislane.accudrop.db.converter.UuidConverter
 
-@Database(entities = [Jump::class, Position::class, User::class], version = 7)
+@Database(entities = [Jump::class, Position::class, User::class], version = 9)
 @TypeConverters(DateConverter::class, UuidConverter::class, FallTypeConverter::class)
-abstract class AccudropDb : RoomDatabase() {
+abstract class AccuDropDb : RoomDatabase() {
 
     /**
      * Get a data access object for the `jump` table.
@@ -30,30 +30,30 @@ abstract class AccudropDb : RoomDatabase() {
 
     companion object {
 
-        private var INSTANCE: AccudropDb? = null
-        private val DB_NAME = "accudrop"
+        private var instance: AccuDropDb? = null
+        private const val DB_NAME = "accudrop"
 
         /**
          * Get an instance of the database.
          *
          * @param context A context in the application.
-         * @return An instance of an `AccudropDb` database.
+         * @return An instance of an `AccuDropDb` database.
          */
-        fun getDatabase(context: Context): AccudropDb {
+        fun getDatabase(context: Context): AccuDropDb {
 
-            if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder<AccudropDb>(context.applicationContext, AccudropDb::class.java, DB_NAME)
+            if (instance == null) {
+                instance = Room.databaseBuilder<AccuDropDb>(context.applicationContext, AccuDropDb::class.java, DB_NAME)
                         .fallbackToDestructiveMigration()
                         .build()
             }
-            return INSTANCE as AccudropDb
+            return instance as AccuDropDb
         }
 
         /**
          * Remove the database instance.
          */
         fun destroyInstance() {
-            INSTANCE = null
+            instance = null
         }
 
         fun clearDatabase(context: Context) {

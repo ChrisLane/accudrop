@@ -4,7 +4,7 @@ import android.os.AsyncTask
 
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 
-class CheckJumpExistsTask(private val listener: Listener, private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, Boolean>() {
+class CheckJumpExistsTask(private val listener: (Boolean?) -> Unit, private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, Boolean>() {
 
     override fun doInBackground(vararg integers: Int?): Boolean? {
         integers[0]?.let { return databaseViewModel.jumpExists(it) }
@@ -16,13 +16,9 @@ class CheckJumpExistsTask(private val listener: Listener, private val databaseVi
         super.onPostExecute(jumpExists)
 
         if (jumpExists == null) {
-            listener.onFinished(false)
+            listener(false)
         } else {
-            listener.onFinished(jumpExists)
+            listener(jumpExists)
         }
-    }
-
-    interface Listener {
-        fun onFinished(jumpExists: Boolean?)
     }
 }

@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit
 
 class JumpStatsFragment : Fragment() {
 
-    private var presenter: JumpStatsPresenter? = null
-    private var statsView: View? = null
+    private lateinit var presenter: JumpStatsPresenter
+    private lateinit var statsView: View
     private var prevButton: ImageButton? = null
     private var nextButton: ImageButton? = null
     private lateinit var unit: Util.Unit
@@ -40,71 +40,71 @@ class JumpStatsFragment : Fragment() {
         statsView = inflater.inflate(R.layout.fragment_jump_stats, container, false)
 
         // Set button listeners
-        prevButton = statsView!!.findViewById(R.id.stats_prev_button)
-        prevButton!!.setOnClickListener { v -> presenter!!.prevJump() }
-        nextButton = statsView!!.findViewById(R.id.stats_next_button)
-        nextButton!!.setOnClickListener { v -> presenter!!.nextJump() }
+        prevButton = statsView.findViewById(R.id.stats_prev_button)
+        prevButton?.setOnClickListener { presenter.prevJump() }
+        nextButton = statsView.findViewById(R.id.stats_next_button)
+        nextButton?.setOnClickListener { presenter.nextJump() }
 
         return statsView
     }
 
     fun updateJumpId(jumpId: Int) {
-        val number = statsView!!.findViewById<TextView>(R.id.jump_number)
-        number.setText(String.format(Locale.ENGLISH, "%d", jumpId))
+        val number: TextView? = statsView.findViewById(R.id.jump_number)
+        number?.text = String.format(Locale.ENGLISH, "%d", jumpId)
     }
 
     fun updateExitAltitude(altitude: Int) {
-        val formatted = Util.getAltitudeText(Util.getAltitudeInUnit(altitude.toDouble(), unit), unit!!)
-        val value = statsView!!.findViewById<TextView>(R.id.exit_altitude_value)
-        value.text = formatted
+        val formatted = Util.getAltitudeText(Util.getAltitudeInUnit(altitude.toDouble(), unit), unit)
+        val value: TextView? = statsView.findViewById(R.id.exit_altitude_value)
+        value?.text = formatted
     }
 
     fun updateTotalDuration(millis: Long) {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
         val seconds = millis / 1000 % 60
 
-        val time = statsView!!.findViewById<TextView>(R.id.total_duration_value)
-        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds))
+        val time: TextView? = statsView.findViewById(R.id.total_duration_value)
+        time?.text = String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds)
     }
 
     fun updateCanopyDuration(millis: Long) {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
         val seconds = millis / 1000 % 60
 
-        val time = statsView!!.findViewById<TextView>(R.id.canopy_duration_value)
-        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds))
+        val time: TextView? = statsView.findViewById(R.id.canopy_duration_value)
+        time?.text = String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds)
     }
 
     fun updateFreefallDuration(millis: Long) {
         val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
         val seconds = millis / 1000 % 60
 
-        val time = statsView!!.findViewById<TextView>(R.id.freefall_duration_value)
-        time.setText(String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds))
+        val time: TextView? = statsView.findViewById(R.id.freefall_duration_value)
+        time?.text = String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds)
     }
 
     fun updateCanopyVSpeed(vSpeed: Double) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit!!)
-        val textView = statsView!!.findViewById<TextView>(R.id.canopy_max_vspeed_value)
-        textView.text = formatted
+        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit)
+        val textView: TextView? = statsView.findViewById(R.id.canopy_max_vspeed_value)
+        textView?.text = formatted
     }
 
     fun updateCanopyHSpeed(hSpeed: Float) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit!!)
-        val textView = statsView!!.findViewById<TextView>(R.id.canopy_max_hspeed_value)
-        textView.text = formatted
+        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
+        val textView: TextView? = statsView.findViewById(R.id.canopy_max_hspeed_value)
+        textView?.text = formatted
     }
 
     fun updateFreefallVSpeed(vSpeed: Double) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit!!)
-        val textView = statsView!!.findViewById<TextView>(R.id.freefall_max_vspeed_value)
-        textView.text = formatted
+        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit)
+        val textView: TextView? = statsView.findViewById(R.id.freefall_max_vspeed_value)
+        textView?.text = formatted
     }
 
     fun updateFreefallHSpeed(hSpeed: Float) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit!!)
-        val textView = statsView!!.findViewById<TextView>(R.id.freefall_max_hspeed_value)
-        textView.text = formatted
+        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
+        val textView: TextView? = statsView.findViewById(R.id.freefall_max_hspeed_value)
+        textView?.text = formatted
     }
 
     fun updateButtons(jumpId: Int, firstJumpId: Int, lastJumpId: Int) {
@@ -114,20 +114,24 @@ class JumpStatsFragment : Fragment() {
 
         // Check limits for previous button
         if (jumpId <= firstJumpId) {
-            prevButton!!.setImageDrawable(disabled)
-            prevButton!!.isEnabled = false
+            prevButton?.setImageDrawable(disabled)
+            prevButton?.isEnabled = false
         } else {
-            prevButton!!.setImageDrawable(leftArrow)
-            prevButton!!.isEnabled = true
+            prevButton?.setImageDrawable(leftArrow)
+            prevButton?.isEnabled = true
         }
 
         // Check limits for next button
         if (jumpId >= lastJumpId) {
-            nextButton!!.setImageDrawable(disabled)
-            nextButton!!.isEnabled = false
+            nextButton?.setImageDrawable(disabled)
+            nextButton?.isEnabled = false
         } else {
-            nextButton!!.setImageDrawable(rightArrow)
-            nextButton!!.isEnabled = true
+            nextButton?.setImageDrawable(rightArrow)
+            nextButton?.isEnabled = true
         }
+    }
+
+    companion object {
+        private val TAG: String = JumpStatsFragment::class.java.simpleName
     }
 }

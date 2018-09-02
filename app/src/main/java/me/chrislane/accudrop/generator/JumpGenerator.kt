@@ -13,11 +13,7 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 class JumpGenerator(private val main: MainActivity) {
-    private val databaseViewModel: DatabaseViewModel
-
-    init {
-        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel::class.java)
-    }
+    private val databaseViewModel: DatabaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel::class.java)
 
     fun generateJump(target: LatLng, noOfGuests: Int) {
         val settings = main.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
@@ -30,7 +26,7 @@ class JumpGenerator(private val main: MainActivity) {
 
     companion object {
 
-        private val TAG = JumpGenerator::class.java.simpleName
+        private val TAG: String = JumpGenerator::class.java.simpleName
 
         /**
          * Add intermediary points to a route with random tweaks to the bearing.

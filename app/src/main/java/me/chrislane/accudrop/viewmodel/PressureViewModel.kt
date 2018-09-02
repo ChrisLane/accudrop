@@ -16,15 +16,10 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
      *
      * @return The pressure listener.
      */
-    val pressureListener: PressureListener
+    val pressureListener: PressureListener = PressureListener(this)
     private val lastPressure = MutableLiveData<Float>()
     private val groundPressure = MutableLiveData<Float>()
     private val lastAltitude = MutableLiveData<Float>()
-
-    init {
-
-        pressureListener = PressureListener(this)
-    }
 
     /**
      * Find the ground pressure.
@@ -41,7 +36,7 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
      * @param groundPressure The ground pressure value to set.
      */
     fun setGroundPressure(groundPressure: Float) {
-        this.groundPressure.setValue(groundPressure)
+        this.groundPressure.value = groundPressure
     }
 
     /**
@@ -59,7 +54,7 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
      * @param lastPressure The pressure value to set.
      */
     fun setLastPressure(lastPressure: Float) {
-        this.lastPressure.setValue(lastPressure)
+        this.lastPressure.value = lastPressure
         updateAltitude()
     }
 
@@ -78,7 +73,7 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
      * @param lastAltitude The altitude in metres to set.
      */
     private fun setLastAltitude(lastAltitude: Float) {
-        this.lastAltitude.setValue(lastAltitude)
+        this.lastAltitude.value = lastAltitude
 
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "Altitude set: $lastAltitude")
@@ -102,10 +97,10 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
         val last = lastPressure.value
         val altitude: Float
 
-        if (ground == null && last != null) {
-            altitude = SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, last)
+        altitude = if (ground == null && last != null) {
+            SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, last)
         } else if (ground != null && last != null) {
-            altitude = SensorManager.getAltitude(ground, last)
+            SensorManager.getAltitude(ground, last)
         } else {
             return
         }
@@ -114,6 +109,6 @@ class PressureViewModel(application: Application) : AndroidViewModel(application
 
     companion object {
 
-        private val TAG = PressureViewModel::class.java!!.getSimpleName()
+        private val TAG = PressureViewModel::class.java.simpleName
     }
 }

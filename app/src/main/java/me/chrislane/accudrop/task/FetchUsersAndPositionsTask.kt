@@ -7,7 +7,8 @@ import android.util.Log
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 import java.util.*
 
-class FetchUsersAndPositionsTask(private val listener: FetchUsersAndPositionsTask.Listener, private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, MutableList<Pair<UUID, MutableList<Location>>>>() {
+class FetchUsersAndPositionsTask(private val listener: (MutableList<Pair<UUID, MutableList<Location>>>) -> Unit,
+                                 private val databaseViewModel: DatabaseViewModel) : AsyncTask<Int, Void, MutableList<Pair<UUID, MutableList<Location>>>>() {
 
     override fun doInBackground(vararg integers: Int?): MutableList<Pair<UUID, MutableList<Location>>>? {
         var result: MutableList<Pair<UUID, MutableList<Location>>>? = mutableListOf()
@@ -33,15 +34,10 @@ class FetchUsersAndPositionsTask(private val listener: FetchUsersAndPositionsTas
         super.onPostExecute(result)
 
         Log.d(TAG, "Finished getting jump data.")
-        listener.onFinished(result)
-    }
-
-    interface Listener {
-        fun onFinished(result: MutableList<Pair<UUID, MutableList<Location>>>)
+        listener(result)
     }
 
     companion object {
-
-        private val TAG = FetchUsersAndPositionsTask::class.java!!.getSimpleName()
+        private val TAG = FetchUsersAndPositionsTask::class.java.simpleName
     }
 }

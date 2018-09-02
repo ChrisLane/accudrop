@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 
-class PermissionManager(private val activity: Activity) {
+class PermissionManager(private val activity: Activity) : ActivityCompat.OnRequestPermissionsResultCallback {
     private val parentLayout: View = activity.findViewById(android.R.id.content)
 
     /**
@@ -46,7 +46,7 @@ class PermissionManager(private val activity: Activity) {
      * If the user hasn't chosen to not be asked again for permissions and the permission was denied,
      * the user will be prompted to grant the permission again.
      */
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
             when (requestCode) {
                 PermissionManager.PERMISSIONS_REQUEST_LOCATION -> {
@@ -66,7 +66,6 @@ class PermissionManager(private val activity: Activity) {
     }
 
     companion object {
-
         private val TAG = PermissionManager::class.java.simpleName
         private const val PERMISSIONS_REQUEST_LOCATION = 0
     }

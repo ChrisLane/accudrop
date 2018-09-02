@@ -20,8 +20,4 @@ class FetchFallTypeMaxVSpeed(private val listener: (Double?) -> Unit, private va
 
         listener(vSpeed)
     }
-
-    interface Listener {
-        fun onFinished(vSpeed: Double?)
-    }
 }

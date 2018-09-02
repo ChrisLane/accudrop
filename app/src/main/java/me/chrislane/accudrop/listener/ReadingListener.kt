@@ -32,7 +32,7 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
     init {
 
         val preferences = PreferenceManager
-                .getDefaultSharedPreferences(databaseViewModel.getApplication<Application>())
+                .getDefaultSharedPreferences(databaseViewModel.getApplication())
         isGuidanceEnabled = preferences.getBoolean("guidance_enabled", false)
 
         subscribeToJumpId()

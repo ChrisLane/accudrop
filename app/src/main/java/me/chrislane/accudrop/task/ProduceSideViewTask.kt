@@ -15,7 +15,7 @@ class ProduceSideViewTask(private val width: Int, private val height: Int, priva
      *
      * @return The screen coordinates converted for the side view.
      */
-    fun produceViewPositions(): MutableList<MutableList<PointF>> {
+    private fun produceViewPositions(): MutableList<MutableList<PointF>> {
         val screenPosList = mutableListOf<MutableList<PointF>>()
 
         val usersAndLocs = model.getUsersAndLocs().value
@@ -87,10 +87,6 @@ class ProduceSideViewTask(private val width: Int, private val height: Int, priva
     override fun onPostExecute(screenPoints: MutableList<MutableList<PointF>>) {
         super.onPostExecute(screenPoints)
         listener(screenPoints)
-    }
-
-    interface Listener {
-        fun onFinished(screenPoints: MutableList<MutableList<PointF>>)
     }
 
     companion object {

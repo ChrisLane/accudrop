@@ -5,14 +5,14 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.location.Location
 import android.support.v4.util.Pair
-import me.chrislane.accudrop.db.AccudropDb
+import me.chrislane.accudrop.db.AccuDropDb
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.db.Jump
 import me.chrislane.accudrop.db.Position
 import java.util.*
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
-    private val db: AccudropDb
+    private val db: AccuDropDb = AccuDropDb.getDatabase(application)
 
     /**
      * Get the last jump ID.
@@ -29,11 +29,6 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
      */
     val firstJumpId: Int?
         get() = db.jumpModel().firstJumpId
-
-    init {
-
-        db = AccudropDb.getDatabase(application)
-    }
 
     /**
      * Find the first jump ID.
@@ -267,19 +262,19 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
         db.locationModel().insertPosition(position)
     }
 
-    fun getFirstDate(uuid: UUID, jumpId: Int): Date {
+    fun getFirstDate(uuid: UUID, jumpId: Int): Date? {
         return db.locationModel().getFirstDateForUser(uuid, jumpId)
     }
 
-    fun getLastDate(uuid: UUID, jumpId: Int): Date {
+    fun getLastDate(uuid: UUID, jumpId: Int): Date? {
         return db.locationModel().getLastDateForUser(uuid, jumpId)
     }
 
-    fun getFirstDateOfFallType(fallType: FallType, uuid: UUID, jumpId: Int): Date {
+    fun getFirstDateOfFallType(fallType: FallType, uuid: UUID, jumpId: Int): Date? {
         return db.locationModel().getFirstDateForUser(fallType, uuid, jumpId)
     }
 
-    fun getLastDateOfFallType(fallType: FallType, uuid: UUID, jumpId: Int): Date {
+    fun getLastDateOfFallType(fallType: FallType, uuid: UUID, jumpId: Int): Date? {
         return db.locationModel().getLastDateForUser(fallType, uuid, jumpId)
     }
 
@@ -296,7 +291,6 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
     }
 
     companion object {
-
-        private val TAG = DatabaseViewModel::class.java!!.getSimpleName()
+        private val TAG = DatabaseViewModel::class.java.simpleName
     }
 }

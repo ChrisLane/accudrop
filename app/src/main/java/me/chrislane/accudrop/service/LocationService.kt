@@ -151,8 +151,8 @@ class LocationService : Service() {
 
     companion object {
         private val TAG = LocationService::class.java.simpleName
-        private val NO_VALUE = 1337f
-        private val CHANNEL_ID = "AccuDrop"
-        private val FOREGROUND_ID = 1237
+        private const val NO_VALUE = 1337f
+        private const val CHANNEL_ID = "AccuDrop"
+        private const val FOREGROUND_ID = 1237
     }
 }

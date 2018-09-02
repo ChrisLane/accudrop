@@ -30,7 +30,7 @@ import me.chrislane.accudrop.viewmodel.GnssViewModel
 import me.chrislane.accudrop.viewmodel.RouteViewModel
 
 class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
-    private var map: GoogleMap? = null
+    private lateinit var map: GoogleMap
     private lateinit var gnssViewModel: GnssViewModel
     private lateinit var camPosBuilder: CameraPosition.Builder
     private lateinit var routeViewModel: RouteViewModel
@@ -64,7 +64,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         val mapFragment = childFragmentManager.findFragmentById(R.id.plan_map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        preferences!!.registerOnSharedPreferenceChangeListener(this)
+        preferences.registerOnSharedPreferenceChangeListener(this)
 
         return view
     }
@@ -83,8 +83,9 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         setupMap()
         subscribeToRoute()
 
-        val gnssLocation = GnssViewModel.getLatLng(gnssViewModel!!.getLastLocation().value)
-        planPresenter = if (gnssLocation != null) {
+        val lastLocation = gnssViewModel.getLastLocation().value
+        planPresenter = if (lastLocation != null) {
+            val gnssLocation = GnssViewModel.getLatLng(lastLocation)
             PlanPresenter(this, gnssLocation)
         } else {
             PlanPresenter(this)
@@ -99,21 +100,21 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         val permissionManager = main.permissionManager
 
         // Initial map setup
-        if (permissionManager!!.checkLocationPermission()) {
-            map!!.isMyLocationEnabled = true
+        if (permissionManager.checkLocationPermission()) {
+            map.isMyLocationEnabled = true
         } else {
             permissionManager.requestLocationPermission("Location access is required to find your location.")
         }
 
-        val loc = gnssViewModel!!.getLastLocation().value
+        val loc = gnssViewModel.getLastLocation().value
         if (loc != null) {
-            val camPos = camPosBuilder!!.target(GnssViewModel.getLatLng(loc)).build()
-            map!!.moveCamera(CameraUpdateFactory.newCameraPosition(camPos))
+            val camPos = camPosBuilder.target(GnssViewModel.getLatLng(loc)).build()
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos))
         }
-        map!!.uiSettings.isMapToolbarEnabled = false
-        map!!.isBuildingsEnabled = true
-        map!!.mapType = GoogleMap.MAP_TYPE_HYBRID
-        map!!.setOnMapLongClickListener(GoogleMap.OnMapLongClickListener { this.onMapLongClick(it) })
+        map.uiSettings.isMapToolbarEnabled = false
+        map.isBuildingsEnabled = true
+        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+        map.setOnMapLongClickListener { this.onMapLongClick(it) }
     }
 
     /**
@@ -126,12 +127,12 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
      */
     private fun onMapLongClick(latLng: LatLng) {
         // Update map camera position
-        val camPos = camPosBuilder!!.target(latLng).build()
-        map!!.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+        val camPos = camPosBuilder.target(latLng).build()
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
 
         // Update route
-        routeViewModel!!.setTarget(latLng)
-        planPresenter!!.calcRoute(latLng)
+        routeViewModel.setTarget(latLng)
+        planPresenter?.calcRoute(latLng)
     }
 
     /**
@@ -139,44 +140,42 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
      * updates the map to display these changes.
      */
     private fun subscribeToRoute() {
-        routeViewModel.getRoute().observe(this, Observer<MutableList<Location>> { this.updateRoute(it) })
+        routeViewModel.getRoute().observe(this, Observer<MutableList<Location>> {
+            if (it != null) {
+                this.updateRoute(it)
+            }
+        })
     }
 
     override fun onDetach() {
         super.onDetach()
-        preferences!!.registerOnSharedPreferenceChangeListener(this)
+        preferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    fun updateRoute(route: MutableList<Location>?) {
-        if (route != null) {
-            map!!.clear()
+    fun updateRoute(route: MutableList<Location>) {
+        map.clear()
 
-            val unitString = preferences!!.getString("general_unit", "")
+        val unitString = preferences.getString("general_unit", "")
 
-            val unit = Util.getUnit(unitString!!)
-            if (unit == null) {
-                Log.w(TAG, "Unit returned was null")
-                return
-            }
+        val unit = Util.getUnit(unitString!!)
 
-            for (i in 0 until route.size - 1) {
-                val point1 = route[i]
-                val point2 = route[i + 1]
-                map!!.addPolyline(PolylineOptions()
-                        .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
-                        .width(5f)
-                        .color(Color.RED))
-                map!!.addMarker(MarkerOptions()
-                        .position(GnssViewModel.getLatLng(point1)!!)
-                        .title(Util.getAltitudeText(
-                                Util.getAltitudeInUnit(point1.altitude, unit), unit))
-                )
-            }
-
-            map!!.addMarker(MarkerOptions()
-                    .position(GnssViewModel.getLatLng(route[route.size - 1])!!)
-                    .title("Landing"))
+        for (i in 0 until route.size - 1) {
+            val point1 = route[i]
+            val point2 = route[i + 1]
+            map.addPolyline(PolylineOptions()
+                    .add(GnssViewModel.getLatLng(point1), GnssViewModel.getLatLng(point2))
+                    .width(5f)
+                    .color(Color.RED))
+            map.addMarker(MarkerOptions()
+                    .position(GnssViewModel.getLatLng(point1)!!)
+                    .title(Util.getAltitudeText(
+                            Util.getAltitudeInUnit(point1.altitude, unit), unit))
+            )
         }
+
+        map.addMarker(MarkerOptions()
+                .position(GnssViewModel.getLatLng(route[route.size - 1])!!)
+                .title("Landing"))
     }
 
     /**
@@ -189,28 +188,32 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         val view = view
         if (view != null) {
             val progressBar = view.findViewById<ProgressBar>(R.id.progressbar)
-            if (showBar) {
-                progressBar.visibility = View.VISIBLE
+            progressBar.visibility = if (showBar) {
+                View.VISIBLE
             } else {
-                progressBar.visibility = View.GONE
+                View.GONE
             }
         }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         when (key) {
-            "general_unit" -> updateRoute(routeViewModel.getRoute().value)
+            "general_unit" -> {
+                val route = routeViewModel.getRoute().value
+                if (route != null) {
+                    updateRoute(route)
+                }
+            }
             "landing_pattern_downwind_altitude", "landing_pattern_crosswind_altitude", "landing_pattern_upwind_altitude" -> {
                 val target = routeViewModel.getTarget().value
                 if (target != null) {
-                    planPresenter.calcRoute(target)
+                    planPresenter?.calcRoute(target)
                 }
             }
         }
     }
 
     companion object {
-
-        private val TAG = PlanFragment::class.java.simpleName
+        private val TAG: String = PlanFragment::class.java.simpleName
     }
 }

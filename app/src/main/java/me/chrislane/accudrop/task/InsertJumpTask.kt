@@ -8,20 +8,16 @@ import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 /**
  * Insert a new jump into the database.
  */
-class InsertJumpTask internal constructor(private val databaseViewModel: DatabaseViewModel, private val listener: Listener) : AsyncTask<Jump, Void, Void>() {
+class InsertJumpTask internal constructor(private val databaseViewModel: DatabaseViewModel, private val listener: () -> Unit) : AsyncTask<Jump, Void, Boolean>() {
 
-    override fun doInBackground(vararg jumps: Jump): Void? {
+    override fun doInBackground(vararg jumps: Jump): Boolean {
         databaseViewModel.addJump(jumps[0])
-        return null
+        return true
     }
 
-    override fun onPostExecute(aVoid: Void) {
-        super.onPostExecute(aVoid)
+    override fun onPostExecute(bool: Boolean) {
+        super.onPostExecute(bool)
 
-        listener.onFinished()
-    }
-
-    interface Listener {
-        fun onFinished()
+        listener
     }
 }

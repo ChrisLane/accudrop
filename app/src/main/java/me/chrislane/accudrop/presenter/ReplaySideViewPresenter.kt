@@ -12,15 +12,15 @@ import me.chrislane.accudrop.viewmodel.GnssViewModel
 import me.chrislane.accudrop.viewmodel.ReplayViewModel
 
 class ReplaySideViewPresenter(private val fragment: ReplaySideViewFragment) {
-    private val parentFragment: ReplayFragment?
+    private val parentFragment: ReplayFragment? = fragment.parentFragment as ReplayFragment?
     private var replayViewModel: ReplayViewModel
 
     private val mapPoints: MutableList<MutableList<Point>>
         get() {
-            val map = parentFragment!!.replayMap!!.map
+            val map = parentFragment!!.replayMap.map
             val mapPoints = mutableListOf<MutableList<Point>>()
 
-            val usersAndLocs = replayViewModel!!.getUsersAndLocs().value
+            val usersAndLocs = replayViewModel.getUsersAndLocs().value
 
             if (usersAndLocs != null) {
                 for (userAndLocs in usersAndLocs) {
@@ -28,7 +28,7 @@ class ReplaySideViewPresenter(private val fragment: ReplaySideViewFragment) {
                     if (locations != null) {
                         val points = mutableListOf<Point>()
                         for (location in locations) {
-                            points.add(map!!.projection
+                            points.add(map.projection
                                     .toScreenLocation(GnssViewModel.getLatLng(location)))
                         }
                         mapPoints.add(points)
@@ -41,7 +41,6 @@ class ReplaySideViewPresenter(private val fragment: ReplaySideViewFragment) {
 
     init {
 
-        parentFragment = fragment.parentFragment as ReplayFragment?
         if (parentFragment == null) {
             throw Exception("Missing parent fragment (Replay)")
         }
@@ -59,6 +58,6 @@ class ReplaySideViewPresenter(private val fragment: ReplaySideViewFragment) {
     }
 
     companion object {
-        private val TAG = ReplaySideViewPresenter::class.java.getSimpleName()
+        private val TAG = ReplaySideViewPresenter::class.java.simpleName
     }
 }

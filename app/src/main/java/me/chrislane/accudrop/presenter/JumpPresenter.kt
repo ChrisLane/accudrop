@@ -11,7 +11,6 @@ import me.chrislane.accudrop.fragment.JumpFragment
 import me.chrislane.accudrop.service.LocationService
 import me.chrislane.accudrop.task.CreateAndInsertJumpTask
 import me.chrislane.accudrop.task.FetchJumpTask
-import me.chrislane.accudrop.task.InsertJumpTask
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 import me.chrislane.accudrop.viewmodel.JumpViewModel
@@ -20,8 +19,8 @@ import me.chrislane.accudrop.viewmodel.PressureViewModel
 class JumpPresenter(private val jumpFragment: JumpFragment) {
     private val databaseViewModel: DatabaseViewModel
     private val jumpViewModel: JumpViewModel
-    private var pressureViewModel: PressureViewModel? = null
-    private var gnssViewModel: GnssViewModel? = null
+    private var pressureViewModel: PressureViewModel
+    private var gnssViewModel: GnssViewModel
     /**
      * Get whether there is an active jump or not.
      *
@@ -51,16 +50,12 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
         Log.i(TAG, "Starting jump.")
         isJumping = true
 
-        gnssViewModel?.gnssListener?.stopListening()
-        val createListener = object : CreateAndInsertJumpTask.Listener {
-            override fun onFinished(jumpId: Int) {
-                jumpViewModel.setJumpId(jumpId)
-            }
+        gnssViewModel.gnssListener.stopListening()
+        val createListener = { jumpId: Int ->
+            jumpViewModel.setJumpId(jumpId)
         }
-        val insertListener = object : InsertJumpTask.Listener {
-            override fun onFinished() {
-                startLocationService()
-            }
+        val insertListener = {
+            startLocationService()
         }
         CreateAndInsertJumpTask(databaseViewModel, createListener, insertListener).execute()
     }
@@ -100,11 +95,9 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
         // Remove the jump if no positional data was logged
         val jumpId = jumpViewModel.getJumpId().value
         if (jumpId != null) {
-            val listener = object : FetchJumpTask.FetchJumpListener {
-                override fun onFinished(locations: MutableList<Location>?) {
-                    if (locations != null && locations.isEmpty()) {
-                        AsyncTask.execute { databaseViewModel.deleteJump(jumpId) }
-                    }
+            val listener = { locations: MutableList<Location> ->
+                if (locations.isEmpty()) {
+                    AsyncTask.execute { databaseViewModel.deleteJump(jumpId) }
                 }
 
             }
@@ -113,7 +106,7 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
         }
 
 
-        gnssViewModel?.gnssListener?.startListening()
+        gnssViewModel.gnssListener.startListening()
     }
 
     /**
@@ -127,14 +120,14 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
             }
         }
 
-        pressureViewModel?.getLastAltitude()?.observe(jumpFragment, altitudeObserver)
+        pressureViewModel.getLastAltitude().observe(jumpFragment, altitudeObserver)
     }
 
     /**
      * Zero the ground pressure.
      */
     fun calibrate() {
-        pressureViewModel!!.setGroundPressure()
+        pressureViewModel.setGroundPressure()
     }
 
     /**
@@ -142,13 +135,13 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
      */
     fun resume() {
         if (!isJumping) {
-            pressureViewModel!!.pressureListener.startListening()
+            pressureViewModel.pressureListener.startListening()
             val main = jumpFragment.activity as MainActivity?
 
             if (main != null) {
                 val permissionManager = main.permissionManager
-                if (permissionManager!!.checkLocationPermission()) {
-                    gnssViewModel!!.gnssListener.startListening()
+                if (permissionManager.checkLocationPermission()) {
+                    gnssViewModel.gnssListener.startListening()
                 } else {
                     val reason = "Location access is required to track your jump location."
                     permissionManager.requestLocationPermission(reason)
@@ -162,8 +155,8 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
      */
     fun pause() {
         if (!isJumping) {
-            pressureViewModel!!.pressureListener.stopListening()
-            gnssViewModel!!.gnssListener.stopListening()
+            pressureViewModel.pressureListener.stopListening()
+            gnssViewModel.gnssListener.stopListening()
         }
     }
 
