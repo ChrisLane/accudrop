@@ -132,7 +132,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
 
         // Update route
         routeViewModel.setTarget(latLng)
-        planPresenter?.calcRoute(latLng)
+        planPresenter.calcRoute(latLng)
     }
 
     /**
@@ -152,7 +152,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         preferences.registerOnSharedPreferenceChangeListener(this)
     }
 
-    fun updateRoute(route: MutableList<Location>) {
+    private fun updateRoute(route: MutableList<Location>) {
         map.clear()
 
         val unitString = preferences.getString("general_unit", "")
@@ -167,14 +167,14 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
                     .width(5f)
                     .color(Color.RED))
             map.addMarker(MarkerOptions()
-                    .position(GnssViewModel.getLatLng(point1)!!)
+                    .position(GnssViewModel.getLatLng(point1))
                     .title(Util.getAltitudeText(
                             Util.getAltitudeInUnit(point1.altitude, unit), unit))
             )
         }
 
         map.addMarker(MarkerOptions()
-                .position(GnssViewModel.getLatLng(route[route.size - 1])!!)
+                .position(GnssViewModel.getLatLng(route[route.size - 1]))
                 .title("Landing"))
     }
 
@@ -207,7 +207,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
             "landing_pattern_downwind_altitude", "landing_pattern_crosswind_altitude", "landing_pattern_upwind_altitude" -> {
                 val target = routeViewModel.getTarget().value
                 if (target != null) {
-                    planPresenter?.calcRoute(target)
+                    planPresenter.calcRoute(target)
                 }
             }
         }

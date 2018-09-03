@@ -31,7 +31,7 @@ class GnssViewModel(application: Application) : AndroidViewModel(application) {
      * @param location The last location.
      */
     fun setLastLocation(location: Location) {
-        lastLocation.setValue(location)
+        lastLocation.value = location
 
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "Location set: $location")

@@ -13,7 +13,7 @@ import me.chrislane.accudrop.Util
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 
 class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources,
-                      wind: Pair<Double, Double>, var target: LatLng) {
+                      wind: Pair<Double, Double>, private var target: LatLng) {
     private val route = mutableListOf<Location>()
     private var airspeed: Double = 0.toDouble() // Metres per second
     private var descentRate: Double = 0.toDouble() // Metres per second

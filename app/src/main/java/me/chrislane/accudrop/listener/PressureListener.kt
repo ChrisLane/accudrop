@@ -26,7 +26,7 @@ class PressureListener(private val pressureViewModel: PressureViewModel) : Senso
      */
     fun startListening() {
         Log.i(TAG, "Listening on pressure.")
-        sensorManager!!.registerListener(this, barometer, ONE_SECOND_DELAY)
+        sensorManager?.registerListener(this, barometer, ONE_SECOND_DELAY)
     }
 
     /**
@@ -34,7 +34,7 @@ class PressureListener(private val pressureViewModel: PressureViewModel) : Senso
      */
     fun stopListening() {
         Log.i(TAG, "Stopped listening on pressure.")
-        sensorManager!!.unregisterListener(this)
+        sensorManager?.unregisterListener(this)
     }
 
     /**

@@ -25,7 +25,7 @@ class GnssListener(private val gnssViewModel: GnssViewModel) : android.location.
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
         } else {
             // TODO #49: Change to more appropriate notification. Be more useful.
-            Toast.makeText(gnssViewModel.getApplication<Application>(), "GPS is disabled.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(gnssViewModel.getApplication(), "GPS is disabled.", Toast.LENGTH_SHORT).show()
         }
     }
 

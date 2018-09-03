@@ -53,7 +53,7 @@ class JumpGenerator(private val main: MainActivity) {
 
                     val randBear = ThreadLocalRandom.current().nextInt(-15, 15)
                     prevLoc = Location("")
-                    prevPos = RouteCalculator.getPosAfterMove(prevPos!!, 5.0, bearing + randBear)
+                    prevPos = RouteCalculator.getPosAfterMove(prevPos, 5.0, bearing + randBear)
                     prevLoc.latitude = prevPos.latitude
                     prevLoc.longitude = prevPos.longitude
                     altitude -= altitudeDec
