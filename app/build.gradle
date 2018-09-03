@@ -39,7 +39,6 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
     implementation "android.arch.lifecycle:common-java8:$archLifecycleVersion"
     implementation "android.arch.persistence.room:runtime:$archRoomVersion"
-    implementation 'com.android.support:support-v4:27.1.1'
     kapt "android.arch.persistence.room:compiler:$archRoomVersion"
     testImplementation "junit:junit:$jUnitVersion"
     androidTestImplementation "com.android.support.test:runner:$runnerVersion"
