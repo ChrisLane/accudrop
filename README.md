@@ -6,6 +6,4 @@ applications.
 
 ## Tools and Frameworks
 - Android SDK
-- Android Studio
-- IntelliJ Idea
 - OpenWeatherMap API
