@@ -36,7 +36,7 @@ class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng,
 
         val latLng = params[0]
 
-        val api = "http://api.openweathermap.org/data/2.5/"
+        val api = "https://api.openweathermap.org/data/2.5/"
         val url = api +
                 "weather?" +
                 "lat=" + latLng.latitude +
