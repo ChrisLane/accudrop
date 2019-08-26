@@ -1,12 +1,10 @@
 package me.chrislane.accudrop.presenter
 
-import androidx.lifecycle.ViewModelProviders
 import android.location.Location
 import android.preference.PreferenceManager
 import android.util.Pair
-
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
-
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.fragment.PlanFragment
@@ -15,33 +13,18 @@ import me.chrislane.accudrop.task.WindTask
 import me.chrislane.accudrop.viewmodel.RouteViewModel
 import me.chrislane.accudrop.viewmodel.WindViewModel
 
-class PlanPresenter {
-    private val planFragment: PlanFragment
-    private val apiKey: String
-    private var routeViewModel: RouteViewModel
-    private var windViewModel: WindViewModel
+class PlanPresenter(private val planFragment: PlanFragment) {
+    private val apiKey: String = planFragment.resources.getString(R.string.owmApiKey)
+    private val routeViewModel: RouteViewModel
+    private val windViewModel: WindViewModel
 
-    constructor(planFragment: PlanFragment) {
-        this.planFragment = planFragment
-
+    init {
         val main = planFragment.requireActivity() as MainActivity
         routeViewModel = ViewModelProviders.of(main).get(RouteViewModel::class.java)
         windViewModel = ViewModelProviders.of(main).get(WindViewModel::class.java)
-
-        // Get the OpenWeatherMap API key
-        apiKey = planFragment.resources.getString(R.string.owmApiKey)
     }
 
-    constructor(planFragment: PlanFragment, target: LatLng) {
-        this.planFragment = planFragment
-
-        val main = planFragment.requireActivity() as MainActivity
-        routeViewModel = ViewModelProviders.of(main).get(RouteViewModel::class.java)
-        windViewModel = ViewModelProviders.of(main).get(WindViewModel::class.java)
-
-        // Get the OpenWeatherMap API key
-        apiKey = planFragment.resources.getString(R.string.owmApiKey)
-
+    constructor(planFragment: PlanFragment, target: LatLng) : this(planFragment) {
         // Calculate a route to the target
         calcRoute(target)
     }
