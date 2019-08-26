@@ -3,6 +3,7 @@ package me.chrislane.accudrop.presenter
 import android.location.Location
 import android.preference.PreferenceManager
 import android.util.Pair
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
 import me.chrislane.accudrop.MainActivity
@@ -35,19 +36,8 @@ class PlanPresenter(private val planFragment: PlanFragment) {
      * @param target The target landing coordinates.
      */
     fun calcRoute(target: LatLng) {
-        val windListener = { windTuple: Pair<Double, Double> ->
-            // Update the windViewModel
-            windViewModel.setWindSpeed(windTuple.first)
-            windViewModel.setWindDirection(windTuple.second)
-
-            // Run a route calculation task with the updated wind
-            val routeListener = { route: MutableList<Location> -> routeViewModel.setRoute(route) }
-            val context = planFragment.requireContext()
-            val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val resources = context.resources
-            RouteTask(routeListener, sharedPrefs, resources, windTuple).execute(target)
-        }
-        WindTask(windListener, this, apiKey).execute(target)
+        val callback = { windTuple: Pair<Double, Double>? -> windTaskCallback(target, windTuple) }
+        WindTask(callback, this, apiKey).execute(target)
     }
 
     /**
@@ -57,6 +47,23 @@ class PlanPresenter(private val planFragment: PlanFragment) {
      */
     fun setTaskRunning(taskRunning: Boolean) {
         planFragment.setProgressBarVisibility(taskRunning)
+    }
+
+
+    private fun windTaskCallback(target: LatLng, windTuple: Pair<Double, Double>?) {
+        if (windTuple != null) {
+            windViewModel.setWindSpeed(windTuple.first)
+            windViewModel.setWindDirection(windTuple.second)
+
+            // Run a route calculation task with the updated wind
+            val routeListener = { route: MutableList<Location> -> routeViewModel.setRoute(route) }
+            val context = planFragment.requireContext()
+            val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val resources = context.resources
+            RouteTask(routeListener, sharedPrefs, resources, windTuple).execute(target)
+        } else {
+            Toast.makeText(planFragment.requireContext(), "Failed to get wind data", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {

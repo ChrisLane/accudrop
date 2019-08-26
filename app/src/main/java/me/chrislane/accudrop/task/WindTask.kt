@@ -1,6 +1,5 @@
 package me.chrislane.accudrop.task
 
-import android.location.Location
 import android.os.AsyncTask
 import android.util.Log
 import android.util.Pair
@@ -22,7 +21,11 @@ import java.nio.charset.StandardCharsets
  *
  * Code is adapted from a [previous project.](https://github.com/ChrisLane/weather/)
  */
-class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng, Void, MutableList<Location>>, private val planPresenter: PlanPresenter, private val apiKey: String) : AsyncTask<LatLng, Void, JSONObject>() {
+class WindTask(
+        private val callback: (Pair<Double, Double>?) -> Unit,
+        private val planPresenter: PlanPresenter,
+        private val apiKey: String)
+    : AsyncTask<LatLng, Void, JSONObject>() {
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -54,11 +57,11 @@ class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng,
     override fun onPostExecute(json: JSONObject) {
         super.onPostExecute(json)
         Log.d(TAG, "Task post execute")
+        var result: Pair<Double, Double>? = null
 
         try {
             // Get wind properties
             val wind = json.getJSONObject("wind")
-
             val windSpeed = wind.getDouble("speed")
             val windDirection = wind.getDouble("deg")
 
@@ -67,12 +70,12 @@ class WindTask(private val listener: (Pair<Double, Double>) -> AsyncTask<LatLng,
             }
 
             // Run code that the caller wants to do on the result
-            listener(Pair(windSpeed, windDirection))
+            result = Pair(windSpeed, windDirection)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Log.i(TAG, "Failed to get wind data", e)
         }
 
-        // Task is no longer running
+        callback(result)
         planPresenter.setTaskRunning(false)
     }
 
