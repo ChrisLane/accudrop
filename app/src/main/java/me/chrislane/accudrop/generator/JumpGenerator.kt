@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.generator
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.location.Location
 import android.os.AsyncTask

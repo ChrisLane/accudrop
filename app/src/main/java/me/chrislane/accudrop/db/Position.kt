@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.db
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import java.util.*
 
 @Entity(tableName = "position", indices = [Index("jump_id")],

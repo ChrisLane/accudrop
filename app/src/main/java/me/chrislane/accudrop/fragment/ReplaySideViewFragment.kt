@@ -3,7 +3,7 @@ package me.chrislane.accudrop.fragment
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.widget.ImageView
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.presenter.ReplaySideViewPresenter

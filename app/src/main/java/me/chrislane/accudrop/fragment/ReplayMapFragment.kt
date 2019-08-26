@@ -3,9 +3,8 @@ package me.chrislane.accudrop.fragment
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
 import android.util.Log
+import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

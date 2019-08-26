@@ -1,10 +1,9 @@
 package me.chrislane.accudrop.presenter
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
-import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import me.chrislane.accudrop.fragment.ReplayMapFragment
 import me.chrislane.accudrop.viewmodel.ReplayViewModel
 import java.util.*

@@ -1,10 +1,9 @@
 package me.chrislane.accudrop.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.location.Location
-import android.support.v4.util.Pair
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import java.util.*
 
 class ReplayViewModel : ViewModel() {

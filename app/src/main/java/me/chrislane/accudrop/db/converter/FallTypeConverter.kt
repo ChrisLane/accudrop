@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.db.converter
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 
 import me.chrislane.accudrop.db.FallType
 

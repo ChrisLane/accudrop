@@ -1,6 +1,5 @@
 package me.chrislane.accudrop
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -8,19 +7,20 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.FileProvider
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.navigation.NavigationView
 import me.chrislane.accudrop.db.AccuDropDb
 import me.chrislane.accudrop.fragment.*
 import me.chrislane.accudrop.generator.JumpGenerator
@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
         }
-        fragmentManager.beginTransaction().replace(R.id.frame, fragment, currentFragmentTag).commit()
+        fragmentManager.beginTransaction().replace(R.id.frame, fragment!!, currentFragmentTag).commit()
 
         val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             fragment = MainFragment()
             currentFragmentTag = MainFragment::class.java.simpleName
         } else {
-            fragment = fragmentManager.findFragmentByTag(currentFragmentTag)
+            fragment = fragmentManager.findFragmentByTag(currentFragmentTag)!!
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.frame, fragment, currentFragmentTag)

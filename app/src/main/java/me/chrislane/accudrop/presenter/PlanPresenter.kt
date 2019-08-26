@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.presenter
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.location.Location
 import android.preference.PreferenceManager
 import android.util.Pair

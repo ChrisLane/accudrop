@@ -1,11 +1,11 @@
 package me.chrislane.accudrop.presenter
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.AsyncTask
-import android.support.v4.app.FragmentActivity
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.fragment.JumpStatsFragment

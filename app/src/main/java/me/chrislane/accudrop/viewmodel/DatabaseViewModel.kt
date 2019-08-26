@@ -1,10 +1,9 @@
 package me.chrislane.accudrop.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
 import android.location.Location
-import android.support.v4.util.Pair
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import me.chrislane.accudrop.db.AccuDropDb
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.db.Jump

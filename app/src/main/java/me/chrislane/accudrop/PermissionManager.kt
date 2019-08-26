@@ -3,11 +3,11 @@ package me.chrislane.accudrop
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 
 class PermissionManager(private val activity: Activity) : ActivityCompat.OnRequestPermissionsResultCallback {
     private val parentLayout: View = activity.findViewById(android.R.id.content)

@@ -2,7 +2,6 @@ package me.chrislane.accudrop.task
 
 import android.location.Location
 import android.os.AsyncTask
-import android.support.v4.util.Pair
 import android.util.Log
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel

@@ -1,11 +1,8 @@
 package me.chrislane.accudrop.fragment
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.*
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.util.Pair
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -14,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.SeekBar
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.Util
@@ -137,7 +136,7 @@ class RadarFragment : Fragment() {
         private var paint = Paint()
         private var textPaint = Paint()
         private var oval = RectF()
-        private var points: MutableList<Pair<UUID, PointF>> = mutableListOf()
+        private var points: MutableList<androidx.core.util.Pair<UUID, PointF>> = mutableListOf()
         private lateinit var event: MotionEvent
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -157,7 +156,7 @@ class RadarFragment : Fragment() {
             val xArea = 25f
             val yArea = 25f
 
-            var closestPoint: Pair<UUID, PointF>? = null
+            var closestPoint: androidx.core.util.Pair<UUID, PointF>? = null
             var bestScore = xArea + yArea
             for (userPoint in points) {
                 val point = userPoint.second
@@ -235,7 +234,7 @@ class RadarFragment : Fragment() {
                 canvas.drawText("Name", pointX, pointY, textPaint)
 
                 // Store user and circle position
-                points.add(Pair.create(guestsInView[i], PointF(pointX, pointY)))
+                points.add(androidx.core.util.Pair.create(guestsInView[i], PointF(pointX, pointY)))
                 i++
             }
         }

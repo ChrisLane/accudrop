@@ -1,12 +1,10 @@
 package me.chrislane.accudrop.presenter
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.AsyncTask
-import android.support.v4.util.Pair
 import android.util.Log
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.fragment.ReplayFragment

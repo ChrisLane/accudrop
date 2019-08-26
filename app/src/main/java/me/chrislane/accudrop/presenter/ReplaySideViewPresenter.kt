@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.presenter
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Point
 import android.graphics.PointF
 import android.os.AsyncTask
