@@ -150,9 +150,8 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
     private fun updateRoute(route: MutableList<Location>) {
         map.clear()
 
-        val unitString = preferences.getString("general_unit", "")
-
-        val unit = Util.getUnit(unitString!!)
+        val unitString = preferences.getString("general_unit", "")!!
+        val unit = Util.Unit.valueOf(unitString.toUpperCase())
 
         for (i in 0 until route.size - 1) {
             val point1 = route[i]

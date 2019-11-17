@@ -30,8 +30,8 @@ class JumpStatsFragment : Fragment() {
 
         // Get unit preference
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
-        val unitString = sharedPref.getString("general_unit", "")
-        unit = Util.getUnit(unitString)
+        val unitString = sharedPref.getString("general_unit", "")!!
+        unit = Util.Unit.valueOf(unitString.toUpperCase())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -93,8 +93,8 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
     fun updatePressureAltitude(altitude: Float) {
         Log.v(TAG, "Updating pressure altitude text.")
 
-        val unitString = preferences.getString("general_unit", "")
-        val unit = Util.getUnit(unitString)
+        val unitString = preferences.getString("general_unit", "")!!
+        val unit = Util.Unit.valueOf(unitString.toUpperCase())
 
         val text = jumpView.findViewById<TextView>(R.id.pressure_altitude)
         text.text = Util.getAltitudeText(java.lang.Double.valueOf(altitude.toDouble()), unit)
