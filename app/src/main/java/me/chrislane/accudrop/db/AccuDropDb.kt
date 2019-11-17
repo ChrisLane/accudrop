@@ -1,17 +1,15 @@
 package me.chrislane.accudrop.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import android.content.Context
-
 import me.chrislane.accudrop.db.converter.DateConverter
 import me.chrislane.accudrop.db.converter.FallTypeConverter
-import me.chrislane.accudrop.db.converter.UuidConverter
 
-@Database(entities = [Jump::class, Position::class, User::class], version = 9)
-@TypeConverters(DateConverter::class, UuidConverter::class, FallTypeConverter::class)
+@Database(entities = [Jump::class, Position::class], version = 9)
+@TypeConverters(DateConverter::class, FallTypeConverter::class)
 abstract class AccuDropDb : RoomDatabase() {
 
     /**
