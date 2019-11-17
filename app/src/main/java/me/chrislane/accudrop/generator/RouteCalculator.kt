@@ -34,21 +34,31 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         var glideRatio: Double
         try {
             // Unfortunately EditTextPreferences don't save in number format
-            p1Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_downwind_altitude",
-                    resources.getInteger(R.integer.pref_default_downwind_altitude).toString())).toDouble()
-            p2Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_crosswind_altitude",
-                    resources.getInteger(R.integer.pref_default_crosswind_altitude).toString())).toDouble()
-            p3Altitude = Integer.valueOf(sharedPreferences.getString("landing_pattern_upwind_altitude",
-                    resources.getInteger(R.integer.pref_default_upwind_altitude).toString())).toDouble()
+            p1Altitude = Integer
+                    .valueOf(
+                            sharedPreferences.getString(
+                                    "landing_pattern_downwind_altitude",
+                                    resources.getInteger(R.integer.pref_default_downwind_altitude).toString())!!)
+                    .toDouble()
+            p2Altitude = Integer.valueOf(
+                    sharedPreferences.getString(
+                            "landing_pattern_crosswind_altitude",
+                            resources.getInteger(R.integer.pref_default_crosswind_altitude).toString())!!)
+                    .toDouble()
+            p3Altitude = Integer.valueOf(
+                    sharedPreferences.getString(
+                            "landing_pattern_upwind_altitude",
+                            resources.getInteger(R.integer.pref_default_upwind_altitude).toString())!!)
+                    .toDouble()
 
             val typedValue = TypedValue()
             resources.getValue(R.integer.pref_default_airspeed, typedValue, false)
             airspeed = java.lang.Float.valueOf(sharedPreferences.getString("canopy_airspeed",
-                    typedValue.float.toString()))!!.toDouble()
+                    typedValue.float.toString())!!).toDouble()
 
             resources.getValue(R.integer.pref_default_glide_ratio, typedValue, false)
             glideRatio = java.lang.Float.valueOf(sharedPreferences.getString("canopy_glide_ratio",
-                    typedValue.float.toString()))!!.toDouble()
+                    typedValue.float.toString())!!).toDouble()
         } catch (e: NumberFormatException) {
             // The user entered something silly as a preference value
             Log.e(TAG, "Invalid number in preferences", e)

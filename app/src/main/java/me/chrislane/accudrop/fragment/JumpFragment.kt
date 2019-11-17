@@ -2,12 +2,9 @@ package me.chrislane.accudrop.fragment
 
 
 import android.app.ActivityManager
-import androidx.lifecycle.DefaultLifecycleObserver
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
-import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +13,9 @@ import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.ToggleButton
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.preference.PreferenceManager
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R

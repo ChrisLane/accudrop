@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.location.Location
 import android.os.AsyncTask
-import android.preference.PreferenceManager
 import android.util.Log
+import androidx.preference.PreferenceManager
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.db.Position

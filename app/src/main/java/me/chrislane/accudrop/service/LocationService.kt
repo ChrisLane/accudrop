@@ -9,9 +9,9 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.listener.ReadingListener
 import me.chrislane.accudrop.network.BroadcastReceiver

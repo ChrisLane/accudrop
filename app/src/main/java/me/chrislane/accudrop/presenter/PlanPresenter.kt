@@ -1,7 +1,7 @@
 package me.chrislane.accudrop.presenter
 
 import android.location.Location
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Pair
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders

@@ -3,7 +3,7 @@ package me.chrislane.accudrop.task
 import android.app.Application
 import android.location.Location
 import android.os.AsyncTask
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.util.Pair
 import com.google.android.gms.maps.model.LatLng
