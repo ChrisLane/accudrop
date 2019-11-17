@@ -162,7 +162,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_jump_stats -> JumpStatsFragment::class.java
             R.id.nav_landing_pattern -> PlanFragment::class.java
             R.id.nav_replay -> ReplayFragment::class.java
-            R.id.nav_radar -> RadarFragment::class.java
             R.id.nav_share -> return false
             else -> return false
         }
