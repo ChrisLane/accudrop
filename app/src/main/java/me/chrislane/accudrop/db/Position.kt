@@ -9,6 +9,8 @@ class Position {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
+    var useruuid: String? = null
+
     var altitude: Int? = null
 
     var vspeed: Double? = null

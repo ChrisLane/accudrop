@@ -215,6 +215,7 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
         pos.altitude = altitude?.toInt()
         pos.time = Date()
         pos.jumpId = jumpId!!
+        pos.useruuid = uuid
 
         if (isUnderCanopy) {
             pos.fallType = FallType.CANOPY
@@ -223,13 +224,14 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
         }
 
         val msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
+                "\tUser UUID: %s%n" +
                 "\tJump ID: %d%n" +
                 "\t(Lat, Long): (%f,%f)%n" +
                 "\tAltitude: %d%n" +
                 "\tTime: %s%n" +
                 "\tHorizontal Speed: %f%n" +
                 "\tVertical Speed: %f",
-                pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
+                pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
                 pos.hspeed, pos.vspeed)
         Log.v(TAG, msg)
 
