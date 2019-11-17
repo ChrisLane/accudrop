@@ -99,9 +99,11 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
             }
 
             // Add the position to the database
-            if (jumpId != null) {
-                addPositionToDb(jumpId, location, altitude, vSpeed)
+            if (jumpId != null && location != null && vSpeed != null) {
+                // TODO: Remove these non-null assertions
+                addPositionToDb(jumpId!!, location, altitude, vSpeed)
             }
+
 
             if (isGuidanceEnabled) {
                 if (coordSender != null && location != null) {
@@ -180,8 +182,9 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
         // Add entry to db
         if (location != null && logging) {
             val altitude = pressureViewModel.getLastAltitude().value
-            if (jumpId != null) {
-                addPositionToDb(jumpId, location, altitude, vSpeed)
+            if (jumpId != null && altitude != null && vSpeed != null) {
+                // TODO: Remove these non-null assertions
+                addPositionToDb(jumpId!!, location, altitude, vSpeed!!)
             }
 
             if (isGuidanceEnabled) {
@@ -202,26 +205,22 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
      * @param location The location of the position.
      * @param altitude The altitude of the position.
      */
-    private fun addPositionToDb(jumpId: Int?, location: Location?, altitude: Float?, vSpeed: Double?) {
+    private fun addPositionToDb(jumpId: Int, location: Location, altitude: Float, vSpeed: Double) {
         val settings = databaseViewModel.getApplication<Application>()
                 .getSharedPreferences("userInfo", Context.MODE_PRIVATE)
-        val uuid = settings.getString("userUUID", "")
+        val uuidString = settings.getString("userUUID", "")
+        val uuid = UUID.fromString(uuidString)
 
-        val pos = Position()
-        pos.latitude = location?.latitude
-        pos.longitude = location?.longitude
-        pos.hspeed = location?.speed
-        pos.vspeed = vSpeed
-        pos.altitude = altitude?.toInt()
-        pos.time = Date()
-        pos.jumpId = jumpId!!
-        pos.useruuid = uuid
-
-        if (isUnderCanopy) {
-            pos.fallType = FallType.CANOPY
-        } else {
-            pos.fallType = FallType.FREEFALL
-        }
+        val pos = Position(
+            jumpId = jumpId,
+            userUuid = uuid,
+            altitude = altitude.toInt(),
+            vSpeed = vSpeed,
+            hSpeed = location.speed,
+            latitude = location.latitude,
+            longitude = location.longitude,
+            time = Date(),
+            fallType = if (isUnderCanopy) FallType.CANOPY else FallType.FREEFALL)
 
         val msg = String.format(Locale.ENGLISH, "Inserting position:%n" +
                 "\tUser UUID: %s%n" +
@@ -231,8 +230,8 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
                 "\tTime: %s%n" +
                 "\tHorizontal Speed: %f%n" +
                 "\tVertical Speed: %f",
-                pos.useruuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
-                pos.hspeed, pos.vspeed)
+                pos.userUuid, pos.jumpId, pos.latitude, pos.longitude, pos.altitude, pos.time,
+                pos.hSpeed, pos.vSpeed)
         Log.v(TAG, msg)
 
         AsyncTask.execute { databaseViewModel.addPosition(pos) }

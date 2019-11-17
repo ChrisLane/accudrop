@@ -1,63 +1,65 @@
 package me.chrislane.accudrop.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import android.content.Context
-
 import me.chrislane.accudrop.db.converter.DateConverter
 import me.chrislane.accudrop.db.converter.FallTypeConverter
 import me.chrislane.accudrop.db.converter.UuidConverter
 
-@Database(entities = [Jump::class, Position::class, User::class], version = 9)
+@Database(entities = [Jump::class, Position::class, User::class], version = 10)
 @TypeConverters(DateConverter::class, UuidConverter::class, FallTypeConverter::class)
 abstract class AccuDropDb : RoomDatabase() {
 
-    /**
-     * Get a data access object for the `jump` table.
-     *
-     * @return A data access object for the `jump` table.
-     */
-    abstract fun jumpModel(): JumpDao
+  /**
+   * Get a data access object for the `jump` table.
+   *
+   * @return A data access object for the `jump` table.
+   */
+  abstract fun jumpModel(): JumpDao
+
+  /**
+   * Get a data access object for the `position` table.
+   *
+   * @return A data access object for the `position` table.
+   */
+  abstract fun locationModel(): PositionDao
+
+  companion object {
+
+    @Volatile
+    private var INSTANCE: AccuDropDb? = null
+    private const val DB_NAME = "accudrop.db"
 
     /**
-     * Get a data access object for the `position` table.
+     * Get an instance of the database.
      *
-     * @return A data access object for the `position` table.
+     * @param context A context in the application.
+     * @return An instance of an `AccuDropDb` database.
      */
-    abstract fun locationModel(): PositionDao
-
-    companion object {
-
-        private var instance: AccuDropDb? = null
-        private const val DB_NAME = "accudrop"
-
-        /**
-         * Get an instance of the database.
-         *
-         * @param context A context in the application.
-         * @return An instance of an `AccuDropDb` database.
-         */
-        fun getDatabase(context: Context): AccuDropDb {
-
-            if (instance == null) {
-                instance = Room.databaseBuilder<AccuDropDb>(context.applicationContext, AccuDropDb::class.java, DB_NAME)
-                        .fallbackToDestructiveMigration()
-                        .build()
-            }
-            return instance as AccuDropDb
+    fun getInstance(context: Context): AccuDropDb =
+        INSTANCE ?: synchronized(this) {
+          INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
         }
 
-        /**
-         * Remove the database instance.
-         */
-        fun destroyInstance() {
-            instance = null
-        }
+    private fun buildDatabase(context: Context) =
+        Room.databaseBuilder(
+            context.applicationContext,
+            AccuDropDb::class.java, DB_NAME)
+            .build()
 
-        fun clearDatabase(context: Context) {
-            context.deleteDatabase(DB_NAME)
-        }
+
+    /**
+     * Remove the database instance.
+     */
+    fun destroyInstance() {
+      INSTANCE = null
     }
+
+    fun clearDatabase(context: Context) {
+      context.deleteDatabase(DB_NAME)
+    }
+  }
 }

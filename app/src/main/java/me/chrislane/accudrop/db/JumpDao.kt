@@ -38,7 +38,7 @@ interface JumpDao {
      * @param id The jump ID of the record.
      * @return A `LiveData` object containing the jump record.
      */
-    @Query("SELECT * FROM jump " + "WHERE id = :id")
+    @Query("SELECT * FROM jump WHERE id = :id")
     fun findJumpWithId(id: Int): LiveData<Jump>
 
     /**
@@ -46,9 +46,7 @@ interface JumpDao {
      *
      * @return A `LiveData` object containing the last jump.
      */
-    @Query("SELECT * FROM jump " +
-            "WHERE id IN ( " +
-            "SELECT MAX(id) FROM jump ) ")
+    @Query("SELECT * FROM jump WHERE id IN (SELECT MAX(id) FROM jump) ")
     fun findLastJump(): LiveData<Jump>
 
     /**
@@ -67,7 +65,7 @@ interface JumpDao {
     @Query("SELECT MAX(id) FROM jump")
     fun findLastJumpId(): LiveData<Int>
 
-    @Query("SELECT EXISTS(SELECT * FROM jump " + "WHERE id = :id)")
+    @Query("SELECT EXISTS(SELECT * FROM jump WHERE id = :id)")
     fun jumpExists(id: Int): Boolean?
 
     /**

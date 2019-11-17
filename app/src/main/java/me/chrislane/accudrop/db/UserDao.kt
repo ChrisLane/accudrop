@@ -8,9 +8,10 @@ import java.util.*
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM user")
-    fun findAllUsers(): LiveData<User>
+  @Query("SELECT * FROM user")
+  fun findAllUsers(): LiveData<User>
 
-    @Query("SELECT name FROM user " + "WHERE uuid = :uuid")
-    fun findNameFromUUID(uuid: UUID): LiveData<String>
+  @Query("SELECT first_name, last_name FROM user WHERE uuid = :uuid")
+  fun findNameFromUUID(uuid: UUID): LiveData<String>
+
 }

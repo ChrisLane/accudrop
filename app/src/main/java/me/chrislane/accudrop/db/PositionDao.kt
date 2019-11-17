@@ -23,7 +23,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find locations for.
      * @return A `LiveData` object containing a list of location records for the jump number.
      */
-    @Query("SELECT * FROM position " + "WHERE jump_id = :jumpNumber ")
+    @Query("SELECT * FROM position WHERE jump_id = :jumpNumber ")
     fun findLocationsByJumpNumber(jumpNumber: Int): LiveData<MutableList<Position>>
 
     /**
@@ -32,13 +32,13 @@ interface PositionDao {
      * @param jumpNumber The jump number to find locations for.
      * @return A list of location records for the jump number.
      */
-    @Query("SELECT * FROM position " + "WHERE jump_id = :jumpNumber ")
+    @Query("SELECT * FROM position WHERE jump_id = :jumpNumber ")
     fun getLocationsByJumpNumber(jumpNumber: Int): MutableList<Position>
 
 
-    @Query("SELECT useruuid FROM position " +
+    @Query("SELECT user_uuid FROM position " +
             "WHERE jump_id = :jumpNumber " +
-            "GROUP BY useruuid")
+            "GROUP BY user_uuid")
     fun getUsersForJump(jumpNumber: Int): MutableList<String>
 
     /**
@@ -47,7 +47,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the maximum latitude for.
      * @return The maximum latitude for a jump number.
      */
-    @Query("SELECT MAX(latitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MAX(latitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMaxLatitudeByJumpNumber(jumpNumber: Int): Double?
 
     /**
@@ -56,7 +56,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the minimum latitude for.
      * @return The minimum latitude for a jump number.
      */
-    @Query("SELECT MIN(latitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MIN(latitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMinLatitudeByJumpNumber(jumpNumber: Int): Double?
 
     /**
@@ -65,7 +65,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the maximum longitude for.
      * @return The maximum longitude for a jump number.
      */
-    @Query("SELECT MAX(longitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MAX(longitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMaxLongitudeByJumpNumber(jumpNumber: Int): Double?
 
     /**
@@ -74,7 +74,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the minimum longitude for.
      * @return The minimum longitude for a jump number.
      */
-    @Query("SELECT MIN(longitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MIN(longitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMinLongitudeByJumpNumber(jumpNumber: Int): Double?
 
     /**
@@ -83,7 +83,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the maximum altitude for.
      * @return The maximum altitude for a jump number.
      */
-    @Query("SELECT MAX(altitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MAX(altitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMaxAltitudeByJumpNumber(jumpNumber: Int): Int?
 
     /**
@@ -92,7 +92,7 @@ interface PositionDao {
      * @param jumpNumber The jump number to find the minimum altitude for.
      * @return The minimum altitude for a jump number.
      */
-    @Query("SELECT MIN(altitude) FROM position " + "WHERE jump_id = :jumpNumber")
+    @Query("SELECT MIN(altitude) FROM position WHERE jump_id = :jumpNumber")
     fun getMinAltitudeByJumpNumber(jumpNumber: Int): Int?
 
     /**
@@ -116,9 +116,7 @@ interface PositionDao {
      * @param jumpNumber The jump number.
      * @return A list of positions ordered by timestamp.
      */
-    @Query("SELECT * FROM position " +
-            "WHERE useruuid = :uuid AND jump_id = :jumpNumber " +
-            "ORDER BY time ASC")
+    @Query("SELECT * FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
     fun getOrderedLocationsByUserByJumpNumber(uuid: UUID, jumpNumber: Int): MutableList<Position>
 
     /**
@@ -129,26 +127,24 @@ interface PositionDao {
      * @param jumpNumber The jump number.
      * @return A list of positions ordered by timestamp.
      */
-    @Query("SELECT * FROM position " +
-            "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber " +
-            "ORDER BY time ASC")
+    @Query("SELECT * FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
     fun getOrderedTypeLocationsByUserByJumpNumber(fallType: FallType, uuid: UUID, jumpNumber: Int): MutableList<Position>
 
-    @Query("SELECT MIN(time) FROM position " + "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MIN(time) FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber")
     fun getFirstDateForUser(uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(time) FROM position " + "WHERE useruuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(time) FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber")
     fun getLastDateForUser(uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MIN(time) FROM position " + "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MIN(time) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
     fun getFirstDateForUser(fallType: FallType, uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(time) FROM position " + "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(time) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
     fun getLastDateForUser(fallType: FallType, uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(vspeed) FROM position " + "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber ")
+    @Query("SELECT MAX(vertical_speed) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber ")
     fun getMaxVSpeed(fallType: FallType, uuid: UUID, jumpNumber: Int): Double?
 
-    @Query("SELECT MAX(hspeed) FROM position " + "WHERE fallType = :fallType AND useruuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(horizontal_speed) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
     fun getMaxHSpeed(fallType: FallType, uuid: UUID, jumpNumber: Int): Float?
 }

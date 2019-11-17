@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "jump")
-class Jump {
-    @PrimaryKey
-    var id: Int = 0
-
-    var time: Date? = null
-}
+data class Jump(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val time: Date)

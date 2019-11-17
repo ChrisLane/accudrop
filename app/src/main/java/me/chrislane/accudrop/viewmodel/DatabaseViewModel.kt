@@ -11,7 +11,7 @@ import me.chrislane.accudrop.db.Position
 import java.util.*
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
-    private val db: AccuDropDb = AccuDropDb.getDatabase(application)
+    private val db: AccuDropDb = AccuDropDb.getInstance(application)
 
     /**
      * Get the last jump ID.
@@ -59,9 +59,9 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
     fun addJump() {
         val lastJumpId = db.jumpModel().lastJumpId
 
-        val jump = Jump()
-        jump.id = if (lastJumpId != null) lastJumpId + 1 else 1
-        jump.time = Date()
+        val jump = Jump(
+            id = if (lastJumpId != null) lastJumpId + 1 else 1,
+            time = Date())
 
         db.jumpModel().insertJump(jump)
     }

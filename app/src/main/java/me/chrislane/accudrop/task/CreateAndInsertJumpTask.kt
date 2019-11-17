@@ -26,9 +26,9 @@ class CreateAndInsertJumpTask(private val databaseViewModel: DatabaseViewModel, 
     }
 
     override fun onPostExecute(result: Int) {
-        val jump = Jump()
-        jump.id = result
-        jump.time = Date()
+        val jump = Jump(
+            id = result,
+            time = Date())
 
         createListener(result)
 

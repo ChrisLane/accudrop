@@ -23,17 +23,16 @@ class AddGeneratedPositionsTask(private val jumpId: Int, private val uuid: UUID,
         // Add "Freefall" data (shift landing pattern up in altitude)
         for (i in route.indices) {
             val location = route[i]
-            val pos = Position()
-            pos.latitude = location.latitude
-            pos.longitude = location.longitude
-            pos.altitude = location.altitude.toInt() + 1000
-            pos.time = date.clone() as Date
-            //pos.time = new Date();
-            pos.jumpId = jumpId
-            pos.useruuid = uuid.toString()
-            pos.vspeed = 54.0
-            pos.hspeed = 4f
-            pos.fallType = FallType.FREEFALL
+            val pos = Position(
+                jumpId = jumpId,
+                userUuid = uuid,
+                altitude = location.altitude.toInt() + 1000,
+                vSpeed = 54.0,
+                hSpeed = 4f,
+                latitude = location.latitude,
+                longitude = location.longitude,
+                time = date.clone() as Date,
+                fallType = FallType.FREEFALL)
 
             databaseViewModel.addPosition(pos)
 
@@ -44,17 +43,16 @@ class AddGeneratedPositionsTask(private val jumpId: Int, private val uuid: UUID,
         // Add canopy data
         for (i in route.indices) {
             val location = route[i]
-            val pos = Position()
-            pos.latitude = location.latitude
-            pos.longitude = location.longitude
-            pos.altitude = location.altitude.toInt()
-            pos.time = date.clone() as Date
-            //pos.time = new Date();
-            pos.jumpId = jumpId
-            pos.useruuid = uuid.toString()
-            pos.vspeed = 15.4 / 2.5
-            pos.hspeed = 15.4f + 2f
-            pos.fallType = FallType.CANOPY
+            val pos = Position(
+                jumpId = jumpId,
+                userUuid = uuid,
+                altitude = location.altitude.toInt(),
+                vSpeed = 15.4 / 2.5,
+                hSpeed = 15.4f + 2f,
+                latitude = location.latitude,
+                longitude = location.longitude,
+                time = date.clone() as Date,
+                fallType = FallType.CANOPY)
 
             databaseViewModel.addPosition(pos)
 
