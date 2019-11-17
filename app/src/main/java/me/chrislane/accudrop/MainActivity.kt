@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
@@ -32,7 +33,6 @@ import java.util.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentFragmentTag: String? = null
     lateinit var permissionManager: PermissionManager
-        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +52,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-        if (savedInstanceState != null) {
-            currentFragmentTag = savedInstanceState.getString("currentFragmentTag")
+        val savedFragmentTag = savedInstanceState?.getString("currentFragmentTag")
+        if (savedFragmentTag != null) {
+            currentFragmentTag = savedFragmentTag
         }
 
         // Check that the device has a barometer.
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         // Initialise preferences
-        initPreferences()
+        initPreferences(this)
 
         // Create or get ViewModels
         ViewModelProviders.of(this).get<PressureViewModel>(PressureViewModel::class.java)
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ViewModelProviders.of(this).get<WindViewModel>(WindViewModel::class.java)
 
         // Set the fragment to be displayed
-        setCurrentFragment()
+        setCurrentFragment(currentFragmentTag, supportFragmentManager)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.email_database_file -> {
-                emailDatabaseFile()
+                emailDatabaseFile(this)
                 return true
             }
             R.id.generate_jump -> {
@@ -143,28 +144,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun emailDatabaseFile() {
-        try {
-            val data = Environment.getDataDirectory()
-
-            val currentDBPath = ("//data//" + "me.chrislane.accudrop" + "//databases//" + "accudrop")
-            val currentDB = File(data, currentDBPath)
-
-            val u = FileProvider.getUriForFile(this, "me.chrislane.accudrop.DbFileProvider", currentDB)
-            val i = Intent(Intent.ACTION_SEND)
-            i.type = "application/x-sqlite3"
-            i.putExtra(Intent.EXTRA_EMAIL, arrayOf("chris@chrislane.com"))
-            i.putExtra(Intent.EXTRA_SUBJECT, "AccuDrop Database File")
-            i.putExtra(Intent.EXTRA_TEXT, "Date: " + Date().toString())
-            i.putExtra(Intent.EXTRA_STREAM, u)
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivity(Intent.createChooser(i, "Email:"))
-        } catch (e: Exception) {
-            Log.e(TAG, "emailDatabaseFile: ", e)
-        }
-
     }
 
     /**
@@ -207,41 +186,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    /**
-     *
-     * Set the current fragment to be displayed based on app state.
-     *
-     * If the app does not have a previously saved fragment tag, the default fragment will be
-     * created and displayed, otherwise, the saved fragment will be displayed.
-     */
-    private fun setCurrentFragment() {
-        val fragmentManager = supportFragmentManager
-        val fragment: Fragment
-
-        if (currentFragmentTag == null) {
-            fragment = MainFragment()
-            currentFragmentTag = MainFragment::class.java.simpleName
-        } else {
-            fragment = fragmentManager.findFragmentByTag(currentFragmentTag)!!
-        }
-        fragmentManager.beginTransaction()
-                .replace(R.id.frame, fragment, currentFragmentTag)
-                .commit()
-    }
-
-    /**
-     * Initialise the app preferences.
-     */
-    private fun initPreferences() {
-        PreferenceManager.setDefaultValues(this, R.xml.pref_canopy, true)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_general, true)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_guidance, true)
-        PreferenceManager.setDefaultValues(this, R.xml.pref_landing_pattern, true)
-        val settings = getSharedPreferences("userInfo", Context.MODE_PRIVATE)
-        if (!settings.contains("userUUID")) {
-            settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply()
-        }
-    }
 
     /**
      *
@@ -257,6 +201,60 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     companion object {
-        private val TAG = MainActivity::class.java.simpleName
+        private val TAG = MainActivity::class.java.simpleName;
+
+        /**
+         * Initialise the app preferences.
+         */
+        private fun initPreferences(context: Context) {
+            PreferenceManager.setDefaultValues(context, R.xml.pref_canopy, true)
+            PreferenceManager.setDefaultValues(context, R.xml.pref_general, true)
+            PreferenceManager.setDefaultValues(context, R.xml.pref_guidance, true)
+            PreferenceManager.setDefaultValues(context, R.xml.pref_landing_pattern, true)
+            val settings = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+            if (!settings.contains("userUUID")) {
+                settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply()
+            }
+        }
+
+        /**
+         *
+         * Set the current fragment to be displayed based on app state.
+         *
+         * If the app does not have a previously saved fragment tag, the default fragment will be
+         * created and displayed, otherwise, the saved fragment will be displayed.
+         */
+        private fun setCurrentFragment(currentFragmentTag: String?, fragmentManager: FragmentManager) {
+            val fragment: Fragment = if (currentFragmentTag == null) {
+                MainFragment()
+            } else {
+                fragmentManager.findFragmentByTag(currentFragmentTag)!!
+            }
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame, fragment, currentFragmentTag)
+                    .commit()
+        }
+
+        private fun emailDatabaseFile(context: Context) {
+            try {
+                val data = Environment.getDataDirectory()
+
+                val currentDBPath = ("//data//" + "me.chrislane.accudrop" + "//databases//" + "accudrop")
+                val currentDB = File(data, currentDBPath)
+
+                val u = FileProvider.getUriForFile(context, "me.chrislane.accudrop.DbFileProvider", currentDB)
+                val i = Intent(Intent.ACTION_SEND)
+                i.type = "application/x-sqlite3"
+                i.putExtra(Intent.EXTRA_EMAIL, arrayOf("chris@chrislane.com"))
+                i.putExtra(Intent.EXTRA_SUBJECT, "AccuDrop Database File")
+                i.putExtra(Intent.EXTRA_TEXT, "Date: " + Date().toString())
+                i.putExtra(Intent.EXTRA_STREAM, u)
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.startActivity(Intent.createChooser(i, "Email:"))
+            } catch (e: Exception) {
+                Log.e(TAG, "emailDatabaseFile: ", e)
+            }
+        }
     }
 }

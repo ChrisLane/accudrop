@@ -21,7 +21,7 @@ class PermissionManager(private val activity: Activity) : ActivityCompat.OnReque
         val hasPermission = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
         if (BuildConfig.DEBUG) {
-            Log.i(TAG, "App has location permission: " + hasPermission.toString())
+            Log.i(TAG, "App has location permission: $hasPermission")
         }
 
         return hasPermission
@@ -49,7 +49,7 @@ class PermissionManager(private val activity: Activity) : ActivityCompat.OnReque
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
             when (requestCode) {
-                PermissionManager.PERMISSIONS_REQUEST_LOCATION -> {
+                PERMISSIONS_REQUEST_LOCATION -> {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                                     Manifest.permission.ACCESS_FINE_LOCATION)) {
                         Log.d(TAG, "Requesting location permission.")
@@ -57,7 +57,7 @@ class PermissionManager(private val activity: Activity) : ActivityCompat.OnReque
                                 Snackbar.LENGTH_INDEFINITE).setAction("OK") {
                             ActivityCompat.requestPermissions(activity,
                                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                    PermissionManager.PERMISSIONS_REQUEST_LOCATION)
+                                    PERMISSIONS_REQUEST_LOCATION)
                         }.show()
                     }
                 }
