@@ -32,7 +32,7 @@ abstract class AccuDropDb : RoomDatabase() {
   companion object {
 
     @Volatile
-    private var INSTANCE: AccuDropDb? = null
+    private var instance: AccuDropDb? = null
     private const val DB_NAME = "accudrop.db"
 
     /**
@@ -42,8 +42,8 @@ abstract class AccuDropDb : RoomDatabase() {
      * @return An instance of an `AccuDropDb` database.
      */
     fun getInstance(context: Context): AccuDropDb =
-        INSTANCE ?: synchronized(this) {
-          INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
+        instance ?: synchronized(this) {
+          instance ?: buildDatabase(context).also { instance = it }
         }
 
     private fun buildDatabase(context: Context) =
@@ -57,7 +57,7 @@ abstract class AccuDropDb : RoomDatabase() {
      * Remove the database instance.
      */
     fun destroyInstance() {
-      INSTANCE = null
+      instance = null
     }
 
     fun clearDatabase(context: Context) {
