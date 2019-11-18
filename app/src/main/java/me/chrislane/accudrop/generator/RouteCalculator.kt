@@ -9,7 +9,7 @@ import android.util.TypedValue
 import com.google.android.gms.maps.model.LatLng
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.R
-import me.chrislane.accudrop.Util
+import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 
 class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources,
@@ -230,7 +230,7 @@ class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources
         fun getPosAfterMove(initialPosition: LatLng, distance: Double, bearing: Double): LatLng {
             val R = 6378.1 // Radius of Earth
             val b = Math.toRadians(bearing) // Bearing is converted to radians.
-            val d = Util.metresToKilometres(distance) // Distance in km
+            val d = DistanceAndSpeedUtil.metresToKilometres(distance) // Distance in km
 
             val lat1 = Math.toRadians(initialPosition.latitude) // Initial latitude converted to radians
             val lon1 = Math.toRadians(initialPosition.longitude) // Initial longitude converted to radians

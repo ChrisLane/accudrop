@@ -11,7 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import me.chrislane.accudrop.R
-import me.chrislane.accudrop.Util
+import me.chrislane.accudrop.UnitType
+import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.presenter.JumpStatsPresenter
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -22,7 +23,7 @@ class JumpStatsFragment : Fragment() {
     private lateinit var statsView: View
     private var prevButton: ImageButton? = null
     private var nextButton: ImageButton? = null
-    private lateinit var unit: Util.Unit
+    private lateinit var unit: UnitType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +32,7 @@ class JumpStatsFragment : Fragment() {
         // Get unit preference
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val unitString = sharedPref.getString("general_unit", "")!!
-        unit = Util.Unit.valueOf(unitString.toUpperCase())
+        unit = UnitType.valueOf(unitString.toUpperCase())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +55,8 @@ class JumpStatsFragment : Fragment() {
     }
 
     fun updateExitAltitude(altitude: Int) {
-        val formatted = Util.getAltitudeText(Util.getAltitudeInUnit(altitude.toDouble(), unit), unit)
+        val formatted = DistanceAndSpeedUtil
+            .getAltitudeText(DistanceAndSpeedUtil.getAltitudeInUnit(altitude.toDouble(), unit), unit)
         val value: TextView? = statsView.findViewById(R.id.exit_altitude_value)
         value?.text = formatted
     }
@@ -84,25 +86,29 @@ class JumpStatsFragment : Fragment() {
     }
 
     fun updateCanopyVSpeed(vSpeed: Double) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit)
+        val formatted = DistanceAndSpeedUtil
+            .getSpeedText(DistanceAndSpeedUtil.getSpeedInUnit(vSpeed, unit), unit)
         val textView: TextView? = statsView.findViewById(R.id.canopy_max_vspeed_value)
         textView?.text = formatted
     }
 
     fun updateCanopyHSpeed(hSpeed: Float) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
+        val formatted = DistanceAndSpeedUtil
+            .getSpeedText(DistanceAndSpeedUtil.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
         val textView: TextView? = statsView.findViewById(R.id.canopy_max_hspeed_value)
         textView?.text = formatted
     }
 
     fun updateFreefallVSpeed(vSpeed: Double) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(vSpeed, unit), unit)
+        val formatted = DistanceAndSpeedUtil
+            .getSpeedText(DistanceAndSpeedUtil.getSpeedInUnit(vSpeed, unit), unit)
         val textView: TextView? = statsView.findViewById(R.id.freefall_max_vspeed_value)
         textView?.text = formatted
     }
 
     fun updateFreefallHSpeed(hSpeed: Float) {
-        val formatted = Util.getSpeedText(Util.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
+        val formatted = DistanceAndSpeedUtil
+            .getSpeedText(DistanceAndSpeedUtil.getSpeedInUnit(hSpeed.toDouble(), unit), unit)
         val textView: TextView? = statsView.findViewById(R.id.freefall_max_hspeed_value)
         textView?.text = formatted
     }

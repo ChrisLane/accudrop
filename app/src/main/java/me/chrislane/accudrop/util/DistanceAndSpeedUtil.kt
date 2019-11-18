@@ -1,11 +1,12 @@
-package me.chrislane.accudrop
+package me.chrislane.accudrop.util
 
+import me.chrislane.accudrop.UnitType
 import java.util.*
 
-class Util {
+class DistanceAndSpeedUtil {
     companion object {
 
-        private val TAG = Util::class.java.simpleName
+        private val TAG = DistanceAndSpeedUtil::class.java.simpleName
 
         /**
          * Convert metres to feet.
@@ -34,7 +35,7 @@ class Util {
          * @param unit     The unit of measurement.
          * @return A formatted string containing the altitude.
          */
-        fun getAltitudeText(altitude: Double?, unit: Unit): String {
+        fun getAltitudeText(altitude: Double?, unit: UnitType): String {
             return String.format(Locale.ENGLISH, "%.0f %s", altitude, unit.altitudeSymbol)
         }
 
@@ -45,19 +46,19 @@ class Util {
          * @param unit  The unit of measurement.
          * @return A formatted string containing the speed.
          */
-        fun getSpeedText(speed: Double?, unit: Unit): String {
+        fun getSpeedText(speed: Double?, unit: UnitType): String {
             return String.format(Locale.ENGLISH, "%.0f %s", speed, unit.speedSymbol)
         }
 
-        fun getSpeedInUnit(speed: Double, unit: Unit): Double {
-            return if (unit == Unit.IMPERIAL) {
+        fun getSpeedInUnit(speed: Double, unit: UnitType): Double {
+            return if (unit == UnitType.IMPERIAL) {
                 msToMph(speed)
             } else speed
 
         }
 
-        fun getAltitudeInUnit(altitude: Double, unit: Unit): Double {
-            return if (unit == Unit.IMPERIAL) {
+        fun getAltitudeInUnit(altitude: Double, unit: UnitType): Double {
+            return if (unit == UnitType.IMPERIAL) {
                 metresToFeet(altitude)
             } else altitude
         }
@@ -89,11 +90,4 @@ class Util {
 
     }
 
-    /**
-     * Types of unit of measurement.
-     */
-    enum class Unit(val altitudeSymbol: String, val speedSymbol: String) {
-        METRIC("m", "m/s"),
-        IMPERIAL("ft", "mph");
-    }
 }

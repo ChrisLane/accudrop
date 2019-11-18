@@ -4,7 +4,7 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.os.AsyncTask
 import android.util.Log
-import me.chrislane.accudrop.Util
+import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.viewmodel.ReplayViewModel
 
 class ProduceSideViewTask(private val width: Int, private val height: Int, private val margin: Int,
@@ -62,8 +62,10 @@ class ProduceSideViewTask(private val width: Int, private val height: Int, priva
                 // Generate screen points
                 var j = 0
                 while (j < mapPoints.size && j < locations.size) {
-                    var x = Util.getScaledValue(mapPoints[j].x.toDouble(), minX.toDouble(), maxX.toDouble(), min.toDouble(), max.toDouble())
-                    val y = Util.getScaledValue(locations[j].altitude, minAltitude, maxAltitude, min.toDouble(), max.toDouble())
+                    var x = DistanceAndSpeedUtil
+                        .getScaledValue(mapPoints[j].x.toDouble(), minX.toDouble(), maxX.toDouble(), min.toDouble(), max.toDouble())
+                    val y = DistanceAndSpeedUtil
+                        .getScaledValue(locations[j].altitude, minAltitude, maxAltitude, min.toDouble(), max.toDouble())
                     x += (diff / 2f).toDouble()
                     screenPos.add(PointF(x.toFloat(), (height - y).toFloat()))
                     j++

@@ -24,7 +24,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R
-import me.chrislane.accudrop.Util
+import me.chrislane.accudrop.UnitType
+import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.presenter.PlanPresenter
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 import me.chrislane.accudrop.viewmodel.RouteViewModel
@@ -151,7 +152,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
         map.clear()
 
         val unitString = preferences.getString("general_unit", "")!!
-        val unit = Util.Unit.valueOf(unitString.toUpperCase())
+        val unit = UnitType.valueOf(unitString.toUpperCase())
 
         for (i in 0 until route.size - 1) {
             val point1 = route[i]
@@ -162,8 +163,9 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
                     .color(Color.RED))
             map.addMarker(MarkerOptions()
                     .position(GnssViewModel.getLatLng(point1))
-                    .title(Util.getAltitudeText(
-                            Util.getAltitudeInUnit(point1.altitude, unit), unit))
+                    .title(
+                        DistanceAndSpeedUtil.getAltitudeText(
+                            DistanceAndSpeedUtil.getAltitudeInUnit(point1.altitude, unit), unit))
             )
         }
 

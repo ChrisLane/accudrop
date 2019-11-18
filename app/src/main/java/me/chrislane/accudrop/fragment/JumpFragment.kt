@@ -16,12 +16,10 @@ import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.preference.PreferenceManager
-import me.chrislane.accudrop.BuildConfig
-import me.chrislane.accudrop.MainActivity
-import me.chrislane.accudrop.R
-import me.chrislane.accudrop.Util
+import me.chrislane.accudrop.*
 import me.chrislane.accudrop.presenter.JumpPresenter
 import me.chrislane.accudrop.service.LocationService
+import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 
 class JumpFragment : Fragment(), DefaultLifecycleObserver {
     private lateinit var jumpView: View
@@ -94,10 +92,10 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
         Log.v(TAG, "Updating pressure altitude text.")
 
         val unitString = preferences.getString("general_unit", "")!!
-        val unit = Util.Unit.valueOf(unitString.toUpperCase())
+        val unit = UnitType.valueOf(unitString.toUpperCase())
 
         val text = jumpView.findViewById<TextView>(R.id.pressure_altitude)
-        text.text = Util.getAltitudeText(java.lang.Double.valueOf(altitude.toDouble()), unit)
+        text.text = DistanceAndSpeedUtil.getAltitudeText(java.lang.Double.valueOf(altitude.toDouble()), unit)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
