@@ -243,7 +243,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             try {
                 val data = Environment.getDataDirectory()
 
-                val currentDBPath = ("//data//" + "me.chrislane.accudrop" + "//databases//" + "accudrop")
+                val currentDBPath = ("//data//" + "me.chrislane.accudrop" + "//databases//" + "accudrop.db")
                 val currentDB = File(data, currentDBPath)
 
                 val u = FileProvider.getUriForFile(context, "me.chrislane.accudrop.DbFileProvider", currentDB)

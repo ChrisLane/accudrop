@@ -41,17 +41,18 @@ abstract class AccuDropDb : RoomDatabase() {
      * @param context A context in the application.
      * @return An instance of an `AccuDropDb` database.
      */
-    fun getInstance(context: Context): AccuDropDb =
-        instance ?: synchronized(this) {
-          instance ?: buildDatabase(context).also { instance = it }
-        }
+    fun getInstance(context: Context): AccuDropDb {
+      return instance ?: synchronized(this) {
+        instance ?: buildDatabase(context).also { instance = it }
+      }
+    }
 
-    private fun buildDatabase(context: Context) =
-        Room.databaseBuilder(
-            context.applicationContext,
-            AccuDropDb::class.java, DB_NAME)
-            .build()
-
+    private fun buildDatabase(context: Context): AccuDropDb {
+      return Room.databaseBuilder(
+          context.applicationContext,
+          AccuDropDb::class.java, DB_NAME)
+          .build()
+    }
 
     /**
      * Remove the database instance.
