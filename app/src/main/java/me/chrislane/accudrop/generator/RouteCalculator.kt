@@ -12,6 +12,7 @@ import me.chrislane.accudrop.R
 import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 
+// TODO: Remove prefs and resources to pass in only basic data
 class RouteCalculator(sharedPreferences: SharedPreferences, resources: Resources,
                       wind: Pair<Double, Double>, private var target: LatLng) {
     private val route = mutableListOf<Location>()

@@ -44,17 +44,21 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
         return db.jumpModel().findLastJumpId()
     }
 
+    suspend fun getLastJumpId(): Int? {
+        return db.jumpModel().getLastJumpId()
+    }
+
     /**
      * Add a jump to the database.
      *
      * @param jump The jump to add to the database.
      */
-    fun addJump(jump: Jump) {
+    suspend fun addJump(jump: Jump) {
         db.jumpModel().insertJump(jump)
     }
 
-    fun addJump() {
-        val lastJumpId = db.jumpModel().lastJumpId
+    suspend fun addJump() {
+        val lastJumpId = db.jumpModel().getLastJumpId()
 
         val jump = Jump(
             id = if (lastJumpId != null) lastJumpId + 1 else 1,
@@ -254,7 +258,7 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
      *
      * @param position The position to add to the database.
      */
-    fun addPosition(position: Position) {
+    suspend fun addPosition(position: Position) {
         db.locationModel().insertPosition(position)
     }
 

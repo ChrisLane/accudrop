@@ -65,6 +65,9 @@ interface JumpDao {
     @Query("SELECT MAX(id) FROM jump")
     fun findLastJumpId(): LiveData<Int>
 
+    @Query("SELECT MAX(id) FROM jump")
+    suspend fun getLastJumpId(): Int?
+
     @Query("SELECT EXISTS(SELECT * FROM jump WHERE id = :id)")
     fun jumpExists(id: Int): Boolean?
 
@@ -74,7 +77,7 @@ interface JumpDao {
      * @param jump The jump to insert.
      */
     @Insert
-    fun insertJump(jump: Jump)
+    suspend fun insertJump(jump: Jump)
 
     /**
      * Delete all jump records.

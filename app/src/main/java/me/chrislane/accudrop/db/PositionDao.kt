@@ -101,7 +101,7 @@ interface PositionDao {
      * @param position The position to insert.
      */
     @Insert
-    fun insertPosition(position: Position)
+    suspend fun insertPosition(position: Position)
 
     /**
      * Delete all position records.

@@ -3,7 +3,6 @@ package me.chrislane.accudrop.listener
 import android.app.Application
 import android.content.Context
 import android.location.Location
-import android.os.AsyncTask
 import android.util.Log
 import androidx.preference.PreferenceManager
 import me.chrislane.accudrop.BuildConfig
@@ -234,7 +233,8 @@ class ReadingListener(private val gnssViewModel: GnssViewModel, private val pres
                 pos.hSpeed, pos.vSpeed)
         Log.v(TAG, msg)
 
-        AsyncTask.execute { databaseViewModel.addPosition(pos) }
+        // TODO: Make this handle the suspend function
+        //AsyncTask.execute { databaseViewModel.addPosition(pos) }
     }
 
     /**

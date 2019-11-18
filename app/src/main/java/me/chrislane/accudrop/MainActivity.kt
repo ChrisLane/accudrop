@@ -20,9 +20,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.launch
 import me.chrislane.accudrop.db.AccuDropDb
 import me.chrislane.accudrop.db.User
 import me.chrislane.accudrop.fragment.*
@@ -130,11 +132,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.generate_jump -> {
-                JumpGenerator(this).generateJump(LatLng(51.52, 0.08), 0)
+                val main = this
+                lifecycleScope.launch {
+                    JumpGenerator(main).generateJump(LatLng(51.52, 0.08), 0)
+                }
                 return true
             }
             R.id.generate_guest_jump -> {
-                JumpGenerator(this).generateJump(LatLng(51.52, 0.08), 9)
+                val main = this
+                lifecycleScope.launch {
+                    JumpGenerator(main).generateJump(LatLng(51.52, 0.08), 9)
+                }
                 return true
             }
             R.id.clear_database -> {

@@ -11,7 +11,8 @@ import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 class InsertJumpTask internal constructor(private val databaseViewModel: DatabaseViewModel, private val listener: () -> Unit) : AsyncTask<Jump, Void, Boolean>() {
 
     override fun doInBackground(vararg jumps: Jump): Boolean {
-        databaseViewModel.addJump(jumps[0])
+        // TODO: Make this handle the suspend function (or replace class completely)
+        //databaseViewModel.addJump(jumps[0])
         return true
     }
 

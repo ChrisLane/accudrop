@@ -32,7 +32,8 @@ class CreateAndInsertJumpTask(private val databaseViewModel: DatabaseViewModel, 
 
         createListener(result)
 
-        InsertJumpTask(databaseViewModel, insertListener).execute(jump)
+        // TODO: Make this handle the suspend function (or replace class completely)
+        //InsertJumpTask(databaseViewModel, insertListener).execute(jump)
     }
 
     companion object {
