@@ -4,10 +4,7 @@ import android.app.Application
 import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import me.chrislane.accudrop.db.AccuDropDb
-import me.chrislane.accudrop.db.FallType
-import me.chrislane.accudrop.db.Jump
-import me.chrislane.accudrop.db.Position
+import me.chrislane.accudrop.db.*
 import java.util.*
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
@@ -287,6 +284,14 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
 
     fun deleteJump(jumpId: Int) {
         db.jumpModel().deleteJump(jumpId)
+    }
+
+    fun addUser(user: User) {
+        db.userModel().insertUser(user)
+    }
+
+    fun getUserById(uuid: UUID): User {
+        return db.userModel().getUserById(uuid)
     }
 
     companion object {

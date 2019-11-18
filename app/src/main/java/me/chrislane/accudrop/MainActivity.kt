@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -23,6 +24,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
 import me.chrislane.accudrop.db.AccuDropDb
+import me.chrislane.accudrop.db.User
 import me.chrislane.accudrop.fragment.*
 import me.chrislane.accudrop.generator.JumpGenerator
 import me.chrislane.accudrop.preference.SettingsActivity
@@ -68,15 +70,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        // Initialise preferences
-        initPreferences(this)
-
         // Create or get ViewModels
+        val databaseViewModel = ViewModelProviders.of(this).get<DatabaseViewModel>(DatabaseViewModel::class.java)
         ViewModelProviders.of(this).get<PressureViewModel>(PressureViewModel::class.java)
         ViewModelProviders.of(this).get<GnssViewModel>(GnssViewModel::class.java)
-        ViewModelProviders.of(this).get<DatabaseViewModel>(DatabaseViewModel::class.java)
         ViewModelProviders.of(this).get<RouteViewModel>(RouteViewModel::class.java)
         ViewModelProviders.of(this).get<WindViewModel>(WindViewModel::class.java)
+
+        // Initialise preferences
+        initPreferences(this, databaseViewModel)
 
         // Set the fragment to be displayed
         setCurrentFragment(currentFragmentTag, supportFragmentManager)
@@ -205,14 +207,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         /**
          * Initialise the app preferences.
          */
-        private fun initPreferences(context: Context) {
+        private fun initPreferences(context: Context, databaseViewModel: DatabaseViewModel) {
             PreferenceManager.setDefaultValues(context, R.xml.pref_canopy, true)
             PreferenceManager.setDefaultValues(context, R.xml.pref_general, true)
             PreferenceManager.setDefaultValues(context, R.xml.pref_guidance, true)
             PreferenceManager.setDefaultValues(context, R.xml.pref_landing_pattern, true)
             val settings = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
             if (!settings.contains("userUUID")) {
-                settings.edit().putString("userUUID", UUID.randomUUID().toString()).apply()
+                val uuid = UUID.randomUUID()
+                settings.edit().putString("userUUID", uuid.toString()).apply()
+                AsyncTask.execute {databaseViewModel.addUser(User(uuid = uuid, firstName = "", lastName = ""))}
             }
         }
 

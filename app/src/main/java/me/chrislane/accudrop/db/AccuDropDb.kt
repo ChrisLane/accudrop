@@ -27,6 +27,8 @@ abstract class AccuDropDb : RoomDatabase() {
    */
   abstract fun locationModel(): PositionDao
 
+  abstract fun userModel(): UserDao
+
   companion object {
 
     @Volatile

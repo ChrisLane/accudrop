@@ -1,27 +1,24 @@
 package me.chrislane.accudrop.generator
 
-import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.location.Location
 import android.os.AsyncTask
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.task.GenerateJumpTask
+import me.chrislane.accudrop.util.UserUtil
 import me.chrislane.accudrop.viewmodel.DatabaseViewModel
 import me.chrislane.accudrop.viewmodel.GnssViewModel
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 class JumpGenerator(private val main: MainActivity) {
     private val databaseViewModel: DatabaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel::class.java)
 
     fun generateJump(target: LatLng, noOfGuests: Int) {
-        val settings = main.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
-        val stringUuid = settings.getString("userUUID", "")
-        val uuid = UUID.fromString(stringUuid)
+        val userUuid = UserUtil.getCurrentUserUuid(main)
 
-        GenerateJumpTask(uuid, target, databaseViewModel)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, noOfGuests)
+        GenerateJumpTask(userUuid, target, databaseViewModel)
+            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, noOfGuests)
     }
 
     companion object {
