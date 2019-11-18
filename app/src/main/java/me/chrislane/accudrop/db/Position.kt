@@ -5,24 +5,24 @@ import java.util.*
 
 @Entity(
     tableName = "position",
-    indices = [Index("jump_id", "user_uuid")],
+    indices = [Index("jump_id")],
     foreignKeys = [
-      ForeignKey(entity = Jump::class, parentColumns = arrayOf("id"), childColumns = arrayOf("jump_id")),
-      ForeignKey(entity = User::class, parentColumns = arrayOf("uuid"), childColumns = arrayOf("user_uuid"))])
+      ForeignKey(entity = Jump::class, parentColumns = ["id"], childColumns = ["jump_id"]),
+      ForeignKey(entity = User::class, parentColumns = ["uuid"], childColumns = ["user_id"])])
 data class Position(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "jump_id")
-    val jumpId: Int = 0,
-    @ColumnInfo(name = "user_uuid")
+    val jumpId: Int,
+    @ColumnInfo(name = "user_id")
     val userUuid: UUID,
-    val altitude: Int,
-    @ColumnInfo(name = "vertical_speed")
-    val vSpeed: Double,
-    @ColumnInfo(name = "horizontal_speed")
-    val hSpeed: Float,
-    val latitude: Double,
-    val longitude: Double,
     val time: Date,
+    val altitude: Int?,
+    @ColumnInfo(name = "vertical_speed")
+    val vSpeed: Double?,
+    @ColumnInfo(name = "horizontal_speed")
+    val hSpeed: Float?,
+    val latitude: Double?,
+    val longitude: Double?,
     @ColumnInfo(name = "fall_type")
     val fallType: FallType)

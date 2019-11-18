@@ -6,6 +6,6 @@ import java.util.*
 
 @Entity(tableName = "jump")
 data class Jump(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Int,
     val time: Date)

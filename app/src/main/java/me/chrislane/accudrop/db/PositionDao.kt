@@ -36,9 +36,9 @@ interface PositionDao {
     fun getLocationsByJumpNumber(jumpNumber: Int): MutableList<Position>
 
 
-    @Query("SELECT user_uuid FROM position " +
+    @Query("SELECT user_id FROM position " +
             "WHERE jump_id = :jumpNumber " +
-            "GROUP BY user_uuid")
+            "GROUP BY user_id")
     fun getUsersForJump(jumpNumber: Int): MutableList<String>
 
     /**
@@ -116,7 +116,7 @@ interface PositionDao {
      * @param jumpNumber The jump number.
      * @return A list of positions ordered by timestamp.
      */
-    @Query("SELECT * FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
+    @Query("SELECT * FROM position WHERE user_id = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
     fun getOrderedLocationsByUserByJumpNumber(uuid: UUID, jumpNumber: Int): MutableList<Position>
 
     /**
@@ -127,24 +127,24 @@ interface PositionDao {
      * @param jumpNumber The jump number.
      * @return A list of positions ordered by timestamp.
      */
-    @Query("SELECT * FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
+    @Query("SELECT * FROM position WHERE fall_type = :fallType AND user_id = :uuid AND jump_id = :jumpNumber ORDER BY time ASC")
     fun getOrderedTypeLocationsByUserByJumpNumber(fallType: FallType, uuid: UUID, jumpNumber: Int): MutableList<Position>
 
-    @Query("SELECT MIN(time) FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MIN(time) FROM position WHERE user_id = :uuid AND jump_id = :jumpNumber")
     fun getFirstDateForUser(uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(time) FROM position WHERE user_uuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(time) FROM position WHERE user_id = :uuid AND jump_id = :jumpNumber")
     fun getLastDateForUser(uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MIN(time) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MIN(time) FROM position WHERE fall_type = :fallType AND user_id = :uuid AND jump_id = :jumpNumber")
     fun getFirstDateForUser(fallType: FallType, uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(time) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(time) FROM position WHERE fall_type = :fallType AND user_id = :uuid AND jump_id = :jumpNumber")
     fun getLastDateForUser(fallType: FallType, uuid: UUID, jumpNumber: Int): Date
 
-    @Query("SELECT MAX(vertical_speed) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber ")
+    @Query("SELECT MAX(vertical_speed) FROM position WHERE fall_type = :fallType AND user_id = :uuid AND jump_id = :jumpNumber ")
     fun getMaxVSpeed(fallType: FallType, uuid: UUID, jumpNumber: Int): Double?
 
-    @Query("SELECT MAX(horizontal_speed) FROM position WHERE fall_type = :fallType AND user_uuid = :uuid AND jump_id = :jumpNumber")
+    @Query("SELECT MAX(horizontal_speed) FROM position WHERE fall_type = :fallType AND user_id = :uuid AND jump_id = :jumpNumber")
     fun getMaxHSpeed(fallType: FallType, uuid: UUID, jumpNumber: Int): Float?
 }

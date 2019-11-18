@@ -9,7 +9,7 @@ import me.chrislane.accudrop.db.converter.DateConverter
 import me.chrislane.accudrop.db.converter.FallTypeConverter
 import me.chrislane.accudrop.db.converter.UuidConverter
 
-@Database(entities = [Jump::class, Position::class, User::class], version = 10)
+@Database(entities = [Jump::class, Position::class, User::class], version = 11)
 @TypeConverters(DateConverter::class, UuidConverter::class, FallTypeConverter::class)
 abstract class AccuDropDb : RoomDatabase() {
 
