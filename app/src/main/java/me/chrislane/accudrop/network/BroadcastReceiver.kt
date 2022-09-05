@@ -31,14 +31,14 @@ class BroadcastReceiver(private val manager: WifiP2pManager?, private val channe
 
             val networkInfo = intent.getParcelableExtra<NetworkInfo>(WifiP2pManager.EXTRA_NETWORK_INFO)
 
-            if (networkInfo.isConnected) {
+            if (networkInfo?.isConnected == true) {
                 Log.d(TAG, "Connected and requesting connection info")
                 manager.requestConnectionInfo(channel, base)
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION == action) {
             val device = intent.getParcelableExtra<WifiP2pDevice>(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE)
 
-            when (device.status) {
+            when (device?.status) {
                 CONNECTED -> Log.d(TAG, "Device status: connected")
                 INVITED -> Log.d(TAG, "Device status: invited")
                 FAILED -> Log.d(TAG, "Device status: failed")

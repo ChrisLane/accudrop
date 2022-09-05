@@ -6,6 +6,7 @@ import android.util.Pair
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
+import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.fragment.PlanFragment
@@ -15,7 +16,7 @@ import me.chrislane.accudrop.viewmodel.RouteViewModel
 import me.chrislane.accudrop.viewmodel.WindViewModel
 
 class PlanPresenter(private val planFragment: PlanFragment) {
-    private val apiKey: String = planFragment.resources.getString(R.string.owmApiKey)
+    private val apiKey: String = BuildConfig.OPEN_WEATHER_API_KEY
     private val routeViewModel: RouteViewModel
     private val windViewModel: WindViewModel
 
