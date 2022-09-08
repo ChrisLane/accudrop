@@ -19,7 +19,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
@@ -73,11 +73,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         // Create or get ViewModels
-        val databaseViewModel = ViewModelProviders.of(this).get<DatabaseViewModel>(DatabaseViewModel::class.java)
-        ViewModelProviders.of(this).get<PressureViewModel>(PressureViewModel::class.java)
-        ViewModelProviders.of(this).get<GnssViewModel>(GnssViewModel::class.java)
-        ViewModelProviders.of(this).get<RouteViewModel>(RouteViewModel::class.java)
-        ViewModelProviders.of(this).get<WindViewModel>(WindViewModel::class.java)
+        val databaseViewModel = ViewModelProvider(this).get<DatabaseViewModel>(DatabaseViewModel::class.java)
+        ViewModelProvider(this).get<PressureViewModel>(PressureViewModel::class.java)
+        ViewModelProvider(this).get<GnssViewModel>(GnssViewModel::class.java)
+        ViewModelProvider(this).get<RouteViewModel>(RouteViewModel::class.java)
+        ViewModelProvider(this).get<WindViewModel>(WindViewModel::class.java)
 
         // Initialise preferences
         initPreferences(this, databaseViewModel)

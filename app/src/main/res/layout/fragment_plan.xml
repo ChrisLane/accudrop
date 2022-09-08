@@ -12,10 +12,8 @@
         android:visibility="gone"
         android:indeterminate="true" />
 
-    <fragment
-        android:id="@+id/plan_map_fragment"
-        class="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ma="me.chrislane.accudrop.fragment.PlanFragment" />
+        android:layout_height="match_parent"/>
 </LinearLayout>

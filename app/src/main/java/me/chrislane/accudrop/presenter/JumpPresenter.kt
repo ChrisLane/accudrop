@@ -1,7 +1,7 @@
 package me.chrislane.accudrop.presenter
 
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.location.Location
 import android.os.AsyncTask
@@ -32,10 +32,10 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
     init {
 
         val main = jumpFragment.requireActivity() as MainActivity
-        pressureViewModel = ViewModelProviders.of(main).get(PressureViewModel::class.java)
-        gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel::class.java)
-        databaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel::class.java)
-        jumpViewModel = ViewModelProviders.of(main).get(JumpViewModel::class.java)
+        pressureViewModel = ViewModelProvider(main).get(PressureViewModel::class.java)
+        gnssViewModel = ViewModelProvider(main).get(GnssViewModel::class.java)
+        databaseViewModel = ViewModelProvider(main).get(DatabaseViewModel::class.java)
+        jumpViewModel = ViewModelProvider(main).get(JumpViewModel::class.java)
 
         subscribeToPressure()
     }
@@ -66,7 +66,7 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
     private fun startLocationService() {
         val main = jumpFragment.requireActivity() as MainActivity
         // Get ground pressure
-        val pressureViewModel = ViewModelProviders.of(main).get<PressureViewModel>(PressureViewModel::class.java)
+        val pressureViewModel = ViewModelProvider(main).get<PressureViewModel>(PressureViewModel::class.java)
         val groundPressure = pressureViewModel.getGroundPressure().value
 
         // Create intent and add ground pressure

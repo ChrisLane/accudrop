@@ -9,19 +9,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.mapbox.maps.*
+import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.locationcomponent.location
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R
 import me.chrislane.accudrop.UnitType
@@ -29,9 +30,14 @@ import me.chrislane.accudrop.util.DistanceAndSpeedUtil
 import me.chrislane.accudrop.presenter.PlanPresenter
 import me.chrislane.accudrop.viewmodel.GnssViewModel
 import me.chrislane.accudrop.viewmodel.RouteViewModel
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 
-class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
-    private lateinit var map: GoogleMap
+class PlanFragment : Fragment(), LifecycleOwner, SharedPreferences.OnSharedPreferenceChangeListener {
+    private lateinit var mapView: MapView
+    private lateinit var map: MapboxMap
     private lateinit var gnssViewModel: GnssViewModel
     private lateinit var routeViewModel: RouteViewModel
     private lateinit var planPresenter: PlanPresenter
@@ -40,29 +46,38 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         retainInstance = true
 
         // Add this as a location listener
         if (savedInstanceState == null) {
             val main = requireActivity() as MainActivity
-            gnssViewModel = ViewModelProviders.of(main).get(GnssViewModel::class.java)
-            routeViewModel = ViewModelProviders.of(main).get(RouteViewModel::class.java)
+            gnssViewModel = ViewModelProvider(main).get(GnssViewModel::class.java)
+            gnssViewModel.gnssListener.startListening()
+            routeViewModel = ViewModelProvider(main).get(RouteViewModel::class.java)
         }
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mapView = MapView(
+            inflater.context,
+            MapInitOptions(inflater.context)
+        )
+
+        onMapReady(mapView)
+
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_plan, container, false)
+/*        val view = inflater.inflate(R.layout.fragment_plan, container, false)
 
         // Set up the map
         val mapFragment = childFragmentManager.findFragmentById(R.id.plan_map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        preferences.registerOnSharedPreferenceChangeListener(this)
+        preferences.registerOnSharedPreferenceChangeListener(this)*/
 
-        return view
+        return mapView
     }
 
     /**
@@ -72,9 +87,9 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    override fun onMapReady(googleMap: GoogleMap) {
+    fun onMapReady(mapView: MapView) {
         Log.i(TAG, "Map ready")
-        map = googleMap
+        map = mapView.getMapboxMap()
 
         setupMap()
         subscribeToRoute()
@@ -97,20 +112,50 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
 
         // Initial map setup
         if (permissionManager.checkLocationPermission()) {
-            map.isMyLocationEnabled = true
         } else {
             permissionManager.requestLocationPermission("Location access is required to find your location.")
+            return
         }
+        mapView.getMapboxMap().setCamera(
+            CameraOptions.Builder()
+                .zoom(14.0)
+                .build()
+        )
+        mapView.getMapboxMap().loadStyleUri(
+            Style.SATELLITE_STREETS
+        ) {
+            initLocationComponent()
+        }
+    }
 
-        val loc = gnssViewModel.getLastLocation().value
-        if (loc != null) {
-            val camPos = camPosBuilder.target(GnssViewModel.getLatLng(loc)).build()
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(camPos))
+    private fun initLocationComponent() {
+        val main = requireActivity() as MainActivity
+        val locationComponentPlugin = mapView.location
+        locationComponentPlugin.updateSettings {
+            this.enabled = true
+            this.locationPuck = LocationPuck2D(
+                bearingImage = AppCompatResources.getDrawable(
+                    main,
+                    R.drawable.mapbox_user_puck_icon,
+                ),
+                shadowImage = AppCompatResources.getDrawable(
+                    main,
+                    R.drawable.mapbox_user_icon_shadow,
+                ),
+                scaleExpression = interpolate {
+                    linear()
+                    zoom()
+                    stop {
+                        literal(0.0)
+                        literal(0.6)
+                    }
+                    stop {
+                        literal(20.0)
+                        literal(1.0)
+                    }
+                }.toJson()
+            )
         }
-        map.uiSettings.isMapToolbarEnabled = false
-        map.isBuildingsEnabled = true
-        map.mapType = GoogleMap.MAP_TYPE_HYBRID
-        map.setOnMapLongClickListener { this.onMapLongClick(it) }
     }
 
     /**
@@ -124,7 +169,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
     private fun onMapLongClick(latLng: LatLng) {
         // Update map camera position
         val camPos = camPosBuilder.target(latLng).build()
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+        //map.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
 
         // Update route
         routeViewModel.setTarget(latLng)
@@ -136,7 +181,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
      * updates the map to display these changes.
      */
     private fun subscribeToRoute() {
-        routeViewModel.getRoute().observe(this, Observer<MutableList<Location>> {
+        routeViewModel.getRoute().observe(viewLifecycleOwner, Observer<MutableList<Location>> {
             if (it != null) {
                 this.updateRoute(it)
             }
@@ -149,7 +194,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
     }
 
     private fun updateRoute(route: MutableList<Location>) {
-        map.clear()
+/*        map.clear()
 
         val unitString = preferences.getString("general_unit", "")!!
         val unit = UnitType.valueOf(unitString.toUpperCase())
@@ -171,7 +216,7 @@ class PlanFragment : Fragment(), LifecycleOwner, OnMapReadyCallback, SharedPrefe
 
         map.addMarker(MarkerOptions()
                 .position(GnssViewModel.getLatLng(route[route.size - 1]))
-                .title("Landing"))
+                .title("Landing"))*/
     }
 
     /**

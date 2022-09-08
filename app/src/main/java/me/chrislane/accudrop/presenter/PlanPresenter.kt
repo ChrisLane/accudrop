@@ -4,7 +4,7 @@ import android.location.Location
 import androidx.preference.PreferenceManager
 import android.util.Pair
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
 import me.chrislane.accudrop.MainActivity
 import me.chrislane.accudrop.R
@@ -21,8 +21,8 @@ class PlanPresenter(private val planFragment: PlanFragment) {
 
     init {
         val main = planFragment.requireActivity() as MainActivity
-        routeViewModel = ViewModelProviders.of(main).get(RouteViewModel::class.java)
-        windViewModel = ViewModelProviders.of(main).get(WindViewModel::class.java)
+        routeViewModel = ViewModelProvider(main).get(RouteViewModel::class.java)
+        windViewModel = ViewModelProvider(main).get(WindViewModel::class.java)
     }
 
     constructor(planFragment: PlanFragment, target: LatLng) : this(planFragment) {

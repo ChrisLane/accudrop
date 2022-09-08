@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.location.Location
 import android.util.Log
 import android.util.Pair
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import me.chrislane.accudrop.BuildConfig
@@ -19,7 +19,7 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 class JumpGenerator(private val main: MainActivity) {
-    private val databaseViewModel: DatabaseViewModel = ViewModelProviders.of(main).get(DatabaseViewModel::class.java)
+    private val databaseViewModel: DatabaseViewModel = ViewModelProvider(main).get(DatabaseViewModel::class.java)
 
     suspend fun generateJump(target: LatLng, noOfGuests: Int) {
         val userUuid = UserUtil.getCurrentUserUuid(main)

@@ -1,7 +1,7 @@
 package me.chrislane.accudrop.presenter
 
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
@@ -15,8 +15,8 @@ import me.chrislane.accudrop.viewmodel.JumpStatsViewModel
 import java.util.*
 
 class JumpStatsPresenter(private val fragment: JumpStatsFragment) {
-    private val dbViewModel: DatabaseViewModel = ViewModelProviders.of(fragment).get(DatabaseViewModel::class.java)
-    private val viewModel: JumpStatsViewModel = ViewModelProviders.of(fragment).get(JumpStatsViewModel::class.java)
+    private val dbViewModel: DatabaseViewModel = ViewModelProvider(fragment).get(DatabaseViewModel::class.java)
+    private val viewModel: JumpStatsViewModel = ViewModelProvider(fragment).get(JumpStatsViewModel::class.java)
     private val main: FragmentActivity = fragment.requireActivity()
     private lateinit var uuid: UUID
 

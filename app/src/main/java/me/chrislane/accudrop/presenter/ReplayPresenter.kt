@@ -4,7 +4,7 @@ import android.location.Location
 import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import me.chrislane.accudrop.BuildConfig
 import me.chrislane.accudrop.db.FallType
 import me.chrislane.accudrop.fragment.ReplayFragment
@@ -15,8 +15,8 @@ import me.chrislane.accudrop.viewmodel.ReplayViewModel
 import java.util.*
 
 class ReplayPresenter(private val replayFragment: ReplayFragment) {
-    private val replayViewModel: ReplayViewModel = ViewModelProviders.of(replayFragment).get(ReplayViewModel::class.java)
-    private val databaseViewModel: DatabaseViewModel = ViewModelProviders.of(replayFragment).get(DatabaseViewModel::class.java)
+    private val replayViewModel: ReplayViewModel = ViewModelProvider(replayFragment).get(ReplayViewModel::class.java)
+    private val databaseViewModel: DatabaseViewModel = ViewModelProvider(replayFragment).get(DatabaseViewModel::class.java)
 
     init {
 

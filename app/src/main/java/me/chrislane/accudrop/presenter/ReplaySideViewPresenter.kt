@@ -1,6 +1,6 @@
 package me.chrislane.accudrop.presenter
 
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import android.graphics.Point
 import android.graphics.PointF
 import android.os.AsyncTask
@@ -44,7 +44,7 @@ class ReplaySideViewPresenter(private val fragment: ReplaySideViewFragment) {
         if (parentFragment == null) {
             throw Exception("Missing parent fragment (Replay)")
         }
-        replayViewModel = ViewModelProviders.of(parentFragment).get(ReplayViewModel::class.java)
+        replayViewModel = ViewModelProvider(parentFragment).get(ReplayViewModel::class.java)
     }
 
     fun produceViewPositions(width: Int, height: Int, margin: Int) {
