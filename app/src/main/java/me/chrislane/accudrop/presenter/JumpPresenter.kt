@@ -46,18 +46,15 @@ class JumpPresenter(private val jumpFragment: JumpFragment) {
      *
      * Inserts a new jump and starts the foreground location tracking service.
      */
-    fun startJump() {
+    suspend fun startJump() {
         Log.i(TAG, "Starting jump.")
         isJumping = true
 
         gnssViewModel.gnssListener.stopListening()
-        val createListener = { jumpId: Int ->
-            jumpViewModel.setJumpId(jumpId)
-        }
-        val insertListener = {
-            startLocationService()
-        }
-        CreateAndInsertJumpTask(databaseViewModel, createListener, insertListener).execute()
+
+        val jumpId = databaseViewModel.addJump()
+        jumpViewModel.setJumpId(jumpId)
+        startLocationService()
     }
 
     /**

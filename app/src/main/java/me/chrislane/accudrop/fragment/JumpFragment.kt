@@ -15,7 +15,10 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.chrislane.accudrop.*
 import me.chrislane.accudrop.presenter.JumpPresenter
 import me.chrislane.accudrop.service.LocationService
@@ -76,7 +79,9 @@ class JumpFragment : Fragment(), DefaultLifecycleObserver {
     private fun onClickJump(): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                jumpPresenter.startJump()
+                lifecycleScope.launch(context = Dispatchers.IO) {
+                    jumpPresenter.startJump()
+                }
             } else {
                 jumpPresenter.stopJump()
             }

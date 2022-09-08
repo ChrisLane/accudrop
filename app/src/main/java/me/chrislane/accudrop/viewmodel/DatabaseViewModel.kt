@@ -2,9 +2,13 @@ package me.chrislane.accudrop.viewmodel
 
 import android.app.Application
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import me.chrislane.accudrop.db.*
+import me.chrislane.accudrop.task.CreateAndInsertJumpTask
 import java.util.*
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
@@ -57,14 +61,16 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
         db.jumpModel().insertJump(jump)
     }
 
-    suspend fun addJump() {
+    suspend fun addJump(): Int {
         val lastJumpId = db.jumpModel().getLastJumpId()
 
+        val jumpId = if (lastJumpId != null) lastJumpId + 1 else 1
         val jump = Jump(
-            id = if (lastJumpId != null) lastJumpId + 1 else 1,
+            id = jumpId,
             time = Date())
 
         db.jumpModel().insertJump(jump)
+        return jumpId
     }
 
     /**

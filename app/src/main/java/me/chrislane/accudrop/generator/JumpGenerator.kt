@@ -27,13 +27,7 @@ class JumpGenerator(private val main: MainActivity) {
         val resources = main.resources
 
         // Add a new jump to the database
-        databaseViewModel.addJump()
-
-        val jumpId = databaseViewModel.getLastJumpId()
-        if (jumpId == null) {
-            Log.e(TAG, "Could not get last jump ID.")
-            throw IllegalStateException("Could not get last jump ID")
-        }
+        val jumpId = databaseViewModel.addJump()
 
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "Generating jump $jumpId")

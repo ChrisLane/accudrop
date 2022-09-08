@@ -14,6 +14,6 @@ class JumpViewModel : ViewModel() {
     }
 
     fun setJumpId(jumpId: Int) {
-        this.jumpId.value = jumpId
+        this.jumpId.postValue(jumpId)
     }
 }
